@@ -15,11 +15,18 @@
       class="vjs-default-skin"
       controls
     >
-      <source src="out/video.m3u8" type="application/x-mpegURL" />
+      <!-- <source src="out/video.m3u8" type="application/x-mpegURL" /> -->
+      <source src="out/video.mpd" type="application/dash+xml" />
     </video-js>
     <script src="https://vjs.zencdn.net/7.6.6/video.js"></script>
     <script>
-      var player = videojs("example-video");
+      var player = videojs("example-video", {
+        html5: {
+          hls: {
+            overrideNative: true
+          }
+        }
+      });
     </script>
   </body>
 </html>

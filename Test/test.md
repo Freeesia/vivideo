@@ -37,7 +37,12 @@ h265はGF980でデコード出来ない
 -i raw/video.mp4 -c:v h264_vaapi -q:v 20 -c:a copy
 ```
 
-## HLS
+## フォーマット
+### HLS
 ```
 -f hls -hls_time 9 -hls_playlist_type vod -hls_segment_filename "out/video%3d.ts" out/video.m3u8
+```
+### mpeg-dash
+```
+-window_size 0 -movflags +faststart out/video.mpd
 ```
