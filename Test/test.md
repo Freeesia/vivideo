@@ -44,5 +44,5 @@ h265はGF980でデコード出来ない
 ```
 ### mpeg-dash
 ```
--window_size 0 -movflags +faststart out/video.mpd
+-window_size 0 -hls_playlist 1 -movflags +faststart out/video.mpd
 ```
