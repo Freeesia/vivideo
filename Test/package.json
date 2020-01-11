@@ -1,0 +1,13 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "repository": "https://github.com/Freeesia/vivideo",
+  "author": "Freesia",
+  "private": true,
+  "scripts": {
+    "start": "http-server ./ -gb"
+  },
+  "dependencies": {
+    "http-server": "^0.12.1"
+  }
+}
