@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 
 namespace StudioFreesia.Vivideo.Worker
 {
-    public class Worker : BackgroundService
+    public class TranscodeWorker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<TranscodeWorker> _logger;
 
-        public Worker(ILogger<Worker> logger)
+        public TranscodeWorker(ILogger<TranscodeWorker> logger)
         {
             _logger = logger;
         }
