@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using StudioFreesia.Vivideo.Core;
@@ -17,8 +18,9 @@ namespace StrudioFreesia.Vivideo.Server
         [HttpPost]
         public string Transcode([FromBody]string path)
         {
-            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(path));
-            return path;
+            var queue = new TranscodeQueue(path, HashCode.Combine(path).ToString());
+            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(queue));
+            return queue.Output;
         }
     }
 }

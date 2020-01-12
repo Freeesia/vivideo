@@ -4,6 +4,6 @@ namespace StudioFreesia.Vivideo.Core
 {
     public interface ITranscodeVideo
     {
-        Task<string> Transcode(string path);
+        void Transcode(TranscodeQueue queue);
     }
 }
