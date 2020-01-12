@@ -80,6 +80,15 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "compose-up",
+      "command": "docker-compose",
+      "type": "process",
+      "args": [
+        "up",
+        "-d"
+      ]
+    },
+    {
       "label": "build",
       "dependsOn": [
         "build:worker",
@@ -89,6 +98,13 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "pre-debug",
+      "dependsOn": [
+        "compose-up",
+        "build"
+      ]
     }
   ]
 }
