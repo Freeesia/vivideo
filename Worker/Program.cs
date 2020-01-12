@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Hangfire;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace StudioFreesia.Vivideo.Worker
 {
@@ -19,7 +19,11 @@ namespace StudioFreesia.Vivideo.Worker
                 .UseWindowsService()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddHostedService<TranscodeWorker>();
+                    services.AddHangfire(config =>
+                    {
+                        config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
+                    });
+                    services.AddHangfireServer();
                 });
     }
 }
