@@ -51,7 +51,7 @@ namespace StudioFreesia.Vivideo.Worker
                 {
                     this.logger.LogError(e.Data);
                 }
-            }
+            };
             p.BeginErrorReadLine();
             p.WaitForExit();
             this.logger.LogTrace("トランスコード終了:{0}", name);
