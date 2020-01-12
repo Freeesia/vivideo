@@ -15,10 +15,10 @@ namespace StrudioFreesia.Vivideo.Server
             => this.jobClient = jobClient;
 
         [HttpPost]
-        public string Transcode()
+        public string Transcode([FromBody]string path)
         {
-            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(string.Empty));
-            return string.Empty;
+            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(path));
+            return path;
         }
     }
 }
