@@ -1,6 +1,6 @@
 using System;
 
-namespace Server
+namespace StudioFreesia.Vivideo.Server
 {
     public class WeatherForecast
     {
