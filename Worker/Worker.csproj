@@ -15,4 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ffmpeg\**\*.*" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always"/>  
+  </ItemGroup>
 </Project>
