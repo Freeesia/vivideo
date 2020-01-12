@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "build:worker",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -11,14 +11,11 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
+      "group": "build",
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "publish",
+      "label": "publish:worker",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -30,7 +27,7 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "watch",
+      "label": "watch:worker",
       "command": "dotnet",
       "type": "process",
       "args": [
@@ -42,6 +39,56 @@
       ],
       "isBackground": true,
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build:server",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Server/Server.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish:server",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "publish",
+        "${workspaceFolder}/Server/Server.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "watch:server",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "${workspaceFolder}/Server/Server.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "isBackground": true,
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "dependsOn": [
+        "build:worker",
+        "build:server"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

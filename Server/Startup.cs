@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,9 +17,7 @@ namespace Server
     public class Startup
     {
         public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+            => this.Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -26,10 +25,14 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHangfire(config =>
+            {
+                config.UseRedisStorage(this.Configuration.GetConnectionString("Redis"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient jobClient)
         {
             if (env.IsDevelopment())
             {
@@ -41,6 +44,10 @@ namespace Server
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseHangfireDashboard();
+            jobClient.Enqueue(() => Console.WriteLine("Test"));
+
 
             app.UseEndpoints(endpoints =>
             {
