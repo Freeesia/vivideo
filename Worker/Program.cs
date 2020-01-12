@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
+using StudioFreesia.Vivideo.Core;
 
 namespace StudioFreesia.Vivideo.Worker
 {
@@ -24,6 +25,7 @@ namespace StudioFreesia.Vivideo.Worker
                         config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
                     });
                     services.AddHangfireServer();
+                    services.AddTransient<ITranscodeVideo, TranscodeVideoImpl>();
                 });
     }
 }
