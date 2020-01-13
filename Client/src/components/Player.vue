@@ -13,11 +13,24 @@ import "video.js/dist/video-js.css";
 export default class Player extends Vue {
   private player: any;
 
-  @Prop({ type: Object })
-  private options: {};
+  @Prop({ type: String, required: true })
+  private path!: string;
 
   private mounted() {
-    this.player = videojs(this.$refs.videoPlayer, this.options);
+    this.player = videojs(this.$refs.videoPlayer, {
+      autoplay: true,
+      controls: true,
+      sources: [
+        {
+          src: this.path + "/master.mpd",
+          type: "application/dash+xml"
+        },
+        {
+          src: this.path + "/master.m3u8",
+          type: "application/x-mpegURL"
+        }
+      ]
+    });
   }
   private beforeDestroy() {
     if (this.player) {
