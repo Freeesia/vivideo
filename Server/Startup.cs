@@ -1,17 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using StudioFreesia.Vivideo.Core;
 
 namespace StudioFreesia.Vivideo.Server
@@ -57,6 +52,17 @@ namespace StudioFreesia.Vivideo.Server
                 RequestPath = "/stream",
                 EnableDirectoryBrowsing = env.IsDevelopment(),
                 EnableDefaultFiles = false,
+                StaticFileOptions =
+                {
+                    ContentTypeProvider = new FileExtensionContentTypeProvider()
+                    {
+                        Mappings = {
+                            [".mpd"] = "application/dash+xml",
+                            [".m3u8"] = "application/x-mpegURL",
+                            [".m4s"] = "video/iso.segment"
+                        }
+                    }
+                },
             });
 
 
