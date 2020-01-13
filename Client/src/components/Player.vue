@@ -1,5 +1,5 @@
 <template>
-  <video autoplay ref="videoPlayer" class="video-js"></video>
+  <video ref="videoPlayer" autoplay class="video-js"></video>
 </template>
 
 <script lang="ts">
@@ -11,7 +11,7 @@ import "video.js/dist/video-js.css";
 
 @Component({})
 export default class Player extends Vue {
-  private player: VideoJsPlayer;
+  private player?: VideoJsPlayer;
 
   @Prop({ type: String, required: true })
   private path!: string;
