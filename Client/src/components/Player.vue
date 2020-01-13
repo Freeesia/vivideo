@@ -1,25 +1,26 @@
 <template>
-  <video ref="videoPlayer" class="video-js"></video>
+  <video autoplay ref="videoPlayer" class="video-js"></video>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import videojs from "video.js";
+import videojs, { VideoJsPlayer } from "video.js";
 import Component from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import "video.js/dist/video-js.css";
 
 @Component({})
 export default class Player extends Vue {
-  private player: any;
+  private player: VideoJsPlayer;
 
   @Prop({ type: String, required: true })
   private path!: string;
 
   private mounted() {
     this.player = videojs(this.$refs.videoPlayer, {
-      autoplay: true,
+      liveui: true,
       controls: true,
+      fluid: true,
       sources: [
         {
           src: this.path + "/master.mpd",
