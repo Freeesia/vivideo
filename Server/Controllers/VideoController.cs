@@ -12,7 +12,7 @@ using StudioFreesia.Vivideo.Server.Model;
 namespace StrudioFreesia.Vivideo.Server
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class VideoController : ControllerBase
     {
         private readonly IBackgroundJobClient jobClient;
