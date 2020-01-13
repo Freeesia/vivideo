@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StudioFreesia.Vivideo.Core;
 
 namespace StudioFreesia.Vivideo.Server
 {
@@ -29,6 +31,7 @@ namespace StudioFreesia.Vivideo.Server
             {
                 config.UseRedisStorage(this.Configuration.GetConnectionString("Redis"));
             });
+            services.AddDirectoryBrowser();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,8 +48,19 @@ namespace StudioFreesia.Vivideo.Server
 
             app.UseAuthorization();
 
+            app.UseFileServer();
+            var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
+            var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
+            app.UseFileServer(new FileServerOptions()
+            {
+                FileProvider = new PhysicalFileProvider(work),
+                RequestPath = "/stream",
+                EnableDirectoryBrowsing = env.IsDevelopment(),
+                EnableDefaultFiles = false,
+            });
+
+
             app.UseHangfireDashboard();
-            jobClient.Enqueue(() => Console.WriteLine("Test"));
 
 
             app.UseEndpoints(endpoints =>

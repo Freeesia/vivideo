@@ -7,3 +7,7 @@ POST http://localhost:5000/video/transcode HTTP/1.1
 Content-Type: application/json
 
 "NEW GAME!\\NEW GAME!\\NEW GAME! #01「なんだかホントに入社した気分です!」.mp4"
+###
+GET http://localhost:5000/video/ HTTP/1.1
+###
+GET http://localhost:5000/video/NEW%20GAME! HTTP/1.1
