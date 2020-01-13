@@ -1,7 +1,9 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark dense>
-      <v-toolbar-title>Vivideo</v-toolbar-title>
+      <router-link to="/" aria-label="Vivideo" title="Vivideo">
+        <v-toolbar-title>Vivideo</v-toolbar-title>
+      </router-link>
       <v-spacer></v-spacer>
 
       <v-menu offset-y>
@@ -18,16 +20,19 @@
     </v-app-bar>
 
     <v-content>
-      <HelloWorld />
+      <router-view></router-view>
     </v-content>
   </v-app>
 </template>
-
+<style lang="scss" scoped>
+.v-toolbar__title {
+  color: white;
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
 import { Component } from "vue-property-decorator";
 
-@Component({ components: { HelloWorld } })
+@Component({})
 export default class App extends Vue {}
 </script>
