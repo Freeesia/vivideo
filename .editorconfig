@@ -7,11 +7,13 @@ root = true
 # All files
 [*]
 indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 120
 
 # Code files
 [*.{cs,csx,vb,vbx}]
 indent_size = 4
-insert_final_newline = true
 charset = utf-8-bom
 
 ###############################
@@ -145,5 +147,11 @@ csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 
 [*.{yml,yaml}]
+end_of_line = lf
+charset = utf-8
 indent_size = 2
-trim_trailing_whitespace = true
+
+[*.{vue,ts,js}]
+end_of_line = lf
+charset = utf-8
+indent_size = 2
