@@ -25,8 +25,8 @@ namespace StrudioFreesia.Vivideo.Server
             this.jobClient = jobClient;
         }
 
-        [HttpPost("[action]")]
-        public string Transcode([FromBody]string path)
+        [HttpPost("[action]/{*path}")]
+        public string Transcode([FromRoute]string path)
         {
             var queue = new TranscodeQueue(path, HashCode.Combine(path).ToString());
             this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(queue));

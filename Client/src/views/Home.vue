@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Player path="/stream/-812461457" />
     <div>{{ path }}</div>
     <v-list>
       <v-list-item-group color="primary">
@@ -42,7 +41,12 @@ export default class Home extends Vue {
   private selectContent(content: ContentNode) {
     this.selectedContent = content;
     if (this.selectedContent ? !this.selectedContent.isDirectory : false) {
-      console.log(this.selectedContent.name);
+      this.$router.push({
+        name: "play",
+        params: {
+          request: content.contentPath
+        }
+      });
     } else {
       this.updateContents();
     }
