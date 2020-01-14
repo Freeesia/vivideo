@@ -13,10 +13,11 @@ import Axios from "axios";
 @Component({ components: { Player } })
 export default class Play extends Vue {
   private streamPath = "";
+  private readonly delay: (msec: number) => Promise<void> = msec => new Promise(resolve => setTimeout(resolve, msec));
 
   private async created() {
-    console.log(this.$route.params.request);
     const res = await Axios.post<string>("/api/video/transcode/" + this.$route.params.request);
+    await this.delay(1000);
     this.streamPath = res.data;
   }
 }
