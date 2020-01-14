@@ -36,6 +36,9 @@
       "url": "http://localhost:8080",
       "webRoot": "${workspaceFolder}/Client",
       "smartStep": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./src/*": "${webRoot}/src/*"
+      },
     }
   ],
   "compounds": [
