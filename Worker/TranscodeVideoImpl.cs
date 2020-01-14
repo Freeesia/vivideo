@@ -30,6 +30,11 @@ namespace StudioFreesia.Vivideo.Worker
         {
             var dir = Path.Combine(this.workDir, queue.Output);
             var name = Path.GetFileNameWithoutExtension(queue.Input);
+            if (Directory.Exists(dir))
+            {
+                this.logger.LogInformation("トランスコードスキップ: {0}", name);
+                return;
+            }
             Directory.CreateDirectory(dir);
             var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
             var info = new ProcessStartInfo(@"ffmpeg\bin\ffmpeg.exe")
@@ -50,7 +55,7 @@ namespace StudioFreesia.Vivideo.Worker
                     Path.Combine(dir, "master.mpd").Replace('\\', '/'),
                 }
             };
-            this.logger.LogTrace("トランスコード開始:{0}", name);
+            this.logger.LogInformation("トランスコード開始:{0}", name);
             using var p = Process.Start(info);
             p.ErrorDataReceived += (s, e) =>
             {
@@ -61,7 +66,7 @@ namespace StudioFreesia.Vivideo.Worker
             };
             p.BeginErrorReadLine();
             p.WaitForExit();
-            this.logger.LogTrace("トランスコード終了:{0}", name);
+            this.logger.LogInformation("トランスコード終了:{0}", name);
         }
     }
 }
