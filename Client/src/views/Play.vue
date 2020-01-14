@@ -16,8 +16,10 @@ export default class Play extends Vue {
   private readonly delay: (msec: number) => Promise<void> = msec => new Promise(resolve => setTimeout(resolve, msec));
 
   private async created() {
-    const res = await Axios.post<string>("/api/video/transcode/" + this.$route.params.request);
-    await this.delay(1000);
+    const res = await Axios.post<string>("/api/video/transcode/", {
+      path: this.$route.params.request
+    });
+    await this.delay(2000);
     this.streamPath = res.data;
   }
 }

@@ -25,10 +25,10 @@ namespace StrudioFreesia.Vivideo.Server
             this.jobClient = jobClient;
         }
 
-        [HttpPost("[action]/{*path}")]
-        public string Transcode([FromRoute]string path)
+        [HttpPost("[action]")]
+        public string Transcode([FromBody]TranscodeRequest request)
         {
-            var queue = new TranscodeQueue(path, HashCode.Combine(path).ToString());
+            var queue = new TranscodeQueue(request.Path ?? throw new ArgumentException(), HashCode.Combine(request.Path).ToString());
             this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(queue));
             return "/stream/" + queue.Output;
         }
@@ -46,5 +46,10 @@ namespace StrudioFreesia.Vivideo.Server
                 .Where(i => !i.Name.StartsWith('.'))
                 .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo)));
         }
+    }
+
+    public class TranscodeRequest
+    {
+        public string? Path { get; set; }
     }
 }
