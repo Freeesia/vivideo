@@ -81,6 +81,14 @@
     },
     {
       "type": "npm",
+      "label": "build:client",
+      "script": "build",
+      "path": "Client/",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
       "label": "serve:client",
       "script": "serve",
       "path": "Client/",
