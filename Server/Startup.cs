@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,6 +51,7 @@ namespace StudioFreesia.Vivideo.Server
             app.UseFileServer();
             var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
             var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
+            Directory.CreateDirectory(work);
             app.UseFileServer(new FileServerOptions()
             {
                 FileProvider = new PhysicalFileProvider(work),

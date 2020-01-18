@@ -16,6 +16,7 @@
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "name": "worker",
@@ -26,7 +27,8 @@
       "args": [],
       "cwd": "${workspaceFolder}/Worker",
       "console": "internalConsole",
-      "stopAtEntry": false
+      "stopAtEntry": false,
+      "envFile": "${workspaceFolder}/.env"
     },
     {
       "name": "client",
