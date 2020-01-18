@@ -1,0 +1,14 @@
+.vscode/
+.env
+.git/
+.gitignore
+docker-compose.*
+
+*/bin/
+*/obj/
+
+Client/dist/
+Client/node_modules/
+
+Test/
+Worker/
