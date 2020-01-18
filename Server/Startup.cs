@@ -27,6 +27,10 @@ namespace StudioFreesia.Vivideo.Server
                 config.UseRedisStorage(this.Configuration.GetConnectionString("Redis"));
             });
             services.AddDirectoryBrowser();
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "Client";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,6 +71,7 @@ namespace StudioFreesia.Vivideo.Server
 
 
             app.UseHangfireDashboard();
+            app.UseSpaStaticFiles();
 
 
             app.UseEndpoints(endpoints =>
