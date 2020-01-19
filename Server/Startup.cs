@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
@@ -44,10 +45,6 @@ namespace StudioFreesia.Vivideo.Server
 
             // app.UseHttpsRedirection();
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
             app.UseFileServer();
             var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
             var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
@@ -71,14 +68,19 @@ namespace StudioFreesia.Vivideo.Server
                 },
             });
 
-
-            app.UseHangfireDashboard();
             app.UseSpaStaticFiles();
 
+            app.UseRouting();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard(new DashboardOptions()
+                {
+                    Authorization = Array.Empty<IDashboardAuthorizationFilter>(),
+                    IsReadOnlyFunc = _ => true,
+                });
             });
         }
     }
