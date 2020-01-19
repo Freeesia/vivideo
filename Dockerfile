@@ -17,6 +17,7 @@ RUN yarn install \
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
 WORKDIR /app
+EXPOSE 80
 COPY --from=dotnet-build /build/Server/out ./
 COPY --from=node-build /build/Client/out ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]
