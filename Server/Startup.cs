@@ -30,9 +30,9 @@ namespace StudioFreesia.Vivideo.Server
                 config.UseRedisStorage(this.Configuration.GetConnectionString("Redis"));
             });
             services.AddDirectoryBrowser();
-            services.AddSpaStaticFiles(configuration =>
+            services.AddSpaStaticFiles(config =>
             {
-                configuration.RootPath = "Client";
+                config.RootPath = "Client";
             });
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED") == "true")
@@ -98,6 +98,8 @@ namespace StudioFreesia.Vivideo.Server
                     IsReadOnlyFunc = _ => true,
                 });
             });
+
+            app.UseSpa(_ => { });
         }
     }
 }
