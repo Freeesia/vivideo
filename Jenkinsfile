@@ -17,15 +17,15 @@ pipeline{
       }
     }
   }
-  post {
-    failure {
-      script {
-        // def slackDomain = 'rokkyapp'
-        // def slackCh = '#git_notification'
-        // def slackToken = '2lTyhICh8FVv8KFfoatYdxfp'
-        // def msg = "<@UA173K1CG> スクレイプ失敗 - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}console|ログ>)"
-        // slackSend teamDomain: slackDomain, channel: slackCh, token: slackToken, color: 'danger', message: msg
-      }
-    }
-  }
+  // post {
+  //   failure {
+  //     script {
+  //       def slackDomain = 'rokkyapp'
+  //       def slackCh = '#git_notification'
+  //       def slackToken = '2lTyhICh8FVv8KFfoatYdxfp'
+  //       def msg = "<@UA173K1CG> スクレイプ失敗 - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}console|ログ>)"
+  //       slackSend teamDomain: slackDomain, channel: slackCh, token: slackToken, color: 'danger', message: msg
+  //     }
+  //   }
+  // }
 }
