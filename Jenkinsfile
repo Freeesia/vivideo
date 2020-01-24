@@ -17,7 +17,7 @@ pipeline{
         sh '''
         dotnet tool restore
         dotnet publish -c Release --self-contained -r win10-x64 -o out Worker
-        dotnet cszip out/ out.zip
+        dotnet script eval 'System.IO.Compression.ZipFile.CreateFromDirectory("out", "out.zip");'
         '''
         archiveArtifacts artifacts: 'out.zip', fingerprint: true, onlyIfSuccessful: true
       }

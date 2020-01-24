@@ -2,10 +2,10 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "cszip": {
-      "version": "0.1.1",
+    "dotnet-script": {
+      "version": "0.50.1",
       "commands": [
-        "cszip"
+        "dotnet-script"
       ]
     }
   }
