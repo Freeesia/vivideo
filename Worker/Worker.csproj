@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ffmpeg\**\*.*" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always"/>
+    <Content Include="ffmpeg\**\*.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
+    <Content Include="install.bat" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
   </ItemGroup>
 </Project>
