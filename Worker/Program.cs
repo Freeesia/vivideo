@@ -11,9 +11,7 @@ namespace StudioFreesia.Vivideo.Worker
     public class Program
     {
         public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+            => CreateHostBuilder(args).Build().Run();
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
@@ -21,11 +19,11 @@ namespace StudioFreesia.Vivideo.Worker
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHangfire(config =>
-                    {
-                        config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
-                    });
-                    services.AddHangfireServer();
-                    services.AddTransient<ITranscodeVideo, TranscodeVideoImpl>();
+                            {
+                                config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
+                            })
+                            .AddHangfireServer()
+                            .AddTransient<ITranscodeVideo, TranscodeVideoImpl>();
                 });
     }
 }

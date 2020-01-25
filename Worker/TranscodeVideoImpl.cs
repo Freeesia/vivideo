@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Model;
@@ -16,12 +14,12 @@ namespace StudioFreesia.Vivideo.Worker
         private readonly ILogger<TranscodeVideoImpl> logger;
         private readonly string workDir;
         private readonly string inputDir;
-        private readonly string execDir;
+        private readonly string rootDir;
 
         private readonly string file;
         private readonly string args;
 
-        public TranscodeVideoImpl(IConfiguration config, ILogger<TranscodeVideoImpl> logger)
+        public TranscodeVideoImpl(IConfiguration config, IHostEnvironment env, ILogger<TranscodeVideoImpl> logger)
         {
             this.logger = logger;
             var content = config.GetSection("Content").Get<ContentDirSetting>();
@@ -30,7 +28,7 @@ namespace StudioFreesia.Vivideo.Worker
             var trans = config.GetSection("Transcode").Get<TranscodeSetting>();
             this.file = trans.File ?? throw new ArgumentException();
             this.args = trans.Args ?? throw new ArgumentException();
-            this.execDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException();
+            this.rootDir = env.ContentRootPath;
         }
 
         public void Transcode(TranscodeQueue queue)
@@ -48,7 +46,7 @@ namespace StudioFreesia.Vivideo.Worker
             {
                 CreateNoWindow = true,
                 UseShellExecute = false,
-                WorkingDirectory = this.execDir,
+                WorkingDirectory = this.rootDir,
                 RedirectStandardError = true,
                 Arguments = string.Format(this.args, input.Replace('\\', '/'), Path.Combine(dir, "master.mpd").Replace('\\', '/')),
             };
