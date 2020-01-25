@@ -61,6 +61,8 @@ namespace StudioFreesia.Vivideo.Server
 
             // app.UseHttpsRedirection();
 
+            app.UseSpaStaticFiles();
+
             app.Map("/stream", app1 =>
             {
                 var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
