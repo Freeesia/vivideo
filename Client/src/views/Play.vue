@@ -19,7 +19,7 @@ export default class Play extends Vue {
     const res = await Axios.post<string>("/api/video/transcode/", {
       path: this.$route.params.request
     });
-    await this.delay(2000);
+    await this.delay(5000);
     this.streamPath = res.data;
   }
 }

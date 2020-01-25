@@ -61,30 +61,29 @@ namespace StudioFreesia.Vivideo.Server
 
             // app.UseHttpsRedirection();
 
-            app.UseFileServer();
-            var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
-            var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
-            Directory.CreateDirectory(work);
-            app.UseFileServer(new FileServerOptions()
+            app.Map("/stream", app1 =>
             {
-                FileProvider = new PhysicalFileProvider(work),
-                RequestPath = "/stream",
-                EnableDirectoryBrowsing = env.IsDevelopment(),
-                EnableDefaultFiles = false,
-                StaticFileOptions =
+                var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
+                var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
+                Directory.CreateDirectory(work);
+                app1.UseFileServer(new FileServerOptions()
                 {
-                    ContentTypeProvider = new FileExtensionContentTypeProvider()
+                    FileProvider = new PhysicalFileProvider(work),
+                    EnableDirectoryBrowsing = env.IsDevelopment(),
+                    EnableDefaultFiles = false,
+                    StaticFileOptions =
                     {
-                        Mappings = {
-                            [".mpd"] = "application/dash+xml",
-                            [".m3u8"] = "application/x-mpegURL",
-                            [".m4s"] = "video/iso.segment"
+                        ContentTypeProvider = new FileExtensionContentTypeProvider()
+                        {
+                            Mappings = {
+                                [".mpd"] = "application/dash+xml",
+                                [".m3u8"] = "application/x-mpegURL",
+                                [".m4s"] = "video/iso.segment"
+                            }
                         }
-                    }
-                },
+                    },
+                });
             });
-
-            app.UseSpaStaticFiles();
 
             app.UseRouting();
             // app.UseAuthorization();
