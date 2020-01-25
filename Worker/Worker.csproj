@@ -22,5 +22,6 @@
   <ItemGroup>
     <Content Include="ffmpeg\**\*.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
     <Content Include="install.bat" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
+    <Content Update="appsettings.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
   </ItemGroup>
 </Project>

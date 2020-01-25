@@ -16,9 +16,9 @@ namespace StudioFreesia.Vivideo.Worker
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
+                .UseContentRootForSingleFile()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    throw new System.Exception($"ContentRootPath is {hostContext.HostingEnvironment.ContentRootPath}");
                     services.AddHangfire(config =>
                             {
                                 config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
