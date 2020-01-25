@@ -14,7 +14,8 @@
       "cwd": "${workspaceFolder}/Server",
       "stopAtEntry": false,
       "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_CONNECTIONSTRINGS_REDIS": "localhost:6379"
       },
       "envFile": "${workspaceFolder}/.env"
     },
@@ -28,7 +29,10 @@
       "cwd": "${workspaceFolder}/Worker",
       "console": "internalConsole",
       "stopAtEntry": false,
-      "envFile": "${workspaceFolder}/.env"
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "DOTNET_CONNECTIONSTRINGS_REDIS": "localhost:6379"
+      }
     },
     {
       "name": "client",
