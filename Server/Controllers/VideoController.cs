@@ -9,14 +9,17 @@ using Microsoft.Extensions.Configuration;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.Model;
 using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace StrudioFreesia.Vivideo.Server
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class VideoController : ControllerBase
+    public class VideoController : ControllerBase, IDisposable
     {
         private readonly IBackgroundJobClient jobClient;
+        private readonly MD5 md5;
         private readonly string inputDir;
         private readonly string outDir;
 
@@ -26,12 +29,22 @@ namespace StrudioFreesia.Vivideo.Server
             this.inputDir = content?.List ?? throw new ArgumentException();
             this.outDir = content?.Work ?? throw new ArgumentException();
             this.jobClient = jobClient;
+            this.md5 = MD5.Create();
+        }
+
+        public void Dispose()
+        {
+            this.md5.Dispose();
         }
 
         [HttpPost("[action]")]
         public async ValueTask<string> Transcode([FromBody]TranscodeRequest request)
         {
-            var hash = HashCode.Combine(request.Path ?? throw new ArgumentException()).ToString();
+            var hash = BitConverter.ToString(
+                this.md5.ComputeHash(
+                    Encoding.UTF8.GetBytes(
+                        request.Path ?? throw new ArgumentException())))
+                .Replace("-", string.Empty);
             var outPath = Path.Combine(this.outDir, hash, "master.mpd");
             if (!System.IO.File.Exists(outPath))
             {
