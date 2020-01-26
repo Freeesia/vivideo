@@ -43,7 +43,12 @@ namespace StrudioFreesia.Vivideo.Server
             }
 
             return Ok(dir.GetFileSystemInfos()
-                .Where(i => !i.Name.StartsWith('.'))
+                .Where(i => !i.Name.StartsWith('.') && i switch
+                {
+                    DirectoryInfo _ => true,
+                    FileInfo f => Path.GetExtension(f.FullName) == ".mp4",
+                    _ => throw new InvalidOperationException(),
+                })
                 .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo)));
         }
     }
