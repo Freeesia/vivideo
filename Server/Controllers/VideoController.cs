@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace StrudioFreesia.Vivideo.Server
 {
@@ -48,6 +49,9 @@ namespace StrudioFreesia.Vivideo.Server
         }
 
         [HttpGet("{*path}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
         public ActionResult<IEnumerable<ContentNode>> List([FromRoute]string? path)
         {
             var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
