@@ -23,7 +23,11 @@ namespace StudioFreesia.Vivideo.Worker
                             {
                                 config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
                             })
-                            .AddHangfireServer()
+                            .AddHangfireServer(config =>
+                            {
+                                // 同時に1つしかトランスコード出来ないので
+                                config.WorkerCount = 1;
+                            })
                             .AddTransient<ITranscodeVideo, TranscodeVideoImpl>();
                 });
     }
