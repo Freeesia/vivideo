@@ -34,8 +34,9 @@ namespace StudioFreesia.Vivideo.Worker
         public void Transcode(TranscodeQueue queue)
         {
             var dir = Path.Combine(this.workDir, queue.Output);
+            var outPath = Path.Combine(dir, "master.mpd");
             var name = Path.GetFileNameWithoutExtension(queue.Input);
-            if (Directory.Exists(dir))
+            if (File.Exists(outPath))
             {
                 this.logger.LogInformation("トランスコードスキップ: {0}", name);
                 return;
@@ -48,7 +49,7 @@ namespace StudioFreesia.Vivideo.Worker
                 UseShellExecute = false,
                 WorkingDirectory = this.rootDir,
                 RedirectStandardError = true,
-                Arguments = string.Format(this.args, input.Replace('\\', '/'), Path.Combine(dir, "master.mpd").Replace('\\', '/')),
+                Arguments = string.Format(this.args, input.Replace('\\', '/'), outPath.Replace('\\', '/')),
             };
             this.logger.LogInformation("トランスコード開始:{0}", name);
             using var p = Process.Start(info);
@@ -61,6 +62,10 @@ namespace StudioFreesia.Vivideo.Worker
                 };
             p.BeginErrorReadLine();
             p.WaitForExit();
+            if (!File.Exists(outPath))
+            {
+                throw new Exception($"「{name}」の出力に失敗しました");
+            }
             this.logger.LogInformation("トランスコード終了:{0}", name);
         }
     }
