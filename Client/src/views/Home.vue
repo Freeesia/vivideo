@@ -61,7 +61,8 @@ export default class Home extends Vue {
   @Watch("search")
   private onSearchChanged() {
     if (this.search) {
-      this.filtered = this.contents.filter(n => n.name.toUpperCase().includes(this.search.toUpperCase()));
+      const search = this.search;
+      this.filtered = this.contents.filter(n => n.name.toUpperCase().includes(search.toUpperCase()));
     } else {
       this.filtered = this.contents;
     }
