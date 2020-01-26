@@ -17,20 +17,34 @@ namespace StrudioFreesia.Vivideo.Server
     {
         private readonly IBackgroundJobClient jobClient;
         private readonly string inputDir;
+        private readonly string outDir;
 
         public VideoController(IConfiguration config, IBackgroundJobClient jobClient)
         {
             var content = config.GetSection("Content").Get<ContentDirSetting>();
             this.inputDir = content?.List ?? throw new ArgumentException();
+            this.outDir = content?.Work ?? throw new ArgumentException();
             this.jobClient = jobClient;
         }
 
         [HttpPost("[action]")]
-        public string Transcode([FromBody]TranscodeRequest request)
+        public async ValueTask<string> Transcode([FromBody]TranscodeRequest request)
         {
-            var queue = new TranscodeQueue(request.Path ?? throw new ArgumentException(), HashCode.Combine(request.Path).ToString());
-            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(queue));
-            return "/stream/" + queue.Output;
+            var hash = HashCode.Combine(request.Path ?? throw new ArgumentException()).ToString();
+            var outPath = Path.Combine(this.outDir, hash, "master.mpd");
+            if (!System.IO.File.Exists(outPath))
+            {
+                this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new TranscodeQueue(request.Path, hash)));
+                for (int i = 0; i < 10; i++)
+                {
+                    await Task.Delay(1000);
+                    if (System.IO.File.Exists(outPath))
+                    {
+                        break;
+                    }
+                }
+            }
+            return "/stream/" + hash;
         }
 
         [HttpGet("{*path}")]
