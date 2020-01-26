@@ -1,22 +1,29 @@
 <template>
   <div>
-    <div>{{ path }}</div>
-    <v-list>
-      <v-list-item-group color="primary">
-        <v-list-item v-for="item in contents" :key="item.name" @click="selectContent(item)">
-          <v-list-item-content>
-            <v-list-item-title>{{ item.name }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <v-progress-linear :active="loading" indeterminate />
+    <v-container class="fill-height" fluid>
+      <v-row>
+        <div>{{ $route.params.request }}</div>
+      </v-row>
+      <v-row>
+        <v-list>
+          <v-list-item-group color="primary">
+            <v-list-item v-for="item in contents" :key="item.name" @click="selectContent(item)">
+              <v-list-item-content>
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Player from "@/components/Player.vue";
-import { Component } from "vue-property-decorator";
+import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import Axios from "axios";
 
@@ -24,18 +31,15 @@ import Axios from "axios";
 export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
   private contents: ContentNode[] = [];
+  private loading = true;
 
-  private get path(): string {
-    return this.selectedContent ? this.selectedContent.contentPath : "";
-  }
-
-  private mounted() {
-    this.updateContents();
-  }
-
-  private async updateContents() {
-    const res = await Axios.get<ContentNode[]>("/api/video/" + this.path);
+  @Watch("$route", { immediate: true, deep: true })
+  private async onRequestChanged() {
+    this.loading = true;
+    this.contents = [];
+    const res = await Axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
     this.contents = res.data;
+    this.loading = false;
   }
 
   private selectContent(content: ContentNode) {
@@ -48,7 +52,12 @@ export default class Home extends Vue {
         }
       });
     } else {
-      this.updateContents();
+      this.$router.push({
+        name: "home",
+        params: {
+          request: content.contentPath
+        }
+      });
     }
   }
 }
