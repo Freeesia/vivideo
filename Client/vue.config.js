@@ -21,7 +21,7 @@ module.exports = {
     plugins: [new HardSourceWebpackPlguin()]
   },
   pwa: {
-    name: "Vivideo",
+    name: "Frix TV Prime",
     themeColor: "#FF9800",
     msTileColor: "#FF9800",
     workboxOptions: {

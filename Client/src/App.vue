@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app color="primary" dark dense>
-      <router-link to="/" aria-label="Vivideo" title="Vivideo">
+      <router-link to="/" aria-label="Frix TV Prime" title="Frix TV Prime">
         <v-toolbar-title>Vivideo</v-toolbar-title>
       </router-link>
       <v-spacer></v-spacer>
