@@ -96,7 +96,6 @@ namespace StudioFreesia.Vivideo.Server
                 endpoints.MapHangfireDashboard(new DashboardOptions()
                 {
                     Authorization = Array.Empty<IDashboardAuthorizationFilter>(),
-                    IsReadOnlyFunc = _ => true,
                 });
             });
 
