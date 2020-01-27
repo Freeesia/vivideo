@@ -73,7 +73,7 @@ namespace StudioFreesia.Vivideo.Server
 
             app.Map("/stream", app1 =>
             {
-                app1.UseCors();
+                // app1.UseCors();
                 var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
                 var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
                 Directory.CreateDirectory(work);
