@@ -48,6 +48,14 @@ namespace StudioFreesia.Vivideo.Server
                     options.KnownProxies.Clear();
                 });
             }
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://reference.dashif.org");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +73,7 @@ namespace StudioFreesia.Vivideo.Server
 
             app.Map("/stream", app1 =>
             {
+                app1.UseCors();
                 var content = this.Configuration.GetSection("Content").Get<ContentDirSetting>();
                 var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
                 Directory.CreateDirectory(work);
