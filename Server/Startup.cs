@@ -91,6 +91,9 @@ namespace StudioFreesia.Vivideo.Server
                                 [".m3u8"] = "application/x-mpegURL",
                             }
                         },
+                        OnPrepareResponse = ctx => {
+                            ctx.Context.Response.Headers["Cache-Control"] = "public, no-cache";
+                        },
                         ServeUnknownFileTypes = true,
                     },
                 });
