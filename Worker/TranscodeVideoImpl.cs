@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -65,6 +66,19 @@ namespace StudioFreesia.Vivideo.Worker
             if (!File.Exists(outPath))
             {
                 throw new Exception($"「{name}」の出力に失敗しました");
+            }
+            var tmp = outPath + ".tmp";
+            while (File.Exists(tmp))
+            {
+                try
+                {
+                    File.Move(tmp, outPath, true);
+                }
+                catch (IOException)
+                {
+                    //  IOException が発生したらもう一度
+                    Thread.Sleep(100);
+                }
             }
             this.logger.LogInformation("トランスコード終了:{0}", name);
         }
