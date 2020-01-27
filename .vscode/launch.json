@@ -15,7 +15,7 @@
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_CONNECTIONSTRINGS_REDIS": "localhost:6379"
+        "DOTNET_CONNECTIONSTRINGS__REDIS": "localhost:6379"
       },
       "envFile": "${workspaceFolder}/.env"
     },
@@ -31,7 +31,7 @@
       "stopAtEntry": false,
       "envFile": "${workspaceFolder}/.env",
       "env": {
-        "DOTNET_CONNECTIONSTRINGS_REDIS": "localhost:6379"
+        "DOTNET_CONNECTIONSTRINGS__REDIS": "localhost:6379"
       }
     },
     {
