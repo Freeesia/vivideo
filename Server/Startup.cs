@@ -80,9 +80,9 @@ namespace StudioFreesia.Vivideo.Server
                             Mappings = {
                                 [".mpd"] = "application/dash+xml",
                                 [".m3u8"] = "application/x-mpegURL",
-                                [".m4s"] = "video/iso.segment"
                             }
-                        }
+                        },
+                        ServeUnknownFileTypes = true,
                     },
                 });
             });
