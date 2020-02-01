@@ -103,7 +103,7 @@
         "-f",
         "docker-compose.debug.yml",
         "up",
-        "-d",
+        "-d"
       ],
       "problemMatcher": []
     },
@@ -130,6 +130,13 @@
       "type": "npm",
       "script": "lint",
       "path": "Client/",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "functions/",
+      "group": "build",
       "problemMatcher": []
     }
   ]
