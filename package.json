@@ -1,0 +1,11 @@
+{
+  "name": "vivideo",
+  "version": "0.1.0",
+  "repository": "https://github.com/Freeesia/vivideo",
+  "author": "Freesia <freesia@studiofreesia.com>",
+  "private": true,
+  "workspaces": [
+    "Client",
+    "functions"
+  ]
+}
