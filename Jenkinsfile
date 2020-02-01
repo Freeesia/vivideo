@@ -21,9 +21,7 @@ pipeline{
     stage("build"){
       steps{
         script {
-          text = sh (returnStdout: true, script: 'dotnet gitversion -nofetch')
-          print text
-          json = readJSON(text:text)
+          json = readJSON(text:sh (returnStdout: true, script: 'dotnet gitversion -nofetch'))
           sh """
           dotnet publish -c Release --self-contained -r win10-x64 -o out \
           -p:Version=$json.FullSemVer \
