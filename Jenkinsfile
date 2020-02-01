@@ -10,6 +10,7 @@ pipeline{
   }
   environment {
     DOTNET_CLI_HOME = "/tmp/DOTNET_CLI_HOME"
+    LD_LIBRARY_PATH = "/root/.nuget/packages/gitversion.tool/5.1.2/tools/netcoreapp3.0/any/runtimes/debian.9-x64/native/"
   }
   stages{
     stage("setup"){
