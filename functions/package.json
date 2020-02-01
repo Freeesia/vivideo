@@ -1,5 +1,6 @@
 {
   "name": "@vivideo/functions",
+  "version": "0.1.0",
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
@@ -10,7 +11,7 @@
     "logs": "firebase functions:log"
   },
   "engines": {
-    "node": "8"
+    "node": "10"
   },
   "main": "lib/index.js",
   "dependencies": {
