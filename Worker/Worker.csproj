@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version Condition="'$(Version)' == ''">0.0.0-local</Version>
     <UserSecretsId>dotnet-Worker-BFB29499-583F-437E-AB9A-D7A3AEEC5953</UserSecretsId>
     <RootNamespace>StudioFreesia.Vivideo.Worker</RootNamespace>
   </PropertyGroup>
