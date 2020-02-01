@@ -16,6 +16,7 @@ pipeline{
       steps{
         sh 'dotnet tool restore'
       }
+    }
     stage("build"){
       steps{
         script {
