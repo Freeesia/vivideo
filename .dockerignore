@@ -12,3 +12,6 @@ Client/node_modules/
 
 Test/
 Worker/
+functions/
+
+node_modules/
