@@ -28,7 +28,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn :disabled="!valid" @click="submit" :loading="isSubmiting" large depressed block color="success"
+        <v-btn :disabled="!valid" :loading="isSubmiting" large depressed block color="success" @click="submit"
           >登録</v-btn
         >
       </v-card-actions>
