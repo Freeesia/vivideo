@@ -4,7 +4,8 @@
   "scripts": {
     "lint": "tslint --project tsconfig.json",
     "build": "tsc",
-    "serve": "yarn build && firebase serve --only functions",
+    "watch": "tsc -w",
+    "serve": "yarn build && firebase serve --only functions -p 5010",
     "shell": "yarn build && firebase functions:shell",
     "start": "yarn shell",
     "deploy": "firebase deploy --only functions",

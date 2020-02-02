@@ -1,7 +1,6 @@
 import { https } from "firebase-functions";
 import { HttpsError } from "firebase-functions/lib/providers/https";
-import { firestore } from "firebase-admin";
-import admin = require("firebase-admin");
+import { firestore, auth } from "firebase-admin";
 
 const invitationCodes = "invitationCodes";
 
@@ -37,7 +36,7 @@ export const signup = https.onCall(async (data, _) => {
     .collection(invitationCodes)
     .doc(data.invitationCode);
 
-  const user = await admin.firestore().runTransaction(async trans => {
+  const user = await firestore().runTransaction(async trans => {
     const codeRef = await trans.get(codeDoc);
     const code = codeRef.data();
     if (!code) {
@@ -51,7 +50,7 @@ export const signup = https.onCall(async (data, _) => {
       remainingCount: firestore.FieldValue.increment(-1)
     });
 
-    return admin.auth().createUser({
+    return auth().createUser({
       email: data.email,
       emailVerified: false,
       password: data.password,
@@ -60,7 +59,7 @@ export const signup = https.onCall(async (data, _) => {
   });
 
   if (user) {
-    await admin.auth().setCustomUserClaims(user.uid, { invitationCodeVerified: true });
+    await auth().setCustomUserClaims(user.uid, { invitationCodeVerified: true });
   }
 
   console.log({ userId: user.uid, code: data.invitationCode });
