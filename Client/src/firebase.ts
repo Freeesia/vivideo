@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/analytics";
+import "firebase/functions";
 
 // Initialize Firebase
 firebase.initializeApp({
@@ -13,3 +14,10 @@ firebase.initializeApp({
   measurementId: "G-TE802BVQ2K"
 });
 firebase.analytics();
+
+if (process.env.NODE_ENV !== "production") {
+  firebase
+    .app()
+    .functions("asia-northeast1")
+    .useFunctionsEmulator("http://localhost:5010");
+}

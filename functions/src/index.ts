@@ -1,10 +1,12 @@
-import { https } from "firebase-functions";
+import { region } from "firebase-functions";
 import { HttpsError } from "firebase-functions/lib/providers/https";
-import { firestore, auth } from "firebase-admin";
+import { firestore, auth, initializeApp } from "firebase-admin";
 
 const invitationCodes = "invitationCodes";
 
-export const checkInvitationCode = https.onCall(async (data, _) => {
+initializeApp();
+
+export const checkInvitationCode = region("asia-northeast1").https.onCall(async (data, _) => {
   if (!data.invitationCode) {
     throw new HttpsError("invalid-argument", "auth/operation-not-allowed");
   }
@@ -27,7 +29,7 @@ export const checkInvitationCode = https.onCall(async (data, _) => {
   return { status: "ok" };
 });
 
-export const signup = https.onCall(async (data, _) => {
+export const signup = region("asia-northeast1").https.onCall(async (data, _) => {
   if (!data.email || !data.password || !data.name || !data.invitationCode) {
     throw new HttpsError("invalid-argument", "auth/operation-not-allowed");
   }
