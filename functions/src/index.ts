@@ -27,12 +27,10 @@ export const checkInvitationCode = https.onCall(async (data, _) => {
   if (count <= 0) {
     throw new HttpsError("invalid-argument", "auth/code-already-in-use");
   }
-
-  return { status: "ok" };
 });
 
 export const signup = https.onCall(async (data, _) => {
-  if (!data.email || !data.password || !data.name || !data.invitationCode) {
+  if (!data.email || !data.password || !data.invitationCode) {
     throw new HttpsError("invalid-argument", "auth/operation-not-allowed");
   }
 
@@ -57,8 +55,7 @@ export const signup = https.onCall(async (data, _) => {
     return auth().createUser({
       email: data.email,
       emailVerified: false,
-      password: data.password,
-      displayName: data.name
+      password: data.password
     });
   });
 
@@ -67,6 +64,20 @@ export const signup = https.onCall(async (data, _) => {
   }
 
   console.log({ userId: user.uid, code: data.invitationCode });
+});
 
-  return { status: "ok" };
+export const invite = https.onCall(async (_, context) => {
+  const uid = context.auth?.uid;
+  if (!uid && !process.env.FUNCTIONS_EMULATOR) {
+    throw new HttpsError("unauthenticated", "認証されていません");
+  }
+
+  const codeRef = await firestore()
+    .collection(invitationCodes)
+    .add({
+      remainingCount: 1,
+      author: uid ?? "Unkown"
+    });
+
+  return codeRef.id;
 });
