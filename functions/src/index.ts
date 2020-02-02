@@ -6,7 +6,9 @@ const invitationCodes = "invitationCodes";
 
 initializeApp();
 
-export const checkInvitationCode = region("asia-northeast1").https.onCall(async (data, _) => {
+const https = region("asia-northeast1").https;
+
+export const checkInvitationCode = https.onCall(async (data, _) => {
   if (!data.invitationCode) {
     throw new HttpsError("invalid-argument", "auth/operation-not-allowed");
   }
@@ -29,7 +31,7 @@ export const checkInvitationCode = region("asia-northeast1").https.onCall(async 
   return { status: "ok" };
 });
 
-export const signup = region("asia-northeast1").https.onCall(async (data, _) => {
+export const signup = https.onCall(async (data, _) => {
   if (!data.email || !data.password || !data.name || !data.invitationCode) {
     throw new HttpsError("invalid-argument", "auth/operation-not-allowed");
   }
