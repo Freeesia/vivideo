@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import "firebase/analytics";
 
 // Initialize Firebase
 firebase.initializeApp({
