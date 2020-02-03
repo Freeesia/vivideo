@@ -96,6 +96,30 @@
       "problemMatcher": []
     },
     {
+      "type": "npm",
+      "label": "build:functions",
+      "script": "build",
+      "path": "functions/",
+      "group": "build",
+      "problemMatcher": "$tsc"
+    },
+    {
+      "type": "npm",
+      "label": "watch:functions",
+      "script": "watch",
+      "path": "functions/",
+      "isBackground": true,
+      "problemMatcher": "$tsc-watch"
+    },
+    {
+      "type": "npm",
+      "label": "serve:functions",
+      "script": "serve",
+      "path": "functions/",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
       "label": "compose-up",
       "command": "docker-compose",
       "type": "process",
@@ -103,7 +127,7 @@
         "-f",
         "docker-compose.debug.yml",
         "up",
-        "-d",
+        "-d"
       ],
       "problemMatcher": []
     },
@@ -130,6 +154,13 @@
       "type": "npm",
       "script": "lint",
       "path": "Client/",
+      "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "build",
+      "path": "functions/",
+      "group": "build",
       "problemMatcher": []
     }
   ]
