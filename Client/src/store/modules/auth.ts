@@ -1,6 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
 import { auth, User } from "firebase/app";
 import "firebase/auth";
+import Axios from "axios";
 
 @Module({ namespaced: true, name: "auth" })
 export default class Auth extends VuexModule {
@@ -33,5 +34,19 @@ export default class Auth extends VuexModule {
       this.context.commit("setUser", user);
     }
     return user ? true : false;
+  }
+
+  @Action
+  async getAxios() {
+    if (!this.user) {
+      throw new Error("ログインされていません");
+    }
+
+    const token = await this.user.getIdToken();
+    return Axios.create({
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
 }

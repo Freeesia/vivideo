@@ -38,7 +38,8 @@ import Vue from "vue";
 import Player from "@/components/Player.vue";
 import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
-import Axios from "axios";
+import Axios, { AxiosInstance } from "axios";
+import { AuthModule } from "../store";
 
 @Component({ components: { Player } })
 export default class Home extends Vue {
@@ -47,13 +48,17 @@ export default class Home extends Vue {
   private filtered: ContentNode[] = [];
   private loading = true;
   private search: string | null = null;
+  private axios?: AxiosInstance;
 
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
     this.loading = true;
     this.contents = [];
     this.search = "";
-    const res = await Axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
+    if (!this.axios) {
+      this.axios = await AuthModule.getAxios();
+    }
+    const res = await this.axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
     this.filtered = this.contents = res.data;
     this.loading = false;
   }
