@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,9 @@ namespace StudioFreesia.Vivideo.Server
             {
                 config.RootPath = "Client";
             });
+
+            var firebase = this.Configuration.GetSection("FirebaseAuthentication");
+            services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED") == "true")
             {
@@ -100,7 +104,7 @@ namespace StudioFreesia.Vivideo.Server
             });
 
             app.UseRouting();
-            // app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

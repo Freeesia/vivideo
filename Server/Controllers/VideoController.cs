@@ -11,6 +11,7 @@ using StudioFreesia.Vivideo.Server.Model;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StrudioFreesia.Vivideo.Server
 {
@@ -65,6 +66,7 @@ namespace StrudioFreesia.Vivideo.Server
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
+        [Authorize]
         public ActionResult<IEnumerable<ContentNode>> List([FromRoute]string? path)
         {
             var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
