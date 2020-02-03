@@ -8,5 +8,6 @@
         "**/.DS_Store": true,
         "**/obj": true
     },
-    "omnisharp.enableRoslynAnalyzers": true
+    "omnisharp.enableRoslynAnalyzers": true,
+    "git.ignoreLimitWarning": true
 }

@@ -162,6 +162,12 @@
       "path": "functions/",
       "group": "build",
       "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "deploy",
+      "path": "functions/",
+      "problemMatcher": []
     }
   ]
 }
