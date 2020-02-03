@@ -44,22 +44,22 @@ import "firebase/functions";
 
 @Component({})
 export default class Signup extends Vue {
-  private functions = app().functions("asia-northeast1");
-  private checkCode = this.functions.httpsCallable("checkInvitationCode");
-  private signup = this.functions.httpsCallable("signup");
+  private readonly functions = app().functions("asia-northeast1");
+  private readonly checkCode = this.functions.httpsCallable("checkInvitationCode");
+  private readonly signup = this.functions.httpsCallable("signup");
+  private readonly emailRules = [
+    (v: string) => !!v || "E-mail is required",
+    (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid"
+  ];
+  private readonly passwordRules = [
+    (v: string) => !!v || "Password is required",
+    (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満"
+  ];
   private isCodeValid: boolean | null = null;
   private code = "";
   private valid = false;
   private email = "";
   private password = "";
-  private emailRules = [
-    (v: string) => !!v || "E-mail is required",
-    (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid"
-  ];
-  private passwordRules = [
-    (v: string) => !!v || "Password is required",
-    (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満"
-  ];
   private isSubmiting = false;
 
   private async mounted() {
