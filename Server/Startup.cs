@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
-using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using StudioFreesia.Vivideo.Core;
+using StudioFreesia.Vivideo.Server.ComponentModel;
 
 namespace StudioFreesia.Vivideo.Server
 {
@@ -119,7 +119,7 @@ namespace StudioFreesia.Vivideo.Server
                 endpoints.MapControllers();
                 endpoints.MapHangfireDashboard(new DashboardOptions()
                 {
-                    Authorization = Array.Empty<IDashboardAuthorizationFilter>(),
+                    Authorization = new []{ new HangfireDashbordAuthFilter() },
                 });
             });
 
