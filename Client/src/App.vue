@@ -14,7 +14,8 @@
         </template>
 
         <v-list>
-          <v-list-item dense href="/hangfire">Hangfire</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" href="/hangfire">Hangfire</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" @click="signout">Sign out</v-list-item>
         </v-list>
       </v-menu>
     </v-app-bar>
@@ -32,7 +33,16 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { AuthModule } from "./store";
 
 @Component({})
-export default class App extends Vue {}
+export default class App extends Vue {
+  private get isSignedIn() {
+    return AuthModule.user ? true : false;
+  }
+  private async signout() {
+    await AuthModule.signOut();
+    this.$router.push({ name: "signin" });
+  }
+}
 </script>

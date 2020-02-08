@@ -11,9 +11,11 @@ using StudioFreesia.Vivideo.Server.Model;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StrudioFreesia.Vivideo.Server
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class VideoController : ControllerBase, IDisposable
@@ -33,9 +35,7 @@ namespace StrudioFreesia.Vivideo.Server
         }
 
         public void Dispose()
-        {
-            this.md5.Dispose();
-        }
+            => this.md5.Dispose();
 
         [HttpPost("[action]")]
         public async ValueTask<string> Transcode([FromBody]TranscodeRequest request)

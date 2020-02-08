@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
-using Hangfire.Dashboard;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using StudioFreesia.Vivideo.Core;
+using StudioFreesia.Vivideo.Server.ComponentModel;
 
 namespace StudioFreesia.Vivideo.Server
 {
@@ -33,6 +36,15 @@ namespace StudioFreesia.Vivideo.Server
             services.AddSpaStaticFiles(config =>
             {
                 config.RootPath = "Client";
+            });
+
+            var firebase = this.Configuration.GetSection("FirebaseAuthentication");
+            services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
+            services.AddAuthorization(op =>
+            {
+                op.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
             });
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED") == "true")
@@ -100,14 +112,14 @@ namespace StudioFreesia.Vivideo.Server
             });
 
             app.UseRouting();
-            // app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHangfireDashboard(new DashboardOptions()
                 {
-                    Authorization = Array.Empty<IDashboardAuthorizationFilter>(),
+                    Authorization = new []{ new HangfireDashbordAuthFilter() },
                 });
             });
 
