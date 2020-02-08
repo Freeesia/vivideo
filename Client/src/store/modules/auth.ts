@@ -5,7 +5,7 @@ import Axios from "axios";
 
 @Module({ namespaced: true, name: "auth" })
 export default class Auth extends VuexModule {
-  user?: User | null;
+  user: User | null = null;
 
   @Mutation
   private setUser(user: User | null) {
@@ -21,7 +21,7 @@ export default class Auth extends VuexModule {
   @Action
   async isSignedIn() {
     let user = this.user;
-    if (undefined === user) {
+    if (!user) {
       user = await new Promise<User | null>((res, rej) => {
         auth().onAuthStateChanged(async u => {
           const result = await u?.getIdTokenResult();
