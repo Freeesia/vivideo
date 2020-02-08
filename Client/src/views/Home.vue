@@ -38,7 +38,7 @@ import Vue from "vue";
 import Player from "@/components/Player.vue";
 import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
-import Axios, { AxiosInstance } from "axios";
+import { AxiosInstance } from "axios";
 import { AuthModule } from "../store";
 
 @Component({ components: { Player } })
