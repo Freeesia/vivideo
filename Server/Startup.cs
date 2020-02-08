@@ -3,6 +3,8 @@ using System.IO;
 using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
 using Hangfire.Dashboard;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -38,6 +40,12 @@ namespace StudioFreesia.Vivideo.Server
 
             var firebase = this.Configuration.GetSection("FirebaseAuthentication");
             services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
+            services.AddAuthorization(op =>
+            {
+                op.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .Build();
+            });
 
             if (Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED") == "true")
             {
