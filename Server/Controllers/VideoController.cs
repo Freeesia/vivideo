@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace StrudioFreesia.Vivideo.Server
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class VideoController : ControllerBase, IDisposable
@@ -34,9 +35,7 @@ namespace StrudioFreesia.Vivideo.Server
         }
 
         public void Dispose()
-        {
-            this.md5.Dispose();
-        }
+            => this.md5.Dispose();
 
         [HttpPost("[action]")]
         public async ValueTask<string> Transcode([FromBody]TranscodeRequest request)
@@ -66,7 +65,6 @@ namespace StrudioFreesia.Vivideo.Server
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        [Authorize]
         public ActionResult<IEnumerable<ContentNode>> List([FromRoute]string? path)
         {
             var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
