@@ -46,6 +46,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
         [HttpGet("{*path}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60 * 60 * 2)]
         public async Task<IActionResult> Get(string path)
         {
             var fullPath = Path.Combine(this.contentDir, path);
