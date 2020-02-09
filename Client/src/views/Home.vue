@@ -19,7 +19,7 @@
       <v-row dense>
         <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
           <v-card height="240" @click="selectContent(item)">
-            <v-img loading height="160">
+            <v-img contain height="160" :src="'/api/thumbnail/' + item.contentPath">
               <template v-slot:placeholder>
                 <v-row class="fill-height" align="center" justify="center">
                   <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
