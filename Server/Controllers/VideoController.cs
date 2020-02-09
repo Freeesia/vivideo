@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 
-namespace StrudioFreesia.Vivideo.Server
+namespace StudioFreesia.Vivideo.Server.Controllers
 {
     [Authorize]
     [ApiController]
