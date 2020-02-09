@@ -16,22 +16,36 @@
           />
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-list>
-            <v-list-item-group color="primary">
-              <v-list-item v-for="item in filtered" :key="item.name" @click="selectContent(item)">
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.name }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
+      <v-row dense>
+        <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
+          <v-card height="240" @click="selectContent(item)">
+            <v-img loading height="160">
+              <template v-slot:placeholder>
+                <v-row class="fill-height" align="center" justify="center">
+                  <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
+                </v-row>
+              </template>
+            </v-img>
+            <v-card-title>
+              {{ item.name }}
+            </v-card-title>
+          </v-card>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.v-card {
+  overflow: hidden;
+  .v-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+</style>
 
 <script lang="ts">
 import Vue from "vue";
