@@ -44,6 +44,7 @@ namespace StudioFreesia.Vivideo.Server
             {
                 op.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
+                    .RequireClaim("invitationCodeVerified", "true")
                     .Build();
             });
 
