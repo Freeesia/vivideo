@@ -10,6 +10,7 @@ using StudioFreesia.Vivideo.Server.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
@@ -22,9 +23,11 @@ namespace StudioFreesia.Vivideo.Server.Controllers
         private readonly string args;
         private readonly string tmpDir;
         private readonly string rootDir;
+        private readonly IDistributedCache cache;
+        private readonly DistributedCacheEntryOptions cacheOption;
         private readonly ILogger<ThumbnailController> logger;
 
-        public ThumbnailController(IConfiguration config, IHostEnvironment env, ILogger<ThumbnailController> logger)
+        public ThumbnailController(IConfiguration config, IHostEnvironment env, IDistributedCache cache, ILogger<ThumbnailController> logger)
         {
             var content = config.GetSection("Content").Get<ContentDirSetting>();
             this.contentDir = content?.List ?? throw new ArgumentException();
@@ -34,6 +37,9 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             this.tmpDir = Path.Combine(Path.GetTempPath(), "VivideoThumb");
             Directory.CreateDirectory(this.tmpDir);
             this.rootDir = env.ContentRootPath;
+            this.cache = cache;
+            this.cacheOption = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromDays(1));
             this.logger = logger;
         }
 
@@ -54,7 +60,16 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             }
             else if (System.IO.File.Exists(fullPath))
             {
-                var buf = await Task.Run(async () => await CreateVideoThumbnail(fullPath)).ConfigureAwait(false);
+                var buf = await this.cache.GetAsync(path);
+                if (buf == null)
+                {
+                    buf = await Task.Run(async () => await CreateVideoThumbnail(fullPath));
+                    await this.cache.SetAsync(path, buf, this.cacheOption);
+                }
+                else
+                {
+                    await this.cache.RefreshAsync(path);
+                }
                 return File(buf, "image/png");
             }
             return NotFound();
@@ -88,7 +103,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             {
                 throw new Exception($"「{name}」のサムネイル出力に失敗しました");
             }
-            return await System.IO.File.ReadAllBytesAsync(tmp).ConfigureAwait(false);
+            return await System.IO.File.ReadAllBytesAsync(tmp);
         }
     }
 }

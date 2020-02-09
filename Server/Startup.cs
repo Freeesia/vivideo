@@ -69,6 +69,8 @@ namespace StudioFreesia.Vivideo.Server
                     builder.WithOrigins("http://reference.dashif.org");
                 });
             });
+
+            services.AddDistributedMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
