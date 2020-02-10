@@ -45,7 +45,6 @@ import { AuthModule, SearchModule } from "../store";
 export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
   private contents: ContentNode[] = [];
-  private filtered: ContentNode[] = [];
   private loading = true;
   private axios?: AxiosInstance;
 
@@ -57,22 +56,14 @@ export default class Home extends Vue {
       this.axios = await AuthModule.getAxios();
     }
     const res = await this.axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
-    this.filtered = this.contents = res.data;
+    this.contents = res.data;
+    SearchModule.setFilter("");
     this.loading = false;
   }
 
-  private get search() {
-    return SearchModule.filter;
-  }
-
-  @Watch("search")
-  private onSearchChanged() {
-    if (this.search) {
-      const search = this.search.toUpperCase();
-      this.filtered = this.contents.filter(n => n.name.toUpperCase().includes(search));
-    } else {
-      this.filtered = this.contents;
-    }
+  get filtered() {
+    const search = SearchModule.filter.toUpperCase();
+    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true));
   }
 
   private selectContent(content: ContentNode) {

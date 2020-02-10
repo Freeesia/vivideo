@@ -51,8 +51,14 @@ import { AuthModule, SearchModule } from "./store";
 export default class App extends Vue {
   private search = "";
 
-  private created() {
-    this.search = SearchModule.filter;
+  private mounted() {
+    this.$store.watch(
+      state => state.search.filter,
+      newValue => {
+        this.search = newValue;
+      },
+      { immediate: true }
+    );
   }
 
   @Watch("search")
