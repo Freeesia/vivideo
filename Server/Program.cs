@@ -13,8 +13,8 @@ namespace StudioFreesia.Vivideo.Server
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                    webBuilder
+                        .UseStartup<Startup>()
+                        .UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801"));
     }
 }
