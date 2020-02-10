@@ -5,8 +5,15 @@ import "./firebase";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { store } from "./store";
+import { init as SentryInit } from "@sentry/browser";
+import { Vue as SentryVue } from "@sentry/integrations";
 
 Vue.config.productionTip = false;
+
+SentryInit({
+  dsn: "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801",
+  integrations: [new SentryVue({ Vue, attachProps: true })]
+});
 
 new Vue({
   router,
