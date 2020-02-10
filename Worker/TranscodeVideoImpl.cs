@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -18,7 +19,7 @@ namespace StudioFreesia.Vivideo.Worker
         private readonly string rootDir;
 
         private readonly string file;
-        private readonly string args;
+        private readonly Dictionary<string, string> args;
 
         public TranscodeVideoImpl(IConfiguration config, IHostEnvironment env, ILogger<TranscodeVideoImpl> logger)
         {
@@ -50,7 +51,7 @@ namespace StudioFreesia.Vivideo.Worker
                 UseShellExecute = false,
                 WorkingDirectory = this.rootDir,
                 RedirectStandardError = true,
-                Arguments = string.Format(this.args, input.Replace('\\', '/'), outPath.Replace('\\', '/')),
+                Arguments = string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')),
             };
             this.logger.LogInformation("トランスコード開始:{0}", name);
             using var p = Process.Start(info);
@@ -81,6 +82,18 @@ namespace StudioFreesia.Vivideo.Worker
                 }
             }
             this.logger.LogInformation("トランスコード終了:{0}", name);
+        }
+
+        private string GetArgs(string input)
+        {
+            if (this.args.TryGetValue("DEFAULT", out var args))
+            {
+                return args;
+            }
+            else
+            {
+                throw new InvalidOperationException("デフォルト用のffmpegの設定が存在しません");
+            }
         }
     }
 }
