@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using StudioFreesia.Vivideo.Server.Extensions;
 
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
@@ -77,7 +78,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 .Where(i => !i.Name.StartsWith('.') && i switch
                 {
                     DirectoryInfo _ => true,
-                    FileInfo f => Path.GetExtension(f.FullName) == ".mp4",
+                    FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi"),
                     _ => throw new InvalidOperationException(),
                 })
                 .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo)));
