@@ -57,7 +57,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 {
                     return NotFound();
                 }
-                return PhysicalFile(logo, "image/" + Path.GetExtension((ReadOnlySpan<char>)logo).Slice(1).ToString());
+                return PhysicalFile(logo, GetContentType(logo));
             }
             else if (System.IO.File.Exists(fullPath))
             {
@@ -105,6 +105,17 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 throw new Exception($"「{name}」のサムネイル出力に失敗しました");
             }
             return await System.IO.File.ReadAllBytesAsync(tmp);
+        }
+
+        private string GetContentType(string path)
+        {
+            var ext = Path.GetExtension((ReadOnlySpan<char>)path);
+            if (ext.Length == 0)
+            {
+                this.logger.LogError("Unknown Logo Image: {path}", path);
+                return "application/octet-stream";
+            }
+            return "image/" + ext.Slice(1).ToString();
         }
     }
 }
