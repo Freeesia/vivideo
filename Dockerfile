@@ -16,8 +16,13 @@ RUN yarn install \
 
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /app
 EXPOSE 80
+RUN apt update \
+ && apt install -y --no-install-recommends ffmpeg \
+ && apt clean \
+ && rm -rf  /var/lib/apt/lists/*
 COPY --from=dotnet-build /build/Server/out ./
 COPY --from=node-build /build/Client/out ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]
