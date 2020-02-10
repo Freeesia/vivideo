@@ -2,20 +2,6 @@
   <div>
     <v-progress-linear :active="loading" indeterminate />
     <v-container class="fill-height" fluid>
-      <v-row>
-        <v-col> {{ $route.params.request }} </v-col>
-        <v-col sm="4">
-          <v-text-field
-            v-model="search"
-            label="検索"
-            prepend-inner-icon="search"
-            hide-details
-            clearable
-            dense
-            outlined
-          />
-        </v-col>
-      </v-row>
       <v-row dense>
         <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
           <v-card height="240" @click="selectContent(item)">
@@ -53,7 +39,7 @@ import Player from "@/components/Player.vue";
 import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
-import { AuthModule } from "../store";
+import { AuthModule, SearchModule } from "../store";
 
 @Component({ components: { Player } })
 export default class Home extends Vue {
@@ -61,14 +47,12 @@ export default class Home extends Vue {
   private contents: ContentNode[] = [];
   private filtered: ContentNode[] = [];
   private loading = true;
-  private search: string | null = null;
   private axios?: AxiosInstance;
 
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
     this.loading = true;
     this.contents = [];
-    this.search = "";
     if (!this.axios) {
       this.axios = await AuthModule.getAxios();
     }
@@ -77,11 +61,15 @@ export default class Home extends Vue {
     this.loading = false;
   }
 
+  private get search() {
+    return SearchModule.filter;
+  }
+
   @Watch("search")
   private onSearchChanged() {
     if (this.search) {
-      const search = this.search;
-      this.filtered = this.contents.filter(n => n.name.toUpperCase().includes(search.toUpperCase()));
+      const search = this.search.toUpperCase();
+      this.filtered = this.contents.filter(n => n.name.toUpperCase().includes(search));
     } else {
       this.filtered = this.contents;
     }

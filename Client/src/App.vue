@@ -5,6 +5,18 @@
         <v-toolbar-title>Frix TV Prime</v-toolbar-title>
       </router-link>
       <v-spacer></v-spacer>
+      <v-text-field
+        v-if="isSignedIn"
+        v-model="search"
+        label="検索"
+        prepend-inner-icon="search"
+        hide-details
+        clearable
+        dense
+        outlined
+        flat
+        solo-inverted
+      />
 
       <v-menu offset-y>
         <template v-slot:activator="{ on }">
@@ -32,11 +44,22 @@
 </style>
 <script lang="ts">
 import Vue from "vue";
-import { Component } from "vue-property-decorator";
-import { AuthModule } from "./store";
+import { Component, Watch } from "vue-property-decorator";
+import { AuthModule, SearchModule } from "./store";
 
 @Component({})
 export default class App extends Vue {
+  private search = "";
+
+  private created() {
+    this.search = SearchModule.filter;
+  }
+
+  @Watch("search")
+  private onSearchChanged() {
+    SearchModule.setFilter(this.search ?? "");
+  }
+
   private get isSignedIn() {
     return AuthModule.user ? true : false;
   }
