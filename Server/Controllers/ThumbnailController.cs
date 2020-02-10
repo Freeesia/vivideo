@@ -43,7 +43,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             this.logger = logger;
         }
 
-        [HttpGet("{*path}")]
+        [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60 * 60 * 2)]
