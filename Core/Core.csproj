@@ -5,4 +5,8 @@
     <RootNamespace>StudioFreesia.Vivideo.Core</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.7.8" />
+  </ItemGroup>
+
 </Project>
