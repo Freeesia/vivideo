@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>{{ this.$route.params.request }}</div>
+    <div>{{ request }}</div>
     <Player v-if="streamPath !== ''" :path="streamPath" />
   </div>
 </template>
@@ -15,11 +15,13 @@ export default class Play extends Vue {
   private streamPath = "";
   private readonly delay: (msec: number) => Promise<void> = msec => new Promise(resolve => setTimeout(resolve, msec));
 
+  get request(): string {
+    return decodeURIComponent(this.$route.params.request);
+  }
+
   private async created() {
     const axios = await AuthModule.getAxios();
-    const res = await axios.post<string>("/api/video/transcode/", {
-      path: this.$route.params.request
-    });
+    const res = await axios.post<string>(`/api/video/transcode/?path=${this.$route.params.request}`);
     this.streamPath = res.data;
   }
 }

@@ -39,17 +39,17 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             => this.md5.Dispose();
 
         [HttpPost("[action]")]
-        public async ValueTask<string> Transcode([FromBody]TranscodeRequest request)
+        public async ValueTask<string> Transcode([FromQuery]string path)
         {
             var hash = BitConverter.ToString(
                 this.md5.ComputeHash(
                     Encoding.UTF8.GetBytes(
-                        request.Path ?? throw new ArgumentException())))
+                        path ?? throw new ArgumentException())))
                 .Replace("-", string.Empty);
             var outPath = Path.Combine(this.outDir, hash, "master.mpd");
             if (!System.IO.File.Exists(outPath))
             {
-                this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new TranscodeQueue(request.Path, hash)));
+                this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new TranscodeQueue(path, hash)));
                 for (int i = 0; i < 10; i++)
                 {
                     await Task.Delay(1000);
