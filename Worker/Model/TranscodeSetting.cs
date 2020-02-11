@@ -1,8 +1,11 @@
+using System.Collections.Generic;
+
 namespace StudioFreesia.Vivideo.Worker.Model
 {
     public class TranscodeSetting
     {
-        public string? File { get; set; }
-        public string? Args { get; set; }
+        public string? Ffmpeg { get; set; }
+        public string? Ffprobe { get; set; }
+        public Dictionary<string, string> Args { get; set; } = new Dictionary<string, string>();
     }
 }
