@@ -17,7 +17,7 @@ export default class Play extends Vue {
   private readonly delay: (msec: number) => Promise<void> = msec => new Promise(resolve => setTimeout(resolve, msec));
 
   @Prop({ required: true, type: String, default: "" })
-  path: string;
+  path!: string;
 
   get decodedPath() {
     return decodeURIComponent(this.path);
