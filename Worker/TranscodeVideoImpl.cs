@@ -19,7 +19,8 @@ namespace StudioFreesia.Vivideo.Worker
         private readonly string inputDir;
         private readonly string rootDir;
 
-        private readonly string file;
+        private readonly string ffmpeg;
+        private readonly string ffprobe;
         private readonly Dictionary<string, string> args;
 
         public TranscodeVideoImpl(IConfiguration config, IHostEnvironment env, ILogger<TranscodeVideoImpl> logger)
@@ -29,7 +30,8 @@ namespace StudioFreesia.Vivideo.Worker
             this.workDir = content?.Work ?? throw new ArgumentException();
             this.inputDir = content?.List ?? throw new ArgumentException();
             var trans = config.GetSection("Transcode").Get<TranscodeSetting>();
-            this.file = trans.File ?? throw new ArgumentException();
+            this.ffmpeg = trans.Ffmpeg ?? throw new ArgumentException();
+            this.ffprobe = trans.Ffprobe ?? throw new ArgumentException();
             this.args = trans.Args ?? throw new ArgumentException();
             this.rootDir = env.ContentRootPath;
         }
@@ -47,7 +49,7 @@ namespace StudioFreesia.Vivideo.Worker
             Directory.CreateDirectory(dir);
             var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
             this.logger.LogInformation("トランスコード開始:{0}", name);
-            RunProcess(this.file, string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')));
+            RunProcess(this.ffmpeg, string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')));
             if (!File.Exists(outPath))
             {
                 throw new Exception($"「{name}」の出力に失敗しました");
@@ -70,7 +72,7 @@ namespace StudioFreesia.Vivideo.Worker
 
         private string GetArgs(string input)
         {
-            var json = RunProcess(Path.Combine(Path.GetDirectoryName(this.file) ?? string.Empty, "ffprobe"), $"-hide_banner -v warning -of json -show_streams \"{input.Replace('\\', '/')}\"");
+            var json = RunProcess(this.ffprobe, $"-hide_banner -v warning -of json -show_streams \"{input.Replace('\\', '/')}\"");
 
             var info = JObject.Parse(json);
 
