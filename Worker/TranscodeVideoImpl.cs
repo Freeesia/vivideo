@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Model;
 
@@ -45,25 +46,8 @@ namespace StudioFreesia.Vivideo.Worker
             }
             Directory.CreateDirectory(dir);
             var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
-            var info = new ProcessStartInfo(this.file)
-            {
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                WorkingDirectory = this.rootDir,
-                RedirectStandardError = true,
-                Arguments = string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')),
-            };
             this.logger.LogInformation("トランスコード開始:{0}", name);
-            using var p = Process.Start(info);
-            p.ErrorDataReceived += (s, e) =>
-                {
-                    if (!string.IsNullOrEmpty(e.Data))
-                    {
-                        this.logger.LogError(e.Data);
-                    }
-                };
-            p.BeginErrorReadLine();
-            p.WaitForExit();
+            RunProcess(this.file, string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')));
             if (!File.Exists(outPath))
             {
                 throw new Exception($"「{name}」の出力に失敗しました");
@@ -86,7 +70,13 @@ namespace StudioFreesia.Vivideo.Worker
 
         private string GetArgs(string input)
         {
-            if (this.args.TryGetValue("DEFAULT", out var args))
+            var json = RunProcess(Path.Combine(Path.GetDirectoryName(this.file) ?? string.Empty, "ffprobe"), $"-hide_banner -v warning -of json -show_streams \"{input.Replace('\\', '/')}\"");
+
+            var info = JObject.Parse(json);
+
+            var codec = info.SelectToken("$.streams[?(@.codec_type == 'video')].codec_name")?.Value<string>().ToUpper();
+
+            if (!string.IsNullOrEmpty(codec) && this.args.TryGetValue(codec, out var args) || this.args.TryGetValue("DEFAULT", out args))
             {
                 return args;
             }
@@ -94,6 +84,30 @@ namespace StudioFreesia.Vivideo.Worker
             {
                 throw new InvalidOperationException("デフォルト用のffmpegの設定が存在しません");
             }
+        }
+
+        private string RunProcess(string file, string args)
+        {
+            var info = new ProcessStartInfo(file)
+            {
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                WorkingDirectory = this.rootDir,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                Arguments = args,
+            };
+            using var p = Process.Start(info);
+            p.ErrorDataReceived += (s, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                    {
+                        this.logger.LogError(e.Data);
+                    }
+                };
+            p.BeginErrorReadLine();
+            p.WaitForExit();
+            return p.StandardOutput.ReadToEnd();
         }
     }
 }
