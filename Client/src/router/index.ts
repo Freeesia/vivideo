@@ -29,9 +29,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "invite" */ "@/views/Invite.vue")
   },
   {
-    path: "/play/:request*",
+    path: "/play/",
     name: "play",
-    component: Play
+    component: Play,
+    props: (route: any) => ({
+      path: route.query.path
+    })
   },
   {
     path: "/:request*",

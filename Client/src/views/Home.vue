@@ -71,8 +71,8 @@ export default class Home extends Vue {
     if (this.selectedContent ? !this.selectedContent.isDirectory : false) {
       this.$router.push({
         name: "play",
-        params: {
-          request: encodeURIComponent(content.contentPath)
+        query: {
+          path: encodeURIComponent(content.contentPath)
         }
       });
     } else {
