@@ -13,9 +13,22 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
+    - name: Fetch all history for all tags and branches
+      run: git fetch --prune --unshallow
+    - uses: gittools/actions/gitversion/setup@v0.9
+      with:
+          versionSpec: '5.1.x'
+    - id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9
     - name: Build with dotnet
-      run: dotnet publish -c Release --self-contained -r win10-x64 -o out Worker
+      run: |
+        dotnet publish -c Release --self-contained -r win10-x64 -o out \
+        -p:Version=${{ steps.gitversion.outputs.fullSemVer }} \
+        -p:AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
+        -p:FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} \
+        -p:InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }} \
+        Worker
     - uses: actions/upload-artifact@v1
       with:
-        name: worker_${{ github.sha }}
+        name: worker_${{ steps.gitversion.outputs.informationalVersion }}
         path: out
