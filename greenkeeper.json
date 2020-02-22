@@ -1,0 +1,12 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "Client/package.json",
+        "Test/package.json",
+        "functions/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
