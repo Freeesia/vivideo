@@ -124,10 +124,25 @@
       "command": "docker-compose",
       "type": "process",
       "args": [
+        "-p",
+        "vivideo",
         "-f",
-        "docker-compose.debug.yml",
+        ".docker/docker-compose.debug.yml",
         "up",
         "-d"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "compose-down",
+      "command": "docker-compose",
+      "type": "process",
+      "args": [
+        "-p",
+        "vivideo",
+        "-f",
+        ".docker/docker-compose.debug.yml",
+        "down"
       ],
       "problemMatcher": []
     },
