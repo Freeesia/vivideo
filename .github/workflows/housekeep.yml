@@ -8,8 +8,7 @@ jobs:
   dotnet:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1.4.0
     - run: |
-        dotnet tool restore
+        dotnet tool install nukeeper --global
         dotnet nukeeper repo https://github.com/Freeesia/vivideo ${{ secrets.GitHubToken }}
