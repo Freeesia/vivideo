@@ -3,6 +3,7 @@ name: HouseKeep
 on:
   schedule:
     - cron: '0 0 * * 6'
+  push:
 jobs:
   dotnet:
     runs-on: ubuntu-latest
