@@ -11,4 +11,5 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-dotnet@v1.4.0
     - run: |
-        dotnet --version
+        dotnet tool restore
+        dotnet nukeeper repo . ${{ github.token }}
