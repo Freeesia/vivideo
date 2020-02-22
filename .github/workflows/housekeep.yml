@@ -12,4 +12,4 @@ jobs:
     - uses: actions/setup-dotnet@v1.4.0
     - run: |
         dotnet tool restore
-        dotnet nukeeper repo . ${{ secrets.GitHubToken }}
+        dotnet nukeeper repo https://github.com/Freeesia/vivideo ${{ secrets.GitHubToken }}
