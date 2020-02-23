@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
+using Sentry;
 
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
@@ -94,16 +95,16 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 {
                     if (!string.IsNullOrEmpty(e.Data))
                     {
-                        this.logger.LogError(e.Data);
+                        this.logger.LogTrace(e.Data);
                     }
                 };
             p.BeginErrorReadLine();
             p.WaitForExit();
-            this.logger.LogDebug("サムネイル生成終了:{0}", name);
             if (!System.IO.File.Exists(tmp))
             {
                 throw new Exception($"「{name}」のサムネイル出力に失敗しました");
             }
+            this.logger.LogDebug("サムネイル生成終了:{0}", name);
             return await System.IO.File.ReadAllBytesAsync(tmp);
         }
 
