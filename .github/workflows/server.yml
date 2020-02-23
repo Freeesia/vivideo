@@ -36,7 +36,7 @@ jobs:
 
           docker tag image $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - use: dmandrade/sentry-release-github-action@v1
+      - uses: dmandrade/sentry-release-github-action@v1
         if: github.ref == 'master'
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
