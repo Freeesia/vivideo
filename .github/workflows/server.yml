@@ -37,7 +37,7 @@ jobs:
           docker tag image $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
       - uses: dmandrade/sentry-release-github-action@v1
-        if: github.ref == 'master'
+        if: github.ref == 'refs/heads/master'
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: studiofreesia
