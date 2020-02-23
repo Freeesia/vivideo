@@ -95,7 +95,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 {
                     if (!string.IsNullOrEmpty(e.Data))
                     {
-                        this.logger.LogTrace(e.Data);
+                        this.logger.LogInformation(e.Data);
                     }
                 };
             p.BeginErrorReadLine();
