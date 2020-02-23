@@ -2,8 +2,6 @@ name: Server
 
 on:
   push:
-    branches:
-      - master
 env:
   IMAGE_NAME: server
 jobs:
@@ -11,7 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker build . --file .docker/Dockerfile --tag image
+      - run: git fetch --prune --unshallow
+      - uses: gittools/actions/gitversion/setup@v0.9.1
+        with:
+            versionSpec: '5.1.x'
+      - id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.1
+      - run: |
+          docker build . --file .docker/Dockerfile --tag image \
+          --build-arg Version=${{ steps.gitversion.outputs.fullSemVer }} \
+          --build-arg AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
+          --build-arg FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} \
+          --build-arg InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }}
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image

@@ -1,9 +1,18 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS dotnet-build
 WORKDIR /build
 
+ARG Version
+ARG AssemblyVersion
+ARG FileVersion
+ARG InformationalVersion
+
 COPY . .
 WORKDIR /build/Server
-RUN dotnet publish -c Release -o out
+RUN dotnet publish -c Release -o out \
+    -p:Version=$Version \
+    -p:AssemblyVersion=$AssemblyVersion \
+    -p:FileVersion=$FileVersion \
+    -p:InformationalVersion=$InformationalVersion
 
 FROM node:lts-alpine AS node-build
 WORKDIR /build
