@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
-using Sentry;
 
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
