@@ -93,6 +93,11 @@
       "script": "serve",
       "path": "Client/",
       "isBackground": true,
+      "options": {
+        "env": {
+          "VUE_APP_VERSION": "0.0.0-local"
+        }
+      },
       "problemMatcher": []
     },
     {
