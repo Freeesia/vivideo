@@ -17,3 +17,5 @@ GET http://localhost:5000/stream/1234567/master.mpd HTTP/1.1
 GET http://localhost:5000/hangfire HTTP/1.1
 ###
 GET http://localhost:5000/ HTTP/1.1
+###
+GET http://localhost:5000/api/info/version HTTP/1.1
