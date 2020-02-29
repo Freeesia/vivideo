@@ -4,8 +4,7 @@ WORKDIR /build
 ARG Version
 ARG AssemblyVersion
 ARG FileVersion
-ARG BuildDate
-ARG Sha
+ARG InformationalVersion
 
 COPY . .
 WORKDIR /build/Server
@@ -26,6 +25,11 @@ RUN yarn install \
 
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+
+ARG InformationalVersion
+ARG BuildDate
+ARG Sha
+
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /app
 EXPOSE 80
