@@ -13,6 +13,8 @@ Vue.config.productionTip = false;
 if (process.env.NODE_ENV === "production") {
   SentryInit({
     dsn: "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801",
+    release: process.env.VUE_APP_VERSION,
+    environment: "Production",
     integrations: [new SentryVue({ Vue, attachProps: true })]
   });
 }
