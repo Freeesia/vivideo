@@ -25,6 +25,11 @@ RUN yarn install \
 
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+
+ARG InformationalVersion
+ARG BuildDate
+ARG Sha
+
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /app
 EXPOSE 80
@@ -35,3 +40,11 @@ RUN apt update \
 COPY --from=dotnet-build /build/Server/out ./
 COPY --from=node-build /build/Client/out ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]
+
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.build-date=$BuildDate \
+      org.label-schema.name="Vivideo" \
+      org.label-schema.description="Vivideo is video streming server" \
+      org.label-schema.vcs-url="https://github.com/Freeesia/vivideo" \
+      org.label-schema.vcs-ref=$Sha \
+      org.label-schema.version=$InformationalVersion
