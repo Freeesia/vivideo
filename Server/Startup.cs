@@ -107,7 +107,7 @@ namespace StudioFreesia.Vivideo.Server
                             }
                         },
                         OnPrepareResponse = ctx => {
-                            ctx.Context.Response.Headers["Cache-Control"] = "public, no-cache";
+                            ctx.Context.Response.Headers["Cache-Control"] = "public, no-store";
                         },
                         ServeUnknownFileTypes = true,
                     },
