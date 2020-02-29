@@ -14,14 +14,14 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="3.1.0" />
     <PackageReference Include="Hangfire.Redis.StackExchange" Version="1.8.1" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.9" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ffmpeg\**\*.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
-    <Content Include="Startup.bat" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
-    <Content Update="appsettings.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always"/>
+    <Content Include="ffmpeg\**\*.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
+    <Content Include="Startup.bat" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
+    <Content Update="appsettings.*" ExcludeFromSingleFile="true" CopyToPublishDirectory="Always" />
   </ItemGroup>
 </Project>
