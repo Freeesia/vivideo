@@ -10,10 +10,12 @@ import { Vue as SentryVue } from "@sentry/integrations";
 
 Vue.config.productionTip = false;
 
-SentryInit({
-  dsn: "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801",
-  integrations: [new SentryVue({ Vue, attachProps: true })]
-});
+if (process.env.NODE_ENV === "production") {
+  SentryInit({
+    dsn: "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801",
+    integrations: [new SentryVue({ Vue, attachProps: true })]
+  });
+}
 
 new Vue({
   router,
