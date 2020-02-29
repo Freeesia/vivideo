@@ -20,7 +20,9 @@ jobs:
           --build-arg Version=${{ steps.gitversion.outputs.fullSemVer }} \
           --build-arg AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }} \
           --build-arg FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} \
-          --build-arg InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }}
+          --build-arg InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }} \
+          --build-arg Sha=${{ steps.gitversion.outputs.Sha }} \
+          --build-arg BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image

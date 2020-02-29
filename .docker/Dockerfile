@@ -4,7 +4,8 @@ WORKDIR /build
 ARG Version
 ARG AssemblyVersion
 ARG FileVersion
-ARG InformationalVersion
+ARG BuildDate
+ARG Sha
 
 COPY . .
 WORKDIR /build/Server
@@ -35,3 +36,11 @@ RUN apt update \
 COPY --from=dotnet-build /build/Server/out ./
 COPY --from=node-build /build/Client/out ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]
+
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.build-date=$BuildDate \
+      org.label-schema.name="Vivideo" \
+      org.label-schema.description="Vivideo is video streming server" \
+      org.label-schema.vcs-url="https://github.com/Freeesia/vivideo" \
+      org.label-schema.vcs-ref=$Sha \
+      org.label-schema.version=$InformationalVersion
