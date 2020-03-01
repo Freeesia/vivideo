@@ -2,7 +2,7 @@ import { VuexModule, Module, Mutation } from "vuex-module-decorators";
 
 export const enum SortType {
   Name,
-  CreatedAt
+  UpdatedAt
 }
 
 export const enum OrderType {
