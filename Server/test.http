@@ -11,6 +11,7 @@ GET http://localhost:5000/api/video/ HTTP/1.1
 Authorization: {{token}}
 ###
 GET http://localhost:5000/api/video/NEW%20GAME! HTTP/1.1
+Authorization: {{token}}
 ###
 GET http://localhost:5000/stream/1234567/master.mpd HTTP/1.1
 ###

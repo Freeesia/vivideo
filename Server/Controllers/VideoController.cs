@@ -81,7 +81,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                     FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi"),
                     _ => throw new InvalidOperationException(),
                 })
-                .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo)));
+                .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo, i.LastWriteTimeUtc)));
         }
     }
 

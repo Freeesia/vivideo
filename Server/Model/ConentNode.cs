@@ -9,11 +9,14 @@ namespace StudioFreesia.Vivideo.Server.Model
         public bool IsDirectory { get; }
         public string ContentPath { get; }
 
-        public ContentNode(string path, bool isDirectory)
+        public DateTime CreatedAt { get; }
+
+        public ContentNode(string path, bool isDirectory, DateTime createdAt)
         {
             this.Name = Path.GetFileNameWithoutExtension(path);
             this.IsDirectory = isDirectory;
             this.ContentPath = path.Replace('\\', '/');
+            this.CreatedAt = createdAt;
         }
     }
 }
