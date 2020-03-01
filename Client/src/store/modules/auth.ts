@@ -31,9 +31,6 @@ export default class Auth extends VuexModule {
       if (!user) {
         auth().signOut();
       }
-      if (process.env.NODE_ENV !== "production") {
-        console.log(await user?.getIdToken());
-      }
       this.context.commit("setUser", user);
     }
     return user ? true : false;
