@@ -1,11 +1,11 @@
 import { VuexModule, Module, Mutation } from "vuex-module-decorators";
 
-export enum SortType {
+export const enum SortType {
   Name,
-  Updated
+  CreatedAt
 }
 
-export enum OrderType {
+export const enum OrderType {
   Asc,
   Desc
 }
@@ -29,5 +29,11 @@ export default class Search extends VuexModule {
   @Mutation
   setOrder(value: OrderType) {
     this.order = value;
+  }
+
+  @Mutation
+  setSortAndOrder(value: { sort: SortType; order: OrderType }) {
+    this.sort = value.sort;
+    this.order = value.order;
   }
 }
