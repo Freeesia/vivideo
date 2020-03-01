@@ -36,7 +36,9 @@ import Player from "@/components/Player.vue";
 import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
+import { SortType, OrderType } from "../store/modules/search";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
+import { compare } from "natural-orderby";
 
 @Component({ components: { Player } })
 export default class Home extends Vue {
@@ -59,7 +61,27 @@ export default class Home extends Vue {
 
   get filtered() {
     const search = SearchModule.filter.toUpperCase();
-    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true));
+    const comp = this.getCompareFunc();
+    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
+  }
+
+  private getCompareFunc() {
+    const order = SearchModule.order;
+    switch (SearchModule.sort) {
+      case SortType.Name: {
+        const c = compare({ order: order === OrderType.Asc ? "asc" : "desc" });
+        return (x: ContentNode, y: ContentNode) => c(x.name, y.name);
+      }
+      case SortType.UpdatedAt: {
+        if (order === OrderType.Asc) {
+          return (x: ContentNode, y: ContentNode) => new Date(x.createdAt).valueOf() - new Date(y.createdAt).valueOf();
+        } else {
+          return (x: ContentNode, y: ContentNode) => new Date(y.createdAt).valueOf() - new Date(x.createdAt).valueOf();
+        }
+      }
+      default:
+        throw new RangeError("out of sorttype range");
+    }
   }
 
   private selectContent(content: ContentNode) {
