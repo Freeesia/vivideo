@@ -72,7 +72,7 @@ export default class Home extends Vue {
       this.$router.push({
         name: "play",
         query: {
-          path: encodeURIComponent(content.contentPath)
+          path: content.contentPath
         }
       });
     } else {
