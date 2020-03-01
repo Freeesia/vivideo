@@ -15,6 +15,10 @@ RUN dotnet publish -c Release -o out \
     -p:InformationalVersion=$InformationalVersion
 
 FROM node:lts-alpine AS node-build
+
+ARG InformationalVersion
+ENV VUE_APP_VERSION=$InformationalVersion
+
 WORKDIR /build
 RUN apk add yarn
 
