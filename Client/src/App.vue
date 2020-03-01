@@ -30,6 +30,15 @@
           <v-list-item dense :disabled="!isSignedIn" to="/about">About</v-list-item>
         </v-list>
       </v-menu>
+      <v-progress-linear
+        striped
+        :active="loading"
+        background-color="accent"
+        color="secondary"
+        indeterminate
+        absolute
+        top
+      />
     </v-app-bar>
 
     <v-content>
@@ -45,11 +54,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import { AuthModule, SearchModule } from "./store";
+import { AuthModule, SearchModule, GeneralModule } from "./store";
 
 @Component({})
 export default class App extends Vue {
   private search = "";
+
+  get loading() {
+    return GeneralModule.loading;
+  }
 
   private mounted() {
     this.$store.watch(
