@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using StudioFreesia.Vivideo.Core;
+using StudioFreesia.Vivideo.Worker.Jobs;
 
 namespace StudioFreesia.Vivideo.Worker
 {
@@ -19,16 +20,18 @@ namespace StudioFreesia.Vivideo.Worker
                 .UseContentRootForSingleFile()
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpClient();
                     services.AddHangfire(config =>
-                            {
-                                config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
-                            })
-                            .AddHangfireServer(config =>
-                            {
-                                // 同時に1つしかトランスコード出来ないので
-                                config.WorkerCount = 1;
-                            })
-                            .AddTransient<ITranscodeVideo, TranscodeVideoImpl>();
+                        {
+                            config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
+                        })
+                        .AddHangfireServer(config =>
+                        {
+                            // 同時に1つしかトランスコード出来ないので
+                            config.WorkerCount = 1;
+                        })
+                        .AddTransient<ITranscodeVideo, TranscodeVideoImpl>()
+                        .AddTransient<ILogoDownload, LogoDownloadImpl>();
                 });
     }
 }
