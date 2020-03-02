@@ -9,6 +9,21 @@
                 <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
               </v-row>
             </template>
+            <template v-slot:default>
+              <v-row class="pa-4" align="start" justify="end">
+                <v-menu v-if="item.isDirectory" offset-y>
+                  <template v-slot:activator="{ on }">
+                    <v-btn small icon v-on="on">
+                      <v-icon>more_vert</v-icon>
+                    </v-btn>
+                  </template>
+
+                  <v-list>
+                    <v-list-item dense @click.stop="openLogoDialog(item)">Logo</v-list-item>
+                  </v-list>
+                </v-menu>
+              </v-row>
+            </template>
           </v-img>
           <v-card-title>
             {{ item.name }}
@@ -16,6 +31,7 @@
         </v-card>
       </v-col>
     </v-row>
+    <logo v-model="logoDialog" :target="logoTarget"></logo>
   </v-container>
 </template>
 
@@ -32,19 +48,23 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Player from "@/components/Player.vue";
+import Logo from "@/components/Logo.vue";
 import { Component, Watch } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
 import { SortType, OrderType } from "../store/modules/search";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
 import { compare } from "natural-orderby";
+import { getThumbnailPath } from "../utilities/pathUtility";
 
-@Component({ components: { Player } })
+@Component({ components: { Logo } })
 export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
   private contents: ContentNode[] = [];
   private axios?: AxiosInstance;
+  private logoDialog = false;
+  private logoTarget: ContentNode | null = null;
+  private getThumbnailPath = getThumbnailPath;
 
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
@@ -103,8 +123,16 @@ export default class Home extends Vue {
     }
   }
 
-  private getThumbnailPath(content: ContentNode) {
-    return "/api/thumbnail/?path=" + encodeURIComponent(content.contentPath);
+  private openLogoDialog(content: ContentNode) {
+    this.logoTarget = content;
+    this.logoDialog = true;
+  }
+
+  @Watch("logoDialog")
+  private async logoDialogChanged(newValue: boolean) {
+    if (!newValue) {
+      this.logoTarget = null;
+    }
   }
 }
 </script>
