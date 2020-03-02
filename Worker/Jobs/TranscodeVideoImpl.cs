@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Model;
 
-namespace StudioFreesia.Vivideo.Worker
+namespace StudioFreesia.Vivideo.Worker.Jobs
 {
     public class TranscodeVideoImpl : ITranscodeVideo
     {

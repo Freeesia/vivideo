@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using StudioFreesia.Vivideo.Core;
+using StudioFreesia.Vivideo.Worker.Jobs;
 
 namespace StudioFreesia.Vivideo.Worker
 {
