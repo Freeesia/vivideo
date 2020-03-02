@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
 using System.Diagnostics;
 using Microsoft.Extensions.Caching.Distributed;
+using Hangfire;
 
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
@@ -117,5 +118,9 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             }
             return "image/" + ext.Slice(1).ToString();
         }
+
+        [HttpPost]
+        public void SetLogo([FromBody]LogoQueue queue, [FromServices] IBackgroundJobClient jobClient)
+            => jobClient.Enqueue<ILogoDownload>(d => d.DownLoad(queue));
     }
 }
