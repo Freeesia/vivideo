@@ -28,7 +28,7 @@ namespace StudioFreesia.Vivideo.Worker.Jobs
             var client = this.httpClientFactory.CreateClient();
             this.logger.LogInformation("path: {0} target: {1}", queue.Output, queue.Url);
             using var stream = await client.GetStreamAsync(queue.Url);
-            using var fs = new FileStream(Path.Combine(this.listDir, queue.Output, "logo" + Path.GetExtension(queue.Url.LocalPath)), FileMode.Create, FileAccess.Write);
+            using var fs = new FileStream(Path.Combine(this.listDir, queue.Output, "logo" + Path.GetExtension(queue.Url.LocalPath)), FileMode.OpenOrCreate, FileAccess.Write);
             stream.CopyTo(fs);
         }
     }
