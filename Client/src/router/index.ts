@@ -1,7 +1,11 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import About from "@/views/About.vue";
+import Invite from "@/views/Invite.vue";
 import Home from "@/views/Home.vue";
 import Play from "@/views/Play.vue";
+import Signin from "@/views/Signin.vue";
+import Signup from "@/views/Signup.vue";
 import { AuthModule } from "@/store";
 
 Vue.use(VueRouter);
@@ -10,7 +14,7 @@ const routes: RouteConfig[] = [
   {
     path: "/signin",
     name: "signin",
-    component: () => import(/* webpackChunkName: "signin" */ "@/views/Signin.vue"),
+    component: Signin,
     meta: {
       anonymous: true
     }
@@ -18,7 +22,7 @@ const routes: RouteConfig[] = [
   {
     path: "/signup/:code",
     name: "signup",
-    component: () => import(/* webpackChunkName: "signup" */ "@/views/Signup.vue"),
+    component: Signup,
     meta: {
       anonymous: true
     }
@@ -26,12 +30,12 @@ const routes: RouteConfig[] = [
   {
     path: "/invite",
     name: "invite",
-    component: () => import(/* webpackChunkName: "invite" */ "@/views/Invite.vue")
+    component: Invite
   },
   {
     path: "/about",
     name: "about",
-    component: () => import(/* webpackChunkName: "about" */ "@/views/About.vue")
+    component: About
   },
   {
     path: "/play/",
