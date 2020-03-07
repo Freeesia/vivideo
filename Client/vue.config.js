@@ -19,7 +19,17 @@ module.exports = {
   },
   configureWebpack: {
     devtool: "source-map",
-    plugins: [new HardSourceWebpackPlguin()]
+    plugins: [
+      new HardSourceWebpackPlguin(),
+      new SentryWebpackPlugin({
+        include: ["dist", "src"],
+        dryRun: process.env.NODE_ENV !== "production" || !process.env.SENTRY_AUTH_TOKEN,
+        release: process.env.VUE_APP_VERSION,
+        validate: true,
+        ext: ["js", "map", "ts"],
+        finalize: false
+      })
+    ]
   },
   pwa: {
     name: "Frix TV Prime",
