@@ -25,7 +25,7 @@ RUN apk add yarn
 COPY . .
 WORKDIR /build/Client
 RUN yarn install \
- && yarn build --dest out
+ && yarn build
 
 
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
@@ -42,7 +42,7 @@ RUN apt update \
  && apt clean \
  && rm -rf  /var/lib/apt/lists/*
 COPY --from=dotnet-build /build/Server/out ./
-COPY --from=node-build /build/Client/out ./Client/
+COPY --from=node-build /build/Client/dist ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]
 
 LABEL org.label-schema.schema-version="1.0" \
