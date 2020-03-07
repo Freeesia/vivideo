@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const HardSourceWebpackPlguin = require("hard-source-webpack-plugin");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
+const os = require("os");
 
 module.exports = {
   transpileDependencies: ["vuetify"],
@@ -30,6 +31,13 @@ module.exports = {
         finalize: false
       })
     ]
+  },
+  chainWebpack: config => {
+    config.plugin("fork-ts-checker").tap(args => {
+      args[0].workers = Math.max(os.cpus().length - 1, 1);
+      args[0].memoryLimit = os.freemem() > 8096 ? 8096 : 2048;
+      return args;
+    });
   },
   pwa: {
     name: "Frix TV Prime",
