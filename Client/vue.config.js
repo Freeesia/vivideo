@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const HardSourceWebpackPlguin = require("hard-source-webpack-plugin");
+const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 
 module.exports = {
   transpileDependencies: ["vuetify"],
