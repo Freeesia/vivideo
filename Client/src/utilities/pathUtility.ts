@@ -1,4 +1,5 @@
 import ContentNode from "@/models/ContnetNode";
 
-export const getThumbnailPath = (content: ContentNode) =>
-  "/api/thumbnail/?path=" + encodeURIComponent(content.contentPath);
+export function getThumbnailPath(content: ContentNode) {
+  return "/api/thumbnail/?path=" + encodeURIComponent(content.contentPath);
+}
