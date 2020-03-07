@@ -516,6 +516,11 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.0.0.tgz#9c13c2574c92d4503b005feca8f2e16cc1611506"
   integrity sha512-KYyTT/T6ALPkIRd2Ge080X/BsXvy9O0hcWTtMWkPvwAwF99+vn6Dv4GzrFT/Nn1LePr+FFDbRXXlqmsy9lw2zA==
 
+"@types/assert@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@types/assert/-/assert-1.4.6.tgz#deb4788a16621e39f28aab166fb62c3d79df24b9"
+  integrity sha512-r/N9gGdYr2MfZSbdi6w6VH3+qS1KboBqZ0bkDiTD2RdAls3smYDK/jy8jhGyGTZglFgLTCknH1MBJG8M4sd+6A==
+
 "@types/body-parser@*":
   version "1.19.0"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.0.tgz#0685b3c47eb3006ffed117cdd55164b61f80538f"
