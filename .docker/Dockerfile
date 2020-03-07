@@ -17,6 +17,7 @@ RUN dotnet publish -c Release -o out \
 FROM node:lts-alpine AS node-build
 
 ARG InformationalVersion
+ARG SENTRY_AUTH_TOKEN
 ENV VUE_APP_VERSION=$InformationalVersion
 
 WORKDIR /build
