@@ -95,7 +95,11 @@ namespace StudioFreesia.Vivideo.Server
                 Directory.CreateDirectory(work);
                 app1.UseFileServer(new FileServerOptions()
                 {
-                    FileProvider = new PhysicalFileProvider(work),
+                    FileProvider = new PhysicalFileProvider(work)
+                    {
+                        UseActivePolling = true,
+                        UsePollingFileWatcher = true,
+                    },
                     EnableDirectoryBrowsing = env.IsDevelopment(),
                     EnableDefaultFiles = false,
                     StaticFileOptions =
