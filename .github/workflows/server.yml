@@ -15,6 +15,8 @@ jobs:
             versionSpec: '5.1.x'
       - id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.1
+      - if: github.ref == 'refs/heads/master'
+        run: echo "::set-env name=SENTRY_AUTH_TOKEN::${{ secrets.SENTRY_AUTH_TOKEN }}"
       - run: |
           docker build . --file .docker/Dockerfile --tag image \
           --build-arg Version=${{ steps.gitversion.outputs.fullSemVer }} \
@@ -22,7 +24,8 @@ jobs:
           --build-arg FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }} \
           --build-arg InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }} \
           --build-arg Sha=${{ steps.gitversion.outputs.Sha }} \
-          --build-arg BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          --build-arg BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+          --build-arg SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
       - name: Log into registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
       - name: Push image
