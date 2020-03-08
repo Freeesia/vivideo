@@ -44,7 +44,9 @@ export default class Player extends Vue {
       autoplay: true,
       poster: this.thumbnailPath
     });
+    this.player.on("ended", () => this.$emit("ended"));
   }
+
   private beforeDestroy() {
     if (this.player) {
       this.player.dispose();
