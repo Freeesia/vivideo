@@ -10,6 +10,9 @@
           <v-subheader>プレイリスト</v-subheader>
           <v-list-item v-for="item in contents" :key="item.name" @click="select(item)">
             <v-list-item-avatar tile>
+              <v-overlay absolute :value="isPlaying(item)">
+                <v-icon>play_arrow</v-icon>
+              </v-overlay>
               <v-img :src="getThumbnailPath(item)">
                 <template v-slot:placeholder>
                   <v-row class="fill-height" align="center" justify="center">
