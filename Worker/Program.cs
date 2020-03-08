@@ -18,6 +18,9 @@ namespace StudioFreesia.Vivideo.Worker
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
                 .UseContentRootForSingleFile()
+#if !DEBUG
+                .UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801")
+#endif
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHttpClient();
