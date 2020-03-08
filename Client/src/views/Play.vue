@@ -1,11 +1,11 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
+  <v-container fluid>
+    <v-row no-gutters dense>
+      <v-col cols="12" md="8">
         <Player :stream-path="streamPath" :thumbnail-path="thumbnailPath" />
         <div>{{ path }}</div>
       </v-col>
-      <v-col>
+      <v-col md="4">
         <v-list>
           <v-subheader>プレイリスト</v-subheader>
           <v-list-item v-for="item in contents" :key="item.name" @click="select(item)">
