@@ -1,1 +1,3 @@
-export const delay: (msec: number) => Promise<void> = msec => new Promise(resolve => setTimeout(resolve, msec));
+export function delay(msec: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, msec));
+}

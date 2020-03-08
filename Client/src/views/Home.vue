@@ -25,9 +25,12 @@
               </v-row>
             </template>
           </v-img>
-          <v-card-title>
-            {{ item.name }}
-          </v-card-title>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-card-title v-on="on">{{ item.name }}</v-card-title>
+            </template>
+            <span>{{ item.name }}</span>
+          </v-tooltip>
         </v-card>
       </v-col>
     </v-row>
