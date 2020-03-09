@@ -104,7 +104,7 @@ namespace StudioFreesia.Vivideo.Worker.Jobs
                 {
                     if (!string.IsNullOrEmpty(e.Data))
                     {
-                        this.logger.LogError(e.Data);
+                        this.logger.LogWarning(e.Data);
                     }
                 };
             p.BeginErrorReadLine();
