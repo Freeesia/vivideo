@@ -43,6 +43,7 @@
 
         <v-list>
           <v-list-item dense :disabled="!isSignedIn" @click="signout">Sign out</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" to="/account">Account</v-list-item>
           <v-list-item dense :disabled="!isSignedIn" to="/about">About</v-list-item>
         </v-list>
       </v-menu>
