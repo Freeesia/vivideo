@@ -98,7 +98,14 @@
           "VUE_APP_VERSION": "0.0.0-local"
         }
       },
-      "problemMatcher": []
+      "problemMatcher": {
+        "base": "$eslint-stylish",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\s*WAIT\\s+Compiling",
+          "endsPattern": "^\\s*(DONE|WARNING)\\s+Compiled"
+        }
+      }
     },
     {
       "type": "npm",
