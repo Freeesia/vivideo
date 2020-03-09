@@ -33,7 +33,9 @@ export default class Signin extends Vue {
         {
           provider: auth.EmailAuthProvider.PROVIDER_ID,
           requireDisplayName: false
-        }
+        },
+        auth.GoogleAuthProvider.PROVIDER_ID,
+        auth.GithubAuthProvider.PROVIDER_ID
       ],
       credentialHelper: authui.CredentialHelper.NONE,
       callbacks: {
