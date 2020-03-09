@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Jobs;
+using System.IO.Compression;
+using Microsoft.Extensions.Logging;
 
 namespace StudioFreesia.Vivideo.Worker
 {
@@ -19,7 +21,12 @@ namespace StudioFreesia.Vivideo.Worker
                 .UseWindowsService()
                 .UseContentRootForSingleFile()
 #if !DEBUG
-                .UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801")
+                .UseSentry(op => {
+                    op.Dsn = "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801";
+                    op.RequestBodyCompressionLevel = CompressionLevel.Optimal;
+                    op.MinimumEventLevel = LogLevel.Error;
+                    op.Environment = "Production";
+                })
 #endif
                 .ConfigureServices((hostContext, services) =>
                 {
