@@ -30,6 +30,21 @@
             </section>
             <v-divider class="my-4" />
             <section class="ma-2">
+              <header class="headline">他のアカウントと連携</header>
+              <p>連携したアカウントでログインできます</p>
+              <div class="d-flex flex-column providers">
+                <v-btn
+                  v-for="id in targetProviders"
+                  :key="id"
+                  class="ma-1"
+                  :disabled="isLinked(id)"
+                  @click="link(id)"
+                  >{{ linkText(id) }}</v-btn
+                >
+              </div>
+            </section>
+            <v-divider class="my-4" />
+            <section class="ma-2">
               <header class="headline">退会</header>
               <p>PinPinからアカウントを削除します。すべてのブックマークは削除されます。</p>
               <v-btn color="error" @click="deleteMe">退会</v-btn>
@@ -40,10 +55,16 @@
     </v-row>
   </v-container>
 </template>
+<style lang="scss" scoped>
+.providers {
+  max-width: 400px;
+}
+</style>
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { User } from "firebase/app";
+import { User, auth } from "firebase/app";
+import "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
 
@@ -51,10 +72,19 @@ import { assertIsDefined } from "../utilities/assert";
 export default class Account extends Vue {
   private user!: User;
   private activeTab: any = null;
+  private targetProviders = [
+    auth.GoogleAuthProvider.PROVIDER_ID,
+    // auth.FacebookAuthProvider.PROVIDER_ID,
+    // auth.TwitterAuthProvider.PROVIDER_ID,
+    auth.GithubAuthProvider.PROVIDER_ID
+  ];
+  private linkedProviders: string[] = [];
+
   private created() {
     const user = AuthModule.user;
     assertIsDefined(user);
     this.user = user;
+    this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
   }
 
   private async signOut() {
@@ -78,6 +108,44 @@ export default class Account extends Vue {
     }
     GeneralModule.setLoading(false);
     this.$router.push("/");
+  }
+
+  private link(id: string) {
+    this.user.linkWithRedirect(this.getProvider(id));
+  }
+
+  private getProvider(id: string): auth.AuthProvider {
+    switch (id) {
+      case auth.GoogleAuthProvider.PROVIDER_ID:
+        return new auth.GoogleAuthProvider();
+      case auth.FacebookAuthProvider.PROVIDER_ID:
+        return new auth.FacebookAuthProvider();
+      case auth.TwitterAuthProvider.PROVIDER_ID:
+        return new auth.TwitterAuthProvider();
+      case auth.GithubAuthProvider.PROVIDER_ID:
+        return new auth.GithubAuthProvider();
+      default:
+        throw new Error("未対応プロバイダ");
+    }
+  }
+
+  private isLinked(id: string) {
+    return this.linkedProviders.includes(id);
+  }
+
+  private linkText(id: string) {
+    switch (id) {
+      case auth.GoogleAuthProvider.PROVIDER_ID:
+        return "Google" + (this.isLinked(id) ? "はリンク済みです" : "");
+      case auth.FacebookAuthProvider.PROVIDER_ID:
+        return "Facebook" + (this.isLinked(id) ? "はリンク済みです" : "");
+      case auth.TwitterAuthProvider.PROVIDER_ID:
+        return "Twitter" + (this.isLinked(id) ? "はリンク済みです" : "");
+      case auth.GithubAuthProvider.PROVIDER_ID:
+        return "GitHub" + (this.isLinked(id) ? "はリンク済みです" : "");
+      default:
+        throw new Error("未対応プロバイダ");
+    }
   }
 }
 </script>
