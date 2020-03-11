@@ -42,7 +42,7 @@
         </template>
 
         <v-list>
-          <v-list-item dense :disabled="!isSignedIn" @click="signout">Sign out</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" to="/account">Account</v-list-item>
           <v-list-item dense :disabled="!isSignedIn" to="/about">About</v-list-item>
         </v-list>
       </v-menu>
@@ -98,11 +98,6 @@ export default class App extends Vue {
   @Watch("search")
   private onSearchChanged() {
     SearchModule.setFilter(this.search ?? "");
-  }
-
-  private async signout() {
-    await AuthModule.signOut();
-    this.$router.push({ name: "signin" });
   }
 
   private selectSort(sort: SortType) {

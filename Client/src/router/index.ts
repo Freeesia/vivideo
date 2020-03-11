@@ -6,6 +6,7 @@ import Home from "@/views/Home.vue";
 import Play from "@/views/Play.vue";
 import Signin from "@/views/Signin.vue";
 import Signup from "@/views/Signup.vue";
+import Account from "@/views/Account.vue";
 import { AuthModule } from "@/store";
 
 Vue.use(VueRouter);
@@ -31,6 +32,11 @@ const routes: RouteConfig[] = [
     path: "/invite",
     name: "invite",
     component: Invite
+  },
+  {
+    path: "/account",
+    name: "account",
+    component: Account
   },
   {
     path: "/about",
