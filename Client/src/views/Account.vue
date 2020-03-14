@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height>
-    <v-row no-gutters class="fill-height">
-      <v-col :md="4" cols="12" class="ma-2">
+    <v-row no-gutters class="fill-height mt-4">
+      <v-col md="4" cols="12" class="pa-2">
         <section class="d-flex align-center flex-column">
           <v-avatar :size="200" color="primary">
             <v-img v-if="user.photoURL" :src="user.photoURL" alt="avatar">
@@ -17,7 +17,7 @@
           <address class="caption">{{ user.email }}</address>
         </section>
       </v-col>
-      <v-col cols="12">
+      <v-col md="8" cols="12">
         <v-tabs v-model="activeTab">
           <v-tab>アカウント</v-tab>
         </v-tabs>
@@ -46,7 +46,7 @@
             <v-divider class="my-4" />
             <section class="ma-2">
               <header class="headline">退会</header>
-              <p>PinPinからアカウントを削除します。すべてのブックマークは削除されます。</p>
+              <p>アカウントを削除します</p>
               <v-btn color="error" @click="deleteMe">退会</v-btn>
             </section>
           </v-tab-item>
