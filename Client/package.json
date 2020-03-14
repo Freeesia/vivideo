@@ -15,6 +15,7 @@
     "firebaseui": "^4.4.0",
     "natural-orderby": "^2.0.3",
     "register-service-worker": "^1.6.2",
+    "shaka-player": "^2.5.9",
     "video.js": "^7.6.6",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
@@ -26,8 +27,8 @@
     "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
-    "@types/assert": "^1.4.6",
     "@sentry/webpack-plugin": "^1.10.0",
+    "@types/assert": "^1.4.6",
     "@types/video.js": "^7.3.3",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",

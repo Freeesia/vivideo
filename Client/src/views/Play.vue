@@ -2,14 +2,15 @@
   <v-container fluid>
     <v-row no-gutters dense>
       <v-col cols="12" md="8">
-        <Player :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
+        <!-- <Player :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
           <template v-if="autoNext" v-slot:overlay>
             <v-row justify="center">
               <v-progress-circular class="ma-2" rotate="-90" size="60" :value="percent"></v-progress-circular>
             </v-row>
             <v-btn @click="cancelAuto">キャンセル</v-btn>
           </template>
-        </Player>
+        </Player> -->
+        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" />
         <div>{{ path }}</div>
       </v-col>
       <v-col md="4">
@@ -45,6 +46,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import Player from "@/components/Player.vue";
+import ShakaPlayer from "@/components/ShakaPlayer.vue";
 import { AuthModule, GeneralModule, SearchModule } from "../store";
 import { Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
@@ -55,7 +57,7 @@ import { assertIsDefined } from "../utilities/assert";
 import { getThumbnailPath } from "../utilities/pathUtility";
 import { delay } from "../utilities/systemUtility";
 
-@Component({ components: { Player } })
+@Component({ components: { Player, ShakaPlayer } })
 export default class Play extends Vue {
   private streamPath = "";
   private thumbnailPath = "";
