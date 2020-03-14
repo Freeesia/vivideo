@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height>
-    <v-row no-gutters class="fill-height">
-      <v-col :md="4" cols="12" class="ma-2">
+    <v-row no-gutters class="fill-height mt-4">
+      <v-col md="4" cols="12" class="pa-2">
         <section class="d-flex align-center flex-column">
           <v-avatar :size="200" color="primary">
             <v-img v-if="user.photoURL" :src="user.photoURL" alt="avatar">
@@ -17,7 +17,7 @@
           <address class="caption">{{ user.email }}</address>
         </section>
       </v-col>
-      <v-col cols="12">
+      <v-col md="8" cols="12">
         <v-tabs v-model="activeTab">
           <v-tab>アカウント</v-tab>
         </v-tabs>
@@ -33,20 +33,15 @@
               <header class="headline">他のアカウントと連携</header>
               <p>連携したアカウントでログインできます</p>
               <div class="d-flex flex-column providers">
-                <v-btn
-                  v-for="id in targetProviders"
-                  :key="id"
-                  class="ma-1"
-                  :disabled="isLinked(id)"
-                  @click="link(id)"
-                  >{{ linkText(id) }}</v-btn
-                >
+                <v-btn v-for="id in targetProviders" :key="id" class="ma-1" :loading="isLinking(id)" @click="link(id)">
+                  {{ linkText(id) }}
+                </v-btn>
               </div>
             </section>
             <v-divider class="my-4" />
             <section class="ma-2">
               <header class="headline">退会</header>
-              <p>PinPinからアカウントを削除します。すべてのブックマークは削除されます。</p>
+              <p>アカウントを削除します</p>
               <v-btn color="error" @click="deleteMe">退会</v-btn>
             </section>
           </v-tab-item>
@@ -79,6 +74,28 @@ export default class Account extends Vue {
     auth.GithubAuthProvider.PROVIDER_ID
   ];
   private linkedProviders: string[] = [];
+  private linking: string[] = [];
+
+  get linkText() {
+    return (id: string) => {
+      switch (id) {
+        case auth.GoogleAuthProvider.PROVIDER_ID:
+          return "Google" + (this.isLinked(id) ? " リンク解除" : "");
+        case auth.FacebookAuthProvider.PROVIDER_ID:
+          return "Facebook" + (this.isLinked(id) ? " リンク解除" : "");
+        case auth.TwitterAuthProvider.PROVIDER_ID:
+          return "Twitter" + (this.isLinked(id) ? " リンク解除" : "");
+        case auth.GithubAuthProvider.PROVIDER_ID:
+          return "GitHub" + (this.isLinked(id) ? " リンク解除" : "");
+        default:
+          throw new Error("未対応プロバイダ");
+      }
+    };
+  }
+
+  get isLinking() {
+    return (id: string) => this.linking.includes(id);
+  }
 
   private created() {
     const user = AuthModule.user;
@@ -110,8 +127,15 @@ export default class Account extends Vue {
     this.$router.push("/");
   }
 
-  private link(id: string) {
-    this.user.linkWithRedirect(this.getProvider(id));
+  private async link(id: string) {
+    this.linking.push(id);
+    if (this.isLinked(id)) {
+      await this.user.unlink(id);
+      this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
+    } else {
+      await this.user.linkWithRedirect(this.getProvider(id));
+    }
+    this.linking = this.linking.filter(i => i !== id);
   }
 
   private getProvider(id: string): auth.AuthProvider {
@@ -131,21 +155,6 @@ export default class Account extends Vue {
 
   private isLinked(id: string) {
     return this.linkedProviders.includes(id);
-  }
-
-  private linkText(id: string) {
-    switch (id) {
-      case auth.GoogleAuthProvider.PROVIDER_ID:
-        return "Google" + (this.isLinked(id) ? "はリンク済みです" : "");
-      case auth.FacebookAuthProvider.PROVIDER_ID:
-        return "Facebook" + (this.isLinked(id) ? "はリンク済みです" : "");
-      case auth.TwitterAuthProvider.PROVIDER_ID:
-        return "Twitter" + (this.isLinked(id) ? "はリンク済みです" : "");
-      case auth.GithubAuthProvider.PROVIDER_ID:
-        return "GitHub" + (this.isLinked(id) ? "はリンク済みです" : "");
-      default:
-        throw new Error("未対応プロバイダ");
-    }
   }
 }
 </script>
