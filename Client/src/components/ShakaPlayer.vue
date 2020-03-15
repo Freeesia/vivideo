@@ -55,6 +55,11 @@ export default class ShakaPlayer extends Vue {
   mounted() {
     const video = this.$refs.video as HTMLMediaElement;
     this.player = new Player(video);
+    this.player.configure({
+      streaming: {
+        bufferBehind: Number.POSITIVE_INFINITY
+      }
+    });
     const overlay = new ui.Overlay(this.player, this.$refs.videoContainer as HTMLElement, video);
     overlay.configure({
       controlPanelElements: [
