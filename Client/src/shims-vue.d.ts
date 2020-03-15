@@ -9,8 +9,11 @@ declare module "shaka-player/dist/shaka-player.ui" {
     constructor(mediaElement: HTMLMediaElement, dependencyInjector?: (player: Player) => void);
     static probeSupport(): Promise<extern.SupportType>;
     getLoadMode(): number;
+    configure(config: extern.PlayerConfiguration): boolean;
     load(assetUri: string, mimeType?: string): Promise<void>;
     load(assetUri: string, startTimeopt: number, mimeType: string): Promise<void>;
+    getMediaElement(): HTMLMediaElement;
+    addEventListener(type: string, listener: EventListener | ((ev: Event) => void)): void;
     destroy(): void;
   }
   interface DrmSupportType {
@@ -33,6 +36,12 @@ declare module "shaka-player/dist/shaka-player.ui" {
       manifest: { [mime: string]: boolean };
       media: { [mime: string]: boolean };
       drm: { [name: string]: DrmSupportType };
+    }
+    interface PlayerConfiguration {
+      streaming: StreamingConfiguration;
+    }
+    interface StreamingConfiguration {
+      bufferBehind: number;
     }
     interface UIConfiguration {
       controlPanelElements?: string[];
