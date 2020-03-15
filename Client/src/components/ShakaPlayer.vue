@@ -100,6 +100,7 @@ export default class ShakaPlayer extends Vue {
   }
 
   private replay() {
+    assertIsDefined(this.player);
     const video = this.player.getMediaElement();
     video.play();
   }
