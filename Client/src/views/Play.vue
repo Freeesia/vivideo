@@ -2,15 +2,14 @@
   <v-container fluid>
     <v-row no-gutters dense>
       <v-col cols="12" md="8">
-        <!-- <Player :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
+        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
           <template v-if="autoNext" v-slot:overlay>
             <v-row justify="center">
               <v-progress-circular class="ma-2" rotate="-90" size="60" :value="percent"></v-progress-circular>
             </v-row>
             <v-btn @click="cancelAuto">キャンセル</v-btn>
           </template>
-        </Player> -->
-        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" />
+        </ShakaPlayer>
         <div>{{ path }}</div>
       </v-col>
       <v-col md="4">

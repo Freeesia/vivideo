@@ -24,7 +24,7 @@ video {
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { Prop, Watch } from "vue-property-decorator";
+import { Prop, Watch, Emit } from "vue-property-decorator";
 import { polyfill, Player, ui } from "shaka-player/dist/shaka-player.ui";
 import { assertIsDefined } from "../utilities/assert";
 import "shaka-player/dist/controls.css";
@@ -70,8 +70,8 @@ export default class ShakaPlayer extends Vue {
       overflowMenuButtons: ["picture_in_picture"],
       addBigPlayButton: false
     });
-    video.addEventListener("playing", () => (this.isEnded = false));
-    video.addEventListener("ended", () => (this.isEnded = true));
+    video.addEventListener("playing", () => this.play());
+    video.addEventListener("ended", () => this.ended());
   }
 
   private async load() {
@@ -83,6 +83,16 @@ export default class ShakaPlayer extends Vue {
     } else {
       await this.player.load(this.streamPath + "/master.m3u8", 0, "application/x-mpegURL");
     }
+  }
+
+  @Emit()
+  private ended() {
+    this.isEnded = true;
+  }
+
+  @Emit()
+  private play() {
+    this.isEnded = false;
   }
 
   private replay() {
