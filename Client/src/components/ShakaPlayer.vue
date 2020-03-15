@@ -72,8 +72,7 @@ export default class ShakaPlayer extends Vue {
         "fullscreen",
         "overflow_menu"
       ],
-      overflowMenuButtons: ["picture_in_picture"],
-      addBigPlayButton: false
+      overflowMenuButtons: ["picture_in_picture"]
     });
     video.addEventListener("playing", () => this.play());
     video.addEventListener("ended", () => this.ended());
