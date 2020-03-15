@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import About from "@/views/About.vue";
-import Invite from "@/views/Invite.vue";
 import Home from "@/views/Home.vue";
 import Play from "@/views/Play.vue";
 import Signin from "@/views/Signin.vue";
@@ -27,11 +26,6 @@ const routes: RouteConfig[] = [
     meta: {
       anonymous: true
     }
-  },
-  {
-    path: "/invite",
-    name: "invite",
-    component: Invite
   },
   {
     path: "/account",
