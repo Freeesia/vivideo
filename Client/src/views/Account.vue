@@ -102,6 +102,7 @@ export default class Account extends Vue {
     assertIsDefined(user);
     this.user = user;
     this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
+    this.linkedRedirect();
   }
 
   private async signOut() {
@@ -109,6 +110,53 @@ export default class Account extends Vue {
     await AuthModule.signOut();
     GeneralModule.setLoading(false);
     this.$router.push("/");
+  }
+
+  private async linkedRedirect() {
+    const result = await auth().getRedirectResult();
+    if (result.operationType !== "link") {
+      return;
+    }
+    const info = result.additionalUserInfo;
+    assertIsDefined(info?.profile);
+    switch (info.providerId) {
+      case auth.GoogleAuthProvider.PROVIDER_ID:
+        this.linkedGoogle(info.profile);
+        break;
+      case auth.GithubAuthProvider.PROVIDER_ID:
+        this.linkedGitHub(info.profile);
+        break;
+      default:
+        throw new Error("未対応プロバイダ");
+    }
+  }
+
+  private async linkedGoogle(profile: Record<string, any>) {
+    const newProf: Record<string, any> = {};
+    if (!this.user.displayName && profile["name"]) {
+      newProf.displayName = profile["name"];
+    }
+    if (!this.user.photoURL && profile["picture"]) {
+      newProf.photoURL = profile["picture"];
+    }
+    await this.user.updateProfile(newProf);
+    const user = auth().currentUser;
+    assertIsDefined(user);
+    this.user = user;
+  }
+
+  private async linkedGitHub(profile: Record<string, any>) {
+    const newProf: Record<string, any> = {};
+    if (!this.user.displayName && profile["name"]) {
+      newProf.displayName = profile["name"];
+    }
+    if (!this.user.photoURL && profile["avatar_url"]) {
+      newProf.photoURL = profile["avatar_url"];
+    }
+    await this.user.updateProfile(newProf);
+    const user = auth().currentUser;
+    assertIsDefined(user);
+    this.user = user;
   }
 
   private async deleteMe() {
