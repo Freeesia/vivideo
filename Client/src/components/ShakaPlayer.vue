@@ -1,6 +1,18 @@
 <template>
   <div ref="videoContainer" data-shaka-player-container>
     <video id="video" ref="video" data-shaka-player :poster="thumbnailPath" autoplay></video>
+    <v-overlay absolute :value="isEnded">
+      <slot name="overlay">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn width="128" height="128" icon @click="replay" v-on="on">
+              <v-icon x-large>replay</v-icon>
+            </v-btn>
+          </template>
+          <span>リプレイ</span>
+        </v-tooltip>
+      </slot>
+    </v-overlay>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -20,6 +32,7 @@ import "shaka-player/dist/controls.css";
 @Component
 export default class ShakaPlayer extends Vue {
   private player?: Player;
+  private isEnded = false;
 
   @Prop({ type: String, required: true, default: "" })
   private streamPath!: string;
@@ -40,12 +53,9 @@ export default class ShakaPlayer extends Vue {
   }
 
   mounted() {
-    this.player = new Player(this.$refs.video as HTMLMediaElement);
-    const overlay = new ui.Overlay(
-      this.player,
-      this.$refs.videoContainer as HTMLElement,
-      this.$refs.video as HTMLMediaElement
-    );
+    const video = this.$refs.video as HTMLMediaElement;
+    this.player = new Player(video);
+    const overlay = new ui.Overlay(this.player, this.$refs.videoContainer as HTMLElement, video);
     overlay.configure({
       controlPanelElements: [
         "rewind",
@@ -57,8 +67,11 @@ export default class ShakaPlayer extends Vue {
         "fullscreen",
         "overflow_menu"
       ],
-      overflowMenuButtons: ["picture_in_picture"]
+      overflowMenuButtons: ["picture_in_picture"],
+      addBigPlayButton: false
     });
+    video.addEventListener("playing", () => (this.isEnded = false));
+    video.addEventListener("ended", () => (this.isEnded = true));
   }
 
   private async load() {
@@ -70,6 +83,11 @@ export default class ShakaPlayer extends Vue {
     } else {
       await this.player.load(this.streamPath + "/master.m3u8", 0, "application/x-mpegURL");
     }
+  }
+
+  private replay() {
+    const video = this.player.getMediaElement();
+    video.play();
   }
 
   private beforeDestroy() {

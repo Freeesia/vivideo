@@ -11,6 +11,8 @@ declare module "shaka-player/dist/shaka-player.ui" {
     getLoadMode(): number;
     load(assetUri: string, mimeType?: string): Promise<void>;
     load(assetUri: string, startTimeopt: number, mimeType: string): Promise<void>;
+    getMediaElement(): HTMLMediaElement;
+    addEventListener(type: string, listener: EventListener | ((ev: Event) => void)): void;
     destroy(): void;
   }
   interface DrmSupportType {
