@@ -20,6 +20,7 @@
       <v-col md="8" cols="12">
         <v-tabs v-model="activeTab">
           <v-tab>アカウント</v-tab>
+          <v-tab>招待</v-tab>
         </v-tabs>
         <v-tabs-items v-model="activeTab" class="fill-height">
           <v-tab-item class="pa-2">
@@ -45,6 +46,9 @@
               <v-btn color="error" @click="deleteMe">退会</v-btn>
             </section>
           </v-tab-item>
+          <v-tab-item class="pa-2">
+            <Invite />
+          </v-tab-item>
         </v-tabs-items>
       </v-col>
     </v-row>
@@ -58,12 +62,13 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import Invite from "@/components/Invite.vue";
 import { User, auth } from "firebase/app";
 import "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
 
-@Component
+@Component({ components: { Invite } })
 export default class Account extends Vue {
   private user!: User;
   private activeTab: any = null;
