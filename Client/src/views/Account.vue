@@ -20,6 +20,7 @@
       <v-col md="8" cols="12">
         <v-tabs v-model="activeTab">
           <v-tab>アカウント</v-tab>
+          <v-tab>招待</v-tab>
         </v-tabs>
         <v-tabs-items v-model="activeTab" class="fill-height">
           <v-tab-item class="pa-2">
@@ -45,6 +46,9 @@
               <v-btn color="error" @click="deleteMe">退会</v-btn>
             </section>
           </v-tab-item>
+          <v-tab-item class="pa-2">
+            <Invite />
+          </v-tab-item>
         </v-tabs-items>
       </v-col>
     </v-row>
@@ -58,12 +62,13 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import Invite from "@/components/Invite.vue";
 import { User, auth } from "firebase/app";
 import "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
 
-@Component
+@Component({ components: { Invite } })
 export default class Account extends Vue {
   private user!: User;
   private activeTab: any = null;
@@ -102,6 +107,7 @@ export default class Account extends Vue {
     assertIsDefined(user);
     this.user = user;
     this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
+    this.linkedRedirect();
   }
 
   private async signOut() {
@@ -109,6 +115,53 @@ export default class Account extends Vue {
     await AuthModule.signOut();
     GeneralModule.setLoading(false);
     this.$router.push("/");
+  }
+
+  private async linkedRedirect() {
+    const result = await auth().getRedirectResult();
+    if (result.operationType !== "link") {
+      return;
+    }
+    const info = result.additionalUserInfo;
+    assertIsDefined(info?.profile);
+    switch (info.providerId) {
+      case auth.GoogleAuthProvider.PROVIDER_ID:
+        this.linkedGoogle(info.profile);
+        break;
+      case auth.GithubAuthProvider.PROVIDER_ID:
+        this.linkedGitHub(info.profile);
+        break;
+      default:
+        throw new Error("未対応プロバイダ");
+    }
+  }
+
+  private async linkedGoogle(profile: Record<string, any>) {
+    const newProf: Record<string, any> = {};
+    if (!this.user.displayName && profile["name"]) {
+      newProf.displayName = profile["name"];
+    }
+    if (!this.user.photoURL && profile["picture"]) {
+      newProf.photoURL = profile["picture"];
+    }
+    await this.user.updateProfile(newProf);
+    const user = auth().currentUser;
+    assertIsDefined(user);
+    this.user = user;
+  }
+
+  private async linkedGitHub(profile: Record<string, any>) {
+    const newProf: Record<string, any> = {};
+    if (!this.user.displayName && profile["name"]) {
+      newProf.displayName = profile["name"];
+    }
+    if (!this.user.photoURL && profile["avatar_url"]) {
+      newProf.photoURL = profile["avatar_url"];
+    }
+    await this.user.updateProfile(newProf);
+    const user = auth().currentUser;
+    assertIsDefined(user);
+    this.user = user;
   }
 
   private async deleteMe() {
