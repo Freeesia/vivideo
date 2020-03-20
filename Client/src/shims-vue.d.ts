@@ -55,6 +55,7 @@ declare module "shaka-player/dist/shaka-player.ui" {
       volumeBarColors?: UIVolumeBarColors;
       trackLabelFormat?: ui.TrackLabelFormat;
       fadeDelay?: number;
+      doubleClickForFullscreen?: boolean;
     }
     interface UISeekBarColors {
       base: string;
