@@ -6,7 +6,7 @@
       </router-link>
       <v-spacer></v-spacer>
       <v-text-field
-        v-if="isSignedIn"
+        v-if="isSignedIn && isHome"
         v-model="search"
         label="検索"
         prepend-inner-icon="search"
@@ -18,7 +18,7 @@
         solo-inverted
       />
 
-      <v-menu v-if="isSignedIn" offset-y open-on-hover :close-on-content-click="false">
+      <v-menu v-if="isSignedIn && isHome" offset-y open-on-hover :close-on-content-click="false">
         <template v-slot:activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>sort</v-icon>
@@ -71,17 +71,27 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { AuthModule, SearchModule, GeneralModule } from "./store";
-import { SortType, OrderType } from "./store/modules/search";
+import { SortType, OrderType, SortOrder } from "./store/modules/search";
 
 @Component({})
 export default class App extends Vue {
   private search = "";
+  private sort = SortType.Name;
+  private order = OrderType.Asc;
 
   get loading() {
     return GeneralModule.loading;
   }
 
-  private get isSignedIn() {
+  get isHome() {
+    return this.$route.name === "home";
+  }
+
+  get currentPath(): string {
+    return this.$route.params.request ?? "";
+  }
+
+  get isSignedIn() {
     return AuthModule.user ? true : false;
   }
 
@@ -100,35 +110,43 @@ export default class App extends Vue {
     SearchModule.setFilter(this.search ?? "");
   }
 
+  @Watch("currentPath", { immediate: true })
+  private onCurrentPathChanged() {
+    const sortOrder = SearchModule.sorts.find(v => v.path === this.currentPath);
+    this.order = sortOrder?.order ?? OrderType.Asc;
+    this.sort = sortOrder?.sort ?? SortType.Name;
+  }
+
   private selectSort(sort: SortType) {
-    if (SearchModule.sort === sort) {
-      switch (SearchModule.order) {
+    if (this.sort === sort) {
+      switch (this.order) {
         case OrderType.Asc:
-          SearchModule.setOrder(OrderType.Desc);
+          this.order = OrderType.Desc;
           break;
         case OrderType.Desc:
-          SearchModule.setOrder(OrderType.Asc);
+          this.order = OrderType.Asc;
           break;
         default:
           throw new RangeError("OrderType out of range");
       }
     } else {
-      SearchModule.setSortAndOrder({ sort, order: OrderType.Asc });
+      this.sort = sort;
     }
+    SearchModule.setSortOrder({ path: this.currentPath, sort: this.sort, order: this.order });
   }
 
-  private isOrderSelected(sort: SortType): string | undefined {
-    if (SearchModule.sort === sort) {
-      switch (SearchModule.order) {
+  private isOrderSelected(sort: SortType): string {
+    if (this.sort === sort) {
+      switch (this.order) {
         case OrderType.Asc:
           return "arrow_upward";
         case OrderType.Desc:
           return "arrow_downward";
         default:
-          throw new RangeError(`OrderType out of range: ${SearchModule.order}`);
+          throw new RangeError(`OrderType out of range: ${this.order}`);
       }
     } else {
-      return undefined;
+      return "";
     }
   }
 }

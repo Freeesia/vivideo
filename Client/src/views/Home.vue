@@ -72,6 +72,16 @@ export default class Home extends Vue {
   @Prop({ required: true, type: String, default: "" })
   path!: string;
 
+  mounted() {
+    this.$store.watch(
+      state => state.search.path,
+      () => {
+        this.$forceUpdate();
+      },
+      { immediate: true, deep: true }
+    );
+  }
+
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
     GeneralModule.setLoading(true);
@@ -92,14 +102,18 @@ export default class Home extends Vue {
   }
 
   private getCompareFunc() {
-    const order = SearchModule.order;
-    switch (SearchModule.sort) {
+    const sortOrder = SearchModule.sorts.find(v => v.path === this.path) ?? {
+      path: this.path,
+      sort: SortType.Name,
+      order: OrderType.Asc
+    };
+    switch (sortOrder.sort) {
       case SortType.Name: {
-        const c = compare({ order: order === OrderType.Asc ? "asc" : "desc" });
+        const c = compare({ order: sortOrder.order === OrderType.Asc ? "asc" : "desc" });
         return (x: ContentNode, y: ContentNode) => c(x.name, y.name);
       }
       case SortType.UpdatedAt: {
-        if (order === OrderType.Asc) {
+        if (sortOrder.order === OrderType.Asc) {
           return (x: ContentNode, y: ContentNode) => new Date(x.createdAt).valueOf() - new Date(y.createdAt).valueOf();
         } else {
           return (x: ContentNode, y: ContentNode) => new Date(y.createdAt).valueOf() - new Date(x.createdAt).valueOf();
