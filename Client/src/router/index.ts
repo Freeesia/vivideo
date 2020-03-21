@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
+import VueRouter, { RouteConfig, Route } from "vue-router";
 import About from "@/views/About.vue";
 import Home from "@/views/Home.vue";
 import Play from "@/views/Play.vue";
@@ -41,14 +41,17 @@ const routes: RouteConfig[] = [
     path: "/play/",
     name: "play",
     component: Play,
-    props: (route: any) => ({
+    props: (route: Route) => ({
       path: route.query.path
     })
   },
   {
     path: "/:request*",
     name: "home",
-    component: Home
+    component: Home,
+    props: (route: Route) => ({
+      path: route.params.request
+    })
   }
 ];
 

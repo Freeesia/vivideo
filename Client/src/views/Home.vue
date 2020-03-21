@@ -52,7 +52,7 @@
 <script lang="ts">
 import Vue from "vue";
 import Logo from "@/components/Logo.vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
 import { SortType, OrderType } from "../store/modules/search";
@@ -69,6 +69,9 @@ export default class Home extends Vue {
   private logoTarget: ContentNode | null = null;
   private getThumbnailPath = getThumbnailPath;
 
+  @Prop({ required: true, type: String, default: "" })
+  path!: string;
+
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
     GeneralModule.setLoading(true);
@@ -76,7 +79,7 @@ export default class Home extends Vue {
     if (!this.axios) {
       this.axios = await AuthModule.getAxios();
     }
-    const res = await this.axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
+    const res = await this.axios.get<ContentNode[]>("/api/video/" + this.path);
     this.contents = res.data;
     SearchModule.setFilter("");
     GeneralModule.setLoading(false);
