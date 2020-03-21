@@ -71,7 +71,7 @@
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
 import { AuthModule, SearchModule, GeneralModule } from "./store";
-import { SortType, OrderType, SortOrder } from "./store/modules/search";
+import { SortType, OrderType } from "./store/modules/search";
 
 @Component({})
 export default class App extends Vue {
