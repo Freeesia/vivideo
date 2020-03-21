@@ -55,10 +55,9 @@ import Logo from "@/components/Logo.vue";
 import { Component, Watch, Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
-import { SortType, OrderType } from "../store/modules/search";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
-import { compare } from "natural-orderby";
 import { getThumbnailPath } from "../utilities/pathUtility";
+import { compareFunc } from "../utilities/sortUtility";
 
 @Component({ components: { Logo } })
 export default class Home extends Vue {
@@ -97,31 +96,8 @@ export default class Home extends Vue {
 
   get filtered() {
     const search = SearchModule.filter.toUpperCase();
-    const comp = this.getCompareFunc();
+    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
     return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
-  }
-
-  private getCompareFunc() {
-    const sortOrder = SearchModule.sorts.find(v => v.path === this.path) ?? {
-      path: this.path,
-      sort: SortType.Name,
-      order: OrderType.Asc
-    };
-    switch (sortOrder.sort) {
-      case SortType.Name: {
-        const c = compare({ order: sortOrder.order === OrderType.Asc ? "asc" : "desc" });
-        return (x: ContentNode, y: ContentNode) => c(x.name, y.name);
-      }
-      case SortType.UpdatedAt: {
-        if (sortOrder.order === OrderType.Asc) {
-          return (x: ContentNode, y: ContentNode) => new Date(x.createdAt).valueOf() - new Date(y.createdAt).valueOf();
-        } else {
-          return (x: ContentNode, y: ContentNode) => new Date(y.createdAt).valueOf() - new Date(x.createdAt).valueOf();
-        }
-      }
-      default:
-        throw new RangeError("out of sorttype range");
-    }
   }
 
   private selectContent(content: ContentNode) {
