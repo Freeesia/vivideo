@@ -52,13 +52,12 @@
 <script lang="ts">
 import Vue from "vue";
 import Logo from "@/components/Logo.vue";
-import { Component, Watch } from "vue-property-decorator";
+import { Component, Watch, Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
-import { SortType, OrderType } from "../store/modules/search";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
-import { compare } from "natural-orderby";
 import { getThumbnailPath } from "../utilities/pathUtility";
+import { compareFunc } from "../utilities/sortUtility";
 
 @Component({ components: { Logo } })
 export default class Home extends Vue {
@@ -69,6 +68,19 @@ export default class Home extends Vue {
   private logoTarget: ContentNode | null = null;
   private getThumbnailPath = getThumbnailPath;
 
+  @Prop({ required: true, type: String, default: "" })
+  path!: string;
+
+  mounted() {
+    this.$store.watch(
+      state => state.search.path,
+      () => {
+        this.$forceUpdate();
+      },
+      { immediate: true, deep: true }
+    );
+  }
+
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
     GeneralModule.setLoading(true);
@@ -76,7 +88,7 @@ export default class Home extends Vue {
     if (!this.axios) {
       this.axios = await AuthModule.getAxios();
     }
-    const res = await this.axios.get<ContentNode[]>("/api/video/" + (this.$route.params.request ?? ""));
+    const res = await this.axios.get<ContentNode[]>("/api/video/" + this.path);
     this.contents = res.data;
     SearchModule.setFilter("");
     GeneralModule.setLoading(false);
@@ -84,27 +96,8 @@ export default class Home extends Vue {
 
   get filtered() {
     const search = SearchModule.filter.toUpperCase();
-    const comp = this.getCompareFunc();
+    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
     return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
-  }
-
-  private getCompareFunc() {
-    const order = SearchModule.order;
-    switch (SearchModule.sort) {
-      case SortType.Name: {
-        const c = compare({ order: order === OrderType.Asc ? "asc" : "desc" });
-        return (x: ContentNode, y: ContentNode) => c(x.name, y.name);
-      }
-      case SortType.UpdatedAt: {
-        if (order === OrderType.Asc) {
-          return (x: ContentNode, y: ContentNode) => new Date(x.createdAt).valueOf() - new Date(y.createdAt).valueOf();
-        } else {
-          return (x: ContentNode, y: ContentNode) => new Date(y.createdAt).valueOf() - new Date(x.createdAt).valueOf();
-        }
-      }
-      default:
-        throw new RangeError("out of sorttype range");
-    }
   }
 
   private selectContent(content: ContentNode) {
