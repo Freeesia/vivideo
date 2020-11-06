@@ -22,6 +22,9 @@
                     <v-list-item dense @click.stop="openLogoDialog(item)">Logo</v-list-item>
                   </v-list>
                 </v-menu>
+                <v-avatar v-else-if="item.transcoded" color="white" size="32">
+                  <v-icon large color="teal">play_circle_filled</v-icon>
+                </v-avatar>
               </v-row>
             </template>
           </v-img>

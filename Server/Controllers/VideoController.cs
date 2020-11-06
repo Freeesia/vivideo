@@ -39,7 +39,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             => this.md5.Dispose();
 
         [HttpPost("[action]")]
-        public async ValueTask<string> Transcode([FromQuery]string path)
+        public async ValueTask<string> Transcode([FromQuery] string path)
         {
             var hash = BitConverter.ToString(
                 this.md5.ComputeHash(
@@ -66,7 +66,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public ActionResult<IEnumerable<ContentNode>> List([FromRoute]string? path)
+        public async Task<ActionResult<IEnumerable<ContentNode>>> List([FromRoute] string? path)
         {
             var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
             if (!dir.Exists)
@@ -74,14 +74,24 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 return NotFound();
             }
 
-            return Ok(dir.GetFileSystemInfos()
+            return await Task.WhenAll(dir.GetFileSystemInfos()
                 .Where(i => !i.Name.StartsWith('.') && i switch
                 {
                     DirectoryInfo _ => true,
                     FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi"),
                     _ => throw new InvalidOperationException(),
                 })
-                .Select(i => new ContentNode(Path.GetRelativePath(this.inputDir, i.FullName), i is DirectoryInfo, i.LastWriteTimeUtc)));
+                .Select(i => Task.Run(() =>
+                {
+                    var path = Path.GetRelativePath(this.inputDir, i.FullName);
+                    var hash = BitConverter.ToString(
+                        this.md5.ComputeHash(
+                            Encoding.UTF8.GetBytes(
+                                path ?? throw new ArgumentException())))
+                        .Replace("-", string.Empty);
+                    var outPath = Path.Combine(this.outDir, hash, "master.mpd");
+                    return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, System.IO.File.Exists(outPath));
+                })));
         }
     }
 
