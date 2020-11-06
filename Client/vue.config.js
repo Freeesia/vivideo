@@ -3,18 +3,20 @@ const HardSourceWebpackPlguin = require("hard-source-webpack-plugin");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 const os = require("os");
 
+const targetUrl = process.env.TARGET_URL || "http://localhost:5000";
+
 module.exports = {
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
       "/hangfire": {
-        target: "http://localhost:5000",
+        target: targetUrl,
       },
       "/api": {
-        target: "http://localhost:5000",
+        target: targetUrl,
       },
       "/stream": {
-        target: "http://localhost:5000",
+        target: targetUrl,
       },
     },
   },
