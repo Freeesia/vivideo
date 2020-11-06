@@ -101,7 +101,7 @@ export default class Account extends Vue {
     const user = AuthModule.user;
     assertIsDefined(user);
     this.user = user;
-    this.linkedProviders = this.user.providerData.map((p) => p?.providerId ?? "");
+    this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
     this.linkedRedirect();
   }
 
@@ -179,11 +179,11 @@ export default class Account extends Vue {
     this.linking.push(id);
     if (this.isLinked(id)) {
       await this.user.unlink(id);
-      this.linkedProviders = this.user.providerData.map((p) => p?.providerId ?? "");
+      this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
     } else {
       await this.user.linkWithRedirect(this.getProvider(id));
     }
-    this.linking = this.linking.filter((i) => i !== id);
+    this.linking = this.linking.filter(i => i !== id);
   }
 
   private getProvider(id: string): auth.AuthProvider {

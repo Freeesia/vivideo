@@ -92,8 +92,8 @@ export default class Play extends Vue {
     assertIsDefined(this.axios);
     const dir = path.dirname(this.path);
     const res = await this.axios.get<ContentNode[]>("/api/video/" + dir);
-    const comp = compareFunc(SearchModule.sorts.find((v) => v.path === this.path));
-    this.contents = res.data.filter((c) => !c.isDirectory).sort(comp);
+    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
+    this.contents = res.data.filter(c => !c.isDirectory).sort(comp);
   }
 
   private isPlaying(item: ContentNode) {
@@ -101,7 +101,7 @@ export default class Play extends Vue {
   }
 
   private async ended() {
-    const index = this.contents.findIndex((c) => c.contentPath === this.path);
+    const index = this.contents.findIndex(c => c.contentPath === this.path);
     if (index < 0 || this.contents.length - 1 <= index) {
       this.autoNext = false;
     }

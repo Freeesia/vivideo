@@ -28,7 +28,7 @@ export default class Search extends VuexModule {
 
   @Mutation
   setSortOrder(value: SortOrder) {
-    const index = this.sorts.findIndex((s) => s.path === value.path);
+    const index = this.sorts.findIndex(s => s.path === value.path);
     if (index >= 0) {
       this.sorts.splice(index, 1, value);
     } else {

@@ -23,7 +23,7 @@ export default class Auth extends VuexModule {
     let user = this.user;
     if (!user) {
       user = await new Promise<User | null>((res, rej) => {
-        auth().onAuthStateChanged(async (u) => {
+        auth().onAuthStateChanged(async u => {
           const result = await u?.getIdTokenResult();
           res(result?.claims?.invitationCodeVerified ? u : null);
         }, rej);

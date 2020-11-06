@@ -62,7 +62,7 @@ export default class Home extends Vue {
 
   mounted() {
     this.$store.watch(
-      (state) => state.search.path,
+      state => state.search.path,
       () => {
         this.$forceUpdate();
       },
@@ -85,8 +85,8 @@ export default class Home extends Vue {
 
   get filtered() {
     const search = SearchModule.filter.toUpperCase();
-    const comp = compareFunc(SearchModule.sorts.find((v) => v.path === this.path));
-    return this.contents.filter((n) => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
+    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
+    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
   }
 
   private selectContent(content: ContentNode) {

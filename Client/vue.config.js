@@ -32,8 +32,8 @@ module.exports = {
       }),
     ],
   },
-  chainWebpack: (config) => {
-    config.plugin("fork-ts-checker").tap((args) => {
+  chainWebpack: config => {
+    config.plugin("fork-ts-checker").tap(args => {
       args[0].workers = Math.max(os.cpus().length - 1, 1);
       args[0].memoryLimit = os.freemem() > 8096 ? 8096 : 2048;
       return args;

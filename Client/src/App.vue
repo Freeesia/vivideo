@@ -92,8 +92,8 @@ export default class App extends Vue {
 
   private mounted() {
     this.$store.watch(
-      (state) => state.search.filter,
-      (newValue) => {
+      state => state.search.filter,
+      newValue => {
         this.search = newValue;
       },
       { immediate: true }
@@ -107,7 +107,7 @@ export default class App extends Vue {
 
   @Watch("currentPath", { immediate: true })
   private onCurrentPathChanged() {
-    const sortOrder = SearchModule.sorts.find((v) => v.path === this.currentPath);
+    const sortOrder = SearchModule.sorts.find(v => v.path === this.currentPath);
     this.order = sortOrder?.order ?? OrderType.Asc;
     this.sort = sortOrder?.sort ?? SortType.Name;
   }
