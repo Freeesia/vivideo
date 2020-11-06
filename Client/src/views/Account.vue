@@ -58,10 +58,12 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import Invite from "@/components/Invite.vue";
-import { User, auth } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
+import auth = firebase.auth;
+import User = firebase.User;
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {

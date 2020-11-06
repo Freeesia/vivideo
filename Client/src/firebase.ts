@@ -16,5 +16,5 @@ firebase.initializeApp({
 firebase.analytics();
 
 if (process.env.NODE_ENV !== "production") {
-  firebase.app().functions("asia-northeast1").useFunctionsEmulator("http://localhost:5010");
+  firebase.app().functions("asia-northeast1").useEmulator("localhost", 5000);
 }

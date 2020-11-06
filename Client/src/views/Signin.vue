@@ -10,10 +10,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { auth as authui } from "firebaseui";
-import { auth, User } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import Component from "vue-class-component";
 import "firebaseui/dist/firebaseui.css";
+import auth = firebase.auth;
+import User = firebase.User;
 
 @Component
 export default class Signin extends Vue {
