@@ -4,7 +4,7 @@
     <v-overlay absolute :value="isEnded">
       <slot name="overlay">
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn icon x-large @click="replay" v-on="on">
               <v-icon x-large>replay</v-icon>
             </v-btn>
@@ -42,12 +42,12 @@ export default class Player extends Vue {
     this.player.src([
       {
         src: this.streamPath + "/master.mpd",
-        type: "application/dash+xml"
+        type: "application/dash+xml",
       },
       {
         src: this.streamPath + "/master.m3u8",
-        type: "application/x-mpegURL"
-      }
+        type: "application/x-mpegURL",
+      },
     ]);
   }
 
@@ -57,7 +57,7 @@ export default class Player extends Vue {
       controls: true,
       fluid: true,
       autoplay: true,
-      poster: this.thumbnailPath
+      poster: this.thumbnailPath,
     });
     this.player.on("ended", () => this.ended());
     this.player.on("play", () => this.play());

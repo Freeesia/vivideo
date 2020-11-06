@@ -4,15 +4,15 @@
       <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
         <v-card height="240" @click="selectContent(item)">
           <v-img contain height="160" :src="getThumbnailPath(item)">
-            <template v-slot:placeholder>
+            <template #placeholder>
               <v-row class="fill-height" align="center" justify="center">
                 <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
               </v-row>
             </template>
-            <template v-slot:default>
+            <template #default>
               <v-row class="pa-4" align="start" justify="end">
                 <v-menu v-if="item.isDirectory" offset-y>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn small icon v-on="on">
                       <v-icon>more_vert</v-icon>
                     </v-btn>
@@ -26,7 +26,7 @@
             </template>
           </v-img>
           <v-tooltip top>
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-card-title v-on="on">{{ item.name }}</v-card-title>
             </template>
             <span>{{ item.name }}</span>
@@ -37,17 +37,6 @@
     <logo v-model="logoDialog" :target="logoTarget"></logo>
   </v-container>
 </template>
-
-<style lang="scss" scoped>
-.v-card {
-  overflow: hidden;
-  .v-card__title {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-}
-</style>
 
 <script lang="ts">
 import Vue from "vue";
@@ -106,15 +95,15 @@ export default class Home extends Vue {
       this.$router.push({
         name: "play",
         query: {
-          path: content.contentPath
-        }
+          path: content.contentPath,
+        },
       });
     } else {
       this.$router.push({
         name: "home",
         params: {
-          request: content.contentPath
-        }
+          request: content.contentPath,
+        },
       });
     }
   }
@@ -132,3 +121,14 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-card {
+  overflow: hidden;
+  .v-card__title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+</style>

@@ -195,6 +195,15 @@
       "script": "deploy",
       "path": "functions/",
       "problemMatcher": []
+    },
+    {
+      "type": "npm",
+      "script": "install",
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "problemMatcher": [],
+      "label": "npm: install"
     }
   ]
 }

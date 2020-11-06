@@ -116,7 +116,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 this.logger.LogError("Unknown Logo Image: {path}", path);
                 return "application/octet-stream";
             }
-            return "image/" + ext.Slice(1).ToString();
+            return "image/" + ext[1..].ToString();
         }
 
         [HttpPost]

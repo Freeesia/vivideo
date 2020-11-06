@@ -2,12 +2,12 @@ import { VuexModule, Module, Mutation } from "vuex-module-decorators";
 
 export const enum SortType {
   Name,
-  UpdatedAt
+  UpdatedAt,
 }
 
 export const enum OrderType {
   Asc,
-  Desc
+  Desc,
 }
 
 export interface SortOrder {

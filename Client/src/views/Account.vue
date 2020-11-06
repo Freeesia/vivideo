@@ -5,7 +5,7 @@
         <section class="d-flex align-center flex-column">
           <v-avatar :size="200" color="primary">
             <v-img v-if="user.photoURL" :src="user.photoURL" alt="avatar">
-              <template v-slot:placeholder>
+              <template #placeholder>
                 <v-row class="fill-height" align="center" justify="center">
                   <v-progress-circular indeterminate color="primary"></v-progress-circular>
                 </v-row>
@@ -54,19 +54,16 @@
     </v-row>
   </v-container>
 </template>
-<style lang="scss" scoped>
-.providers {
-  max-width: 400px;
-}
-</style>
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
 import Invite from "@/components/Invite.vue";
-import { User, auth } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
+import auth = firebase.auth;
+import User = firebase.User;
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {
@@ -76,7 +73,7 @@ export default class Account extends Vue {
     auth.GoogleAuthProvider.PROVIDER_ID,
     // auth.FacebookAuthProvider.PROVIDER_ID,
     // auth.TwitterAuthProvider.PROVIDER_ID,
-    auth.GithubAuthProvider.PROVIDER_ID
+    auth.GithubAuthProvider.PROVIDER_ID,
   ];
   private linkedProviders: string[] = [];
   private linking: string[] = [];
@@ -211,3 +208,8 @@ export default class Account extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.providers {
+  max-width: 400px;
+}
+</style>

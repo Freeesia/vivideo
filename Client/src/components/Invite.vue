@@ -12,8 +12,9 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { app } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/functions";
+import app = firebase.app;
 
 @Component({})
 export default class Invite extends Vue {

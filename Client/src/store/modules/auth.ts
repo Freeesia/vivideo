@@ -1,7 +1,9 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { auth, User } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import Axios from "axios";
+import auth = firebase.auth;
+import User = firebase.User;
 
 @Module({ namespaced: true, name: "auth" })
 export default class Auth extends VuexModule {
@@ -45,8 +47,8 @@ export default class Auth extends VuexModule {
     const token = await this.user.getIdToken();
     return Axios.create({
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 }

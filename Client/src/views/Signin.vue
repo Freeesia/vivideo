@@ -10,10 +10,12 @@
 <script lang="ts">
 import Vue from "vue";
 import { auth as authui } from "firebaseui";
-import { auth, User } from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth";
 import Component from "vue-class-component";
 import "firebaseui/dist/firebaseui.css";
+import auth = firebase.auth;
+import User = firebase.User;
 
 @Component
 export default class Signin extends Vue {
@@ -32,18 +34,18 @@ export default class Signin extends Vue {
       signInOptions: [
         {
           provider: auth.EmailAuthProvider.PROVIDER_ID,
-          requireDisplayName: false
+          requireDisplayName: false,
         },
         auth.GoogleAuthProvider.PROVIDER_ID,
-        auth.GithubAuthProvider.PROVIDER_ID
+        auth.GithubAuthProvider.PROVIDER_ID,
       ],
       credentialHelper: authui.CredentialHelper.NONE,
       callbacks: {
         signInSuccessWithAuthResult: (res: any) => {
           this.signInSuccess(res.user as User);
           return false;
-        }
-      }
+        },
+      },
     });
   }
 
@@ -54,7 +56,7 @@ export default class Signin extends Vue {
       return;
     }
     this.$router.push({
-      name: "home"
+      name: "home",
     });
   }
 }

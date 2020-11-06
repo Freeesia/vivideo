@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/class-name-casing */
 declare module "*.vue" {
   import Vue from "vue";
   export default Vue;
@@ -28,7 +27,7 @@ declare module "shaka-player/dist/shaka-player.ui" {
     enum TrackLabelFormat {
       LANGUAGE = 0,
       ROLE = 1,
-      LANGUAGE_ROLE = 2
+      LANGUAGE_ROLE = 2,
     }
   }
   namespace extern {

@@ -4,7 +4,7 @@
     <v-overlay absolute :value="isEnded">
       <slot name="overlay">
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn width="128" height="128" icon @click="replay" v-on="on">
               <v-icon x-large>replay</v-icon>
             </v-btn>
@@ -15,12 +15,6 @@
     </v-overlay>
   </div>
 </template>
-<style lang="scss" scoped>
-video {
-  width: 100%;
-  height: 100%;
-}
-</style>
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
@@ -57,8 +51,8 @@ export default class ShakaPlayer extends Vue {
     this.player = new Player(video);
     this.player.configure({
       streaming: {
-        bufferBehind: Number.POSITIVE_INFINITY
-      }
+        bufferBehind: Number.POSITIVE_INFINITY,
+      },
     });
     const overlay = new ui.Overlay(this.player, this.$refs.videoContainer as HTMLElement, video);
     overlay.configure({
@@ -70,10 +64,10 @@ export default class ShakaPlayer extends Vue {
         "time_and_duration",
         "spacer",
         "fullscreen",
-        "overflow_menu"
+        "overflow_menu",
       ],
       overflowMenuButtons: ["picture_in_picture"],
-      doubleClickForFullscreen: true
+      doubleClickForFullscreen: true,
     });
     video.addEventListener("playing", () => this.play());
     video.addEventListener("ended", () => this.ended());
@@ -113,3 +107,9 @@ export default class ShakaPlayer extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+video {
+  width: 100%;
+  height: 100%;
+}
+</style>

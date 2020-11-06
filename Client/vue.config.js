@@ -3,20 +3,22 @@ const HardSourceWebpackPlguin = require("hard-source-webpack-plugin");
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
 const os = require("os");
 
+const targetUrl = process.env.TARGET_URL || "http://localhost:5000";
+
 module.exports = {
   transpileDependencies: ["vuetify"],
   devServer: {
     proxy: {
       "/hangfire": {
-        target: "http://localhost:5000"
+        target: targetUrl,
       },
       "/api": {
-        target: "http://localhost:5000"
+        target: targetUrl,
       },
       "/stream": {
-        target: "http://localhost:5000"
-      }
-    }
+        target: targetUrl,
+      },
+    },
   },
   configureWebpack: {
     devtool: "source-map",
@@ -28,9 +30,9 @@ module.exports = {
         release: process.env.VUE_APP_VERSION,
         validate: true,
         ext: ["js", "map", "ts"],
-        finalize: false
-      })
-    ]
+        finalize: false,
+      }),
+    ],
   },
   chainWebpack: config => {
     config.plugin("fork-ts-checker").tap(args => {
@@ -45,12 +47,12 @@ module.exports = {
     msTileColor: "#FF9800",
     workboxOptions: {
       clientsClaim: true,
-      skipWaiting: true
-    }
+      skipWaiting: true,
+    },
     // iconPaths: {
     //   appleTouchIcon: "img/icons/icon-152x152_light.png",
     //   maskIcon: "img/Logo_light.svg",
     //   msTileImage: "img/icons/icon-144x144_dark.png"
     // }
-  }
+  },
 };
