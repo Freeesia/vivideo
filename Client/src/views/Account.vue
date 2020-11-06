@@ -5,7 +5,7 @@
         <section class="d-flex align-center flex-column">
           <v-avatar :size="200" color="primary">
             <v-img v-if="user.photoURL" :src="user.photoURL" alt="avatar">
-              <template v-slot:placeholder>
+              <template #placeholder>
                 <v-row class="fill-height" align="center" justify="center">
                   <v-progress-circular indeterminate color="primary"></v-progress-circular>
                 </v-row>
@@ -54,11 +54,6 @@
     </v-row>
   </v-container>
 </template>
-<style lang="scss" scoped>
-.providers {
-  max-width: 400px;
-}
-</style>
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
@@ -76,7 +71,7 @@ export default class Account extends Vue {
     auth.GoogleAuthProvider.PROVIDER_ID,
     // auth.FacebookAuthProvider.PROVIDER_ID,
     // auth.TwitterAuthProvider.PROVIDER_ID,
-    auth.GithubAuthProvider.PROVIDER_ID
+    auth.GithubAuthProvider.PROVIDER_ID,
   ];
   private linkedProviders: string[] = [];
   private linking: string[] = [];
@@ -106,7 +101,7 @@ export default class Account extends Vue {
     const user = AuthModule.user;
     assertIsDefined(user);
     this.user = user;
-    this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
+    this.linkedProviders = this.user.providerData.map((p) => p?.providerId ?? "");
     this.linkedRedirect();
   }
 
@@ -184,11 +179,11 @@ export default class Account extends Vue {
     this.linking.push(id);
     if (this.isLinked(id)) {
       await this.user.unlink(id);
-      this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
+      this.linkedProviders = this.user.providerData.map((p) => p?.providerId ?? "");
     } else {
       await this.user.linkWithRedirect(this.getProvider(id));
     }
-    this.linking = this.linking.filter(i => i !== id);
+    this.linking = this.linking.filter((i) => i !== id);
   }
 
   private getProvider(id: string): auth.AuthProvider {
@@ -211,3 +206,8 @@ export default class Account extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.providers {
+  max-width: 400px;
+}
+</style>

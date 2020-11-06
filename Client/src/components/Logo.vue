@@ -13,13 +13,9 @@
       <v-card-actions>
         <v-spacer></v-spacer>
 
-        <v-btn color="primary" text @click="close">
-          Cancel
-        </v-btn>
+        <v-btn color="primary" text @click="close"> Cancel </v-btn>
 
-        <v-btn color="primary" depressed :loading="setting" :disabled="!valid" @click="submit">
-          OK
-        </v-btn>
+        <v-btn color="primary" depressed :loading="setting" :disabled="!valid" @click="submit"> OK </v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -47,7 +43,7 @@ export default class Logo extends Vue {
     (v: string) => {
       const pattern = /^https?:\/\/.+$/;
       return pattern.test(v) || "Invalid url";
-    }
+    },
   ];
   private valid = false;
   private setting = false;
@@ -81,7 +77,7 @@ export default class Logo extends Vue {
     const axios = await AuthModule.getAxios();
     await axios.post("/api/thumbnail", {
       url: this.url,
-      output: this.target.contentPath
+      output: this.target.contentPath,
     });
     this.close();
   }

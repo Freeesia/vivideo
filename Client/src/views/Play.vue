@@ -3,7 +3,7 @@
     <v-row no-gutters dense>
       <v-col cols="12" md="8">
         <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
-          <template v-if="autoNext" v-slot:overlay>
+          <template v-if="autoNext" #overlay>
             <v-row justify="center">
               <v-progress-circular class="ma-2" rotate="-90" size="60" :value="percent"></v-progress-circular>
             </v-row>
@@ -25,7 +25,7 @@
                 <v-icon>play_arrow</v-icon>
               </v-overlay>
               <v-img :src="getThumbnailPath(item)">
-                <template v-slot:placeholder>
+                <template #placeholder>
                   <v-row class="fill-height" align="center" justify="center">
                     <v-icon>movie</v-icon>
                   </v-row>
@@ -92,8 +92,8 @@ export default class Play extends Vue {
     assertIsDefined(this.axios);
     const dir = path.dirname(this.path);
     const res = await this.axios.get<ContentNode[]>("/api/video/" + dir);
-    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
-    this.contents = res.data.filter(c => !c.isDirectory).sort(comp);
+    const comp = compareFunc(SearchModule.sorts.find((v) => v.path === this.path));
+    this.contents = res.data.filter((c) => !c.isDirectory).sort(comp);
   }
 
   private isPlaying(item: ContentNode) {
@@ -101,7 +101,7 @@ export default class Play extends Vue {
   }
 
   private async ended() {
-    const index = this.contents.findIndex(c => c.contentPath === this.path);
+    const index = this.contents.findIndex((c) => c.contentPath === this.path);
     if (index < 0 || this.contents.length - 1 <= index) {
       this.autoNext = false;
     }
@@ -132,8 +132,8 @@ export default class Play extends Vue {
     await this.$router.push({
       name: "play",
       query: {
-        path: item.contentPath
-      }
+        path: item.contentPath,
+      },
     });
     this.loadVideo();
   }

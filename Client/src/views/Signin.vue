@@ -32,18 +32,18 @@ export default class Signin extends Vue {
       signInOptions: [
         {
           provider: auth.EmailAuthProvider.PROVIDER_ID,
-          requireDisplayName: false
+          requireDisplayName: false,
         },
         auth.GoogleAuthProvider.PROVIDER_ID,
-        auth.GithubAuthProvider.PROVIDER_ID
+        auth.GithubAuthProvider.PROVIDER_ID,
       ],
       credentialHelper: authui.CredentialHelper.NONE,
       callbacks: {
         signInSuccessWithAuthResult: (res: any) => {
           this.signInSuccess(res.user as User);
           return false;
-        }
-      }
+        },
+      },
     });
   }
 
@@ -54,7 +54,7 @@ export default class Signin extends Vue {
       return;
     }
     this.$router.push({
-      name: "home"
+      name: "home",
     });
   }
 }

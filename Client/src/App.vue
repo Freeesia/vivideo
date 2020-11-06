@@ -19,7 +19,7 @@
       />
 
       <v-menu v-if="isSignedIn && isHome" offset-y open-on-hover :close-on-content-click="false">
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>sort</v-icon>
           </v-btn>
@@ -35,7 +35,7 @@
         </v-list>
       </v-menu>
       <v-menu offset-y>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn icon v-on="on">
             <v-icon>more_vert</v-icon>
           </v-btn>
@@ -62,11 +62,6 @@
     </v-content>
   </v-app>
 </template>
-<style lang="scss" scoped>
-.v-toolbar__title {
-  color: white;
-}
-</style>
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
@@ -97,8 +92,8 @@ export default class App extends Vue {
 
   private mounted() {
     this.$store.watch(
-      state => state.search.filter,
-      newValue => {
+      (state) => state.search.filter,
+      (newValue) => {
         this.search = newValue;
       },
       { immediate: true }
@@ -112,7 +107,7 @@ export default class App extends Vue {
 
   @Watch("currentPath", { immediate: true })
   private onCurrentPathChanged() {
-    const sortOrder = SearchModule.sorts.find(v => v.path === this.currentPath);
+    const sortOrder = SearchModule.sorts.find((v) => v.path === this.currentPath);
     this.order = sortOrder?.order ?? OrderType.Asc;
     this.sort = sortOrder?.sort ?? SortType.Name;
   }
@@ -151,3 +146,8 @@ export default class App extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.v-toolbar__title {
+  color: white;
+}
+</style>

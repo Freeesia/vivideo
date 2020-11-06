@@ -9,16 +9,16 @@ import General from "./modules/general";
 Vue.use(Vuex);
 
 const persist = new VuexPersistence({
-  modules: ["search"]
+  modules: ["search"],
 });
 
 export const store = new Vuex.Store({
   modules: {
     auth: Auth,
     search: Search,
-    general: General
+    general: General,
   },
-  plugins: [persist.plugin]
+  plugins: [persist.plugin],
 });
 
 export const AuthModule = getModule(Auth, store);

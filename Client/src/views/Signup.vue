@@ -49,11 +49,11 @@ export default class Signup extends Vue {
   private readonly signup = this.functions.httpsCallable("signup");
   private readonly emailRules = [
     (v: string) => !!v || "E-mail is required",
-    (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid"
+    (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
   ];
   private readonly passwordRules = [
     (v: string) => !!v || "Password is required",
-    (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満"
+    (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満",
   ];
   private isCodeValid: boolean | null = null;
   private code = "";
@@ -83,7 +83,7 @@ export default class Signup extends Vue {
       await this.signup({
         email: this.email,
         password: this.password,
-        invitationCode: this.code
+        invitationCode: this.code,
       });
       this.$router.push({ name: "home" });
     } catch (error) {

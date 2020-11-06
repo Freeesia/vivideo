@@ -11,13 +11,10 @@ firebase.initializeApp({
   storageBucket: "vivideo.appspot.com",
   messagingSenderId: "313434128507",
   appId: "1:313434128507:web:8246d5fac382681b6962de",
-  measurementId: "G-TE802BVQ2K"
+  measurementId: "G-TE802BVQ2K",
 });
 firebase.analytics();
 
 if (process.env.NODE_ENV !== "production") {
-  firebase
-    .app()
-    .functions("asia-northeast1")
-    .useFunctionsEmulator("http://localhost:5010");
+  firebase.app().functions("asia-northeast1").useFunctionsEmulator("http://localhost:5010");
 }

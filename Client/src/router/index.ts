@@ -16,49 +16,49 @@ const routes: RouteConfig[] = [
     name: "signin",
     component: Signin,
     meta: {
-      anonymous: true
-    }
+      anonymous: true,
+    },
   },
   {
     path: "/signup/:code",
     name: "signup",
     component: Signup,
     meta: {
-      anonymous: true
-    }
+      anonymous: true,
+    },
   },
   {
     path: "/account",
     name: "account",
-    component: Account
+    component: Account,
   },
   {
     path: "/about",
     name: "about",
-    component: About
+    component: About,
   },
   {
     path: "/play/",
     name: "play",
     component: Play,
     props: (route: Route) => ({
-      path: route.query.path
-    })
+      path: route.query.path,
+    }),
   },
   {
     path: "/:request*",
     name: "home",
     component: Home,
     props: (route: Route) => ({
-      path: route.params.request
-    })
-  }
+      path: route.params.request,
+    }),
+  },
 ];
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
-  routes
+  routes,
 });
 
 router.beforeEach(async (to, _, next) => {
