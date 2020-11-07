@@ -22,6 +22,13 @@ jobs:
             versionSpec: '5.1.x'
       - id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.1
+      - id: image-tag
+        run: |
+          IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
+          IMAGE_ID=${IMAGE_ID,,}
+          VERSION=$(echo $BRANCH_NAME | sed -e 's,.*/\(.*\),\1,')
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo "::set-output name=tag::$IMAGE_ID:$VERSION"
       - uses: docker/build-push-action@v2.1.0
         with:
           file: .docker/Dockerfile
@@ -33,7 +40,7 @@ jobs:
             Sha=${{ steps.gitversion.outputs.Sha }}
             BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
             SENTRY_AUTH_TOKEN=${{ (env.BRANCH_NAME == 'master' && secrets.SENTRY_AUTH_TOKEN) || '' }}
-          tags: ${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ (env.BRANCH_NAME == 'master' && 'latest') || env.BRANCH_NAME }}
+          tags: ${{ steps.image-tag.outputs.tag }}
           push: true
       - uses: dmandrade/sentry-release-github-action@v1
         if: env.BRANCH_NAME == 'master'
