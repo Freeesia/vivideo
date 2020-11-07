@@ -48,6 +48,23 @@ module.exports = {
     workboxOptions: {
       clientsClaim: true,
       skipWaiting: true,
+      runtimeCaching: [
+        {
+          urlPattern: /\/api\/thumbnail\//,
+          handler: "StaleWhileRevalidate",
+          method: "GET",
+          options: {
+            cacheName: "thumbnail-cache",
+            expiration: {
+              maxEntries: 1000,
+              maxAgeSeconds: 60 * 60 * 24 * 365,
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
+      ],
     },
     // iconPaths: {
     //   appleTouchIcon: "img/icons/icon-152x152_light.png",
