@@ -16,6 +16,12 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.CR_PAT }}
       - uses: nelonoel/branch-name@v1
+      - uses: actions/cache@v2
+        with:
+          path: ~/buildx-cache
+          key: docker-buildx-${{ github.sha }}
+          restore-keys: |
+            docker-buildx-
       - run: git fetch --prune --unshallow
       - uses: gittools/actions/gitversion/setup@v0.9.1
         with:
@@ -42,6 +48,8 @@ jobs:
             SENTRY_AUTH_TOKEN=${{ (env.BRANCH_NAME == 'master' && secrets.SENTRY_AUTH_TOKEN) || '' }}
           tags: ghcr.io/${{ steps.image-tag.outputs.tag }}
           push: true
+          cache-from: type=local,src=~/buildx-cache
+          cache-to: type=local,mode=max,dest=~/buildx-cache
       - uses: dmandrade/sentry-release-github-action@v1
         if: env.BRANCH_NAME == 'master'
         env:
