@@ -24,7 +24,7 @@ jobs:
         uses: gittools/actions/gitversion/execute@v0.9.1
       - id: image-tag
         run: |
-          IMAGE_ID=${{ github.repository }}-$IMAGE_NAME
+          IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
           IMAGE_ID=${IMAGE_ID,,}
           VERSION=$(echo $BRANCH_NAME | sed -e 's,.*/\(.*\),\1,')
           [ "$VERSION" == "master" ] && VERSION=latest
