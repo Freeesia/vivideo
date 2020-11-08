@@ -16,7 +16,7 @@ using Hangfire;
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ThumbnailController : ControllerBase
     {
         private readonly string contentDir;

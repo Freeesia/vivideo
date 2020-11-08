@@ -119,15 +119,25 @@ namespace StudioFreesia.Vivideo.Server
                 });
             });
 
+            app.Map("/api", api =>
+            {
+                api.UseRouting();
+                api.UseAuthorization();
+
+                api.UseEndpoints(ep =>
+                {
+                    ep.MapControllers();
+                });
+            });
+
             app.UseRouting();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(ep =>
             {
-                endpoints.MapControllers();
-                endpoints.MapHangfireDashboard(new DashboardOptions()
+                ep.MapHangfireDashboard(new DashboardOptions()
                 {
-                    Authorization = new []{ new HangfireDashbordAuthFilter() },
+                    Authorization = new[] { new HangfireDashbordAuthFilter() },
                 });
             });
 
