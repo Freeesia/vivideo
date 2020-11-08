@@ -75,6 +75,10 @@ namespace StudioFreesia.Vivideo.Server
             });
 
             services.AddDistributedMemoryCache();
+            services.AddSwaggerGen(op =>
+            {
+                op.DocumentFilter<SwaggerDocumentFilter>("api/");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,6 +95,12 @@ namespace StudioFreesia.Vivideo.Server
             app.UseResponseCompression();
             app.UseResponseCaching();
             app.UseSpaStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.Map("/stream", app1 =>
             {
