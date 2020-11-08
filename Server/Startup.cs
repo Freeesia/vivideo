@@ -39,6 +39,9 @@ namespace StudioFreesia.Vivideo.Server
                 config.RootPath = "Client";
             });
 
+            services.AddResponseCompression();
+            services.AddResponseCaching();
+
             var firebase = this.Configuration.GetSection("FirebaseAuthentication");
             services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
             services.AddAuthorization(op =>
@@ -85,6 +88,8 @@ namespace StudioFreesia.Vivideo.Server
 
             // app.UseHttpsRedirection();
 
+            app.UseResponseCompression();
+            app.UseResponseCaching();
             app.UseSpaStaticFiles();
 
             app.Map("/stream", app1 =>
