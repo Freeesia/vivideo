@@ -39,6 +39,9 @@ namespace StudioFreesia.Vivideo.Server
                 config.RootPath = "Client";
             });
 
+            services.AddResponseCompression();
+            services.AddResponseCaching();
+
             var firebase = this.Configuration.GetSection("FirebaseAuthentication");
             services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
             services.AddAuthorization(op =>
@@ -85,6 +88,8 @@ namespace StudioFreesia.Vivideo.Server
 
             // app.UseHttpsRedirection();
 
+            app.UseResponseCompression();
+            app.UseResponseCaching();
             app.UseSpaStaticFiles();
 
             app.Map("/stream", app1 =>
@@ -119,15 +124,25 @@ namespace StudioFreesia.Vivideo.Server
                 });
             });
 
+            app.Map("/api", api =>
+            {
+                api.UseRouting();
+                api.UseAuthorization();
+
+                api.UseEndpoints(ep =>
+                {
+                    ep.MapControllers();
+                });
+            });
+
             app.UseRouting();
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            app.UseEndpoints(ep =>
             {
-                endpoints.MapControllers();
-                endpoints.MapHangfireDashboard(new DashboardOptions()
+                ep.MapHangfireDashboard(new DashboardOptions()
                 {
-                    Authorization = new []{ new HangfireDashbordAuthFilter() },
+                    Authorization = new[] { new HangfireDashbordAuthFilter() },
                 });
             });
 

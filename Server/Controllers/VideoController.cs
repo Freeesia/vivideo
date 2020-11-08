@@ -19,7 +19,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class VideoController : ControllerBase
     {
         private readonly IBackgroundJobClient jobClient;

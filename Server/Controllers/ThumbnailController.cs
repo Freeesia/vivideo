@@ -16,7 +16,7 @@ using Hangfire;
 namespace StudioFreesia.Vivideo.Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ThumbnailController : ControllerBase
     {
         private readonly string contentDir;
@@ -47,7 +47,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60 * 60 * 2)]
+        [ResponseCache(Location = ResponseCacheLocation.Client, Duration = 60 * 60 * 2)]
         public async Task<IActionResult> Get(string path)
         {
             var fullPath = Path.Combine(this.contentDir, path);
