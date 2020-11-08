@@ -40,7 +40,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
         public async ValueTask<string> Transcode([FromQuery] string? path)
         {
             var hash = GetHash(path ?? throw new ArgumentNullException(nameof(path)));
-            var outPath = Path.Combine(this.outDir, hash, "master.mpd");
+            var outPath = GetOutPath(hash);
             if (System.IO.File.Exists(outPath))
             {
                 return "/stream/" + hash;
@@ -55,6 +55,38 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 }
             }
             return "/stream/" + hash;
+        }
+
+        [HttpPost("transcode/all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public ActionResult TranscodeAll([FromQuery] string? path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                return BadRequest();
+            }
+            var dirPath = Path.Combine(this.inputDir, path);
+            if (!Directory.Exists(dirPath))
+            {
+                return NotFound();
+            }
+            var files = Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories)
+                .Where(f => Path.GetExtension(f).Or(".mp4", ".avi"));
+            foreach (var filePath in files)
+            {
+                var relPath = Path.GetRelativePath(this.inputDir, filePath);
+                var hash = GetHash(relPath);
+                var outPath = GetOutPath(hash);
+                if (System.IO.File.Exists(outPath))
+                {
+                    continue;
+                }
+                this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new TranscodeQueue(relPath, hash)));
+            }
+
+            return Ok();
         }
 
         [HttpGet("{*path}")]
@@ -80,7 +112,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers
                 {
                     var path = Path.GetRelativePath(this.inputDir, i.FullName);
                     var hash = GetHash(path);
-                    var outPath = Path.Combine(this.outDir, hash, "master.mpd");
+                    var outPath = GetOutPath(hash);
                     var exists = System.IO.File.Exists(outPath);
                     this.logger.LogTrace("{0}:{1}:{2}", path, exists, hash);
                     return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists);
@@ -92,6 +124,8 @@ namespace StudioFreesia.Vivideo.Server.Controllers
             using var md5 = MD5.Create();
             return BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(path))).Replace("-", string.Empty);
         }
+
+        private string GetOutPath(string hash) => Path.Combine(this.outDir, hash, "master.mpd");
     }
 
     public class TranscodeRequest

@@ -7,6 +7,10 @@ Content-Type: application/json
     "path": "hoge"
 }
 ###
+POST http://localhost:5000/api/video/transcode/all?path=hoge HTTP/1.1
+Content-Type: application/json
+Authorization: {{token}}
+###
 GET http://localhost:5000/api/video/ HTTP/1.1
 Authorization: {{token}}
 ###

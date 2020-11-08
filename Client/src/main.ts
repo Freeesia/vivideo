@@ -7,8 +7,16 @@ import vuetify from "./plugins/vuetify";
 import { store } from "./store";
 import { init as SentryInit } from "@sentry/browser";
 import { Vue as SentryVue } from "@sentry/integrations";
+import VuetifyDialog from "vuetify-dialog";
+import "vuetify-dialog/dist/vuetify-dialog.css";
 
 Vue.config.productionTip = false;
+
+Vue.use(VuetifyDialog, {
+  context: {
+    vuetify,
+  },
+});
 
 if (process.env.NODE_ENV === "production") {
   SentryInit({
