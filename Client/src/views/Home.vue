@@ -20,6 +20,7 @@
 
                   <v-list>
                     <v-list-item dense @click.stop="openLogoDialog(item)">Logo</v-list-item>
+                    <v-list-item dense @click.stop="queuingAll(item)">全ての動画を再生可能にする</v-list-item>
                   </v-list>
                 </v-menu>
                 <v-avatar v-else-if="item.transcoded" color="white" size="32">
@@ -46,10 +47,11 @@ import Vue from "vue";
 import Logo from "@/components/Logo.vue";
 import { Component, Watch, Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
-import { AxiosInstance } from "axios";
+import { AxiosError, AxiosInstance } from "axios";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
 import { getThumbnailPath } from "../utilities/pathUtility";
 import { compareFunc } from "../utilities/sortUtility";
+import { assertIsDefined } from "../utilities/assert";
 
 @Component({ components: { Logo } })
 export default class Home extends Vue {
@@ -114,6 +116,16 @@ export default class Home extends Vue {
   private openLogoDialog(content: ContentNode) {
     this.logoTarget = content;
     this.logoDialog = true;
+  }
+
+  private async queuingAll(content: ContentNode) {
+    assertIsDefined(this.axios);
+    try {
+      await this.axios.post<string>(`/api/video/transcode/all/?path=${encodeURIComponent(content.contentPath)}`);
+    } catch (error) {
+      const e = error as AxiosError;
+      this.$dialog.notify.error(e.message);
+    }
   }
 
   @Watch("logoDialog")
