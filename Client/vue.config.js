@@ -64,6 +64,21 @@ module.exports = {
             },
           },
         },
+        {
+          urlPattern: /\/api\/video\//,
+          handler: "StaleWhileRevalidate",
+          method: "GET",
+          options: {
+            cacheName: "list-cache",
+            expiration: {
+              maxEntries: 1000,
+              maxAgeSeconds: 60 * 60 * 6,
+            },
+            cacheableResponse: {
+              statuses: [0, 200],
+            },
+          },
+        },
       ],
     },
     // iconPaths: {

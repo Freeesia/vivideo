@@ -6,7 +6,7 @@ namespace StudioFreesia.Vivideo.Server
 {
     [ApiController]
     [Produces("application/json")]
-    [Route("api/[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class InfoController : ControllerBase
     {
         [HttpGet]
