@@ -146,6 +146,9 @@ csharp_space_after_dot = false
 csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = true
 
+[*.{csproj,props,targets}]
+indent_size = 2
+
 [*.{yml,yaml}]
 end_of_line = lf
 charset = utf-8

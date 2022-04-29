@@ -1,8 +1,11 @@
 <Project>
-    <PropertyGroup>
-        <Deterministic>true</Deterministic>
-        <LangVersion>latest</LangVersion>
-        <Nullable>enable</Nullable>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version Condition="'$(Version)' == ''">0.0.0-local</Version>
+    <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 </Project>

@@ -20,7 +20,7 @@ namespace StudioFreesia.Vivideo.Worker
             if (WindowsServiceHelpers.IsWindowsService())
             {
                 using var process = Process.GetCurrentProcess();
-                var pathToExe = process.MainModule.FileName;
+                var pathToExe = process?.MainModule?.FileName ?? throw new InvalidOperationException("モジュールが取れない");
                 hostBuilder = hostBuilder.UseContentRoot(Path.GetDirectoryName(pathToExe));
             }
             return hostBuilder;
