@@ -62,7 +62,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, _, next) => {
-  if (to.meta.anonymous) {
+  if (to.meta?.anonymous) {
     if (await AuthModule.isSignedIn()) {
       next({ name: "home" });
     } else {

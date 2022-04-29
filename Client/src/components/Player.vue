@@ -52,7 +52,7 @@ export default class Player extends Vue {
   }
 
   private mounted() {
-    this.player = videojs(this.$refs.videoPlayer, {
+    this.player = videojs(this.$refs.videoPlayer as Element, {
       liveui: true,
       controls: true,
       fluid: true,

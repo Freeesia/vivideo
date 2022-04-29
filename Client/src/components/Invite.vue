@@ -10,16 +10,14 @@
   </section>
 </template>
 <script lang="ts">
+import { httpsCallable } from "firebase/functions";
+import { functions } from "../firebase";
 import Vue from "vue";
 import Component from "vue-class-component";
-import firebase from "firebase/app";
-import "firebase/functions";
-import app = firebase.app;
 
 @Component({})
 export default class Invite extends Vue {
-  private functions = app().functions("asia-northeast1");
-  private invite = this.functions.httpsCallable("invite");
+  private invite = httpsCallable<void, string>(functions, "invite");
   private generating = false;
   private host = window.location.origin + "/signup/";
   private code: string | null = null;

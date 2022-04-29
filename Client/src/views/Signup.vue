@@ -37,17 +37,15 @@
 </template>
 
 <script lang="ts">
+import { httpsCallable } from "firebase/functions";
 import Vue from "vue";
 import Component from "vue-class-component";
-import firebase from "firebase/app";
-import "firebase/functions";
-import app = firebase.app;
+import { functions } from "../firebase";
 
 @Component({})
 export default class Signup extends Vue {
-  private readonly functions = app().functions("asia-northeast1");
-  private readonly checkCode = this.functions.httpsCallable("checkInvitationCode");
-  private readonly signup = this.functions.httpsCallable("signup");
+  private readonly checkCode = httpsCallable<{ invitationCode: string }>(functions, "checkInvitationCode");
+  private readonly signup = httpsCallable(functions, "signup");
   private readonly emailRules = [
     (v: string) => !!v || "E-mail is required",
     (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",

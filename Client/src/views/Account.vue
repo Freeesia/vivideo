@@ -58,22 +58,34 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import Invite from "@/components/Invite.vue";
-import firebase from "firebase/app";
-import "firebase/auth";
+import {
+  getRedirectResult,
+  AuthProvider,
+  FacebookAuthProvider,
+  getAuth,
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  TwitterAuthProvider,
+  User,
+  updateProfile,
+  unlink,
+  linkWithCredential,
+  linkWithRedirect,
+} from "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
-import auth = firebase.auth;
-import User = firebase.User;
+
+const auth = getAuth();
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {
   private user!: User;
   private activeTab: any = null;
   private targetProviders = [
-    auth.GoogleAuthProvider.PROVIDER_ID,
-    // auth.FacebookAuthProvider.PROVIDER_ID,
-    // auth.TwitterAuthProvider.PROVIDER_ID,
-    auth.GithubAuthProvider.PROVIDER_ID,
+    GoogleAuthProvider.PROVIDER_ID,
+    // FacebookAuthProvider.PROVIDER_ID,
+    // TwitterAuthProvider.PROVIDER_ID,
+    GithubAuthProvider.PROVIDER_ID,
   ];
   private linkedProviders: string[] = [];
   private linking: string[] = [];
@@ -81,13 +93,13 @@ export default class Account extends Vue {
   get linkText() {
     return (id: string) => {
       switch (id) {
-        case auth.GoogleAuthProvider.PROVIDER_ID:
+        case GoogleAuthProvider.PROVIDER_ID:
           return "Google" + (this.isLinked(id) ? " リンク解除" : "");
-        case auth.FacebookAuthProvider.PROVIDER_ID:
+        case FacebookAuthProvider.PROVIDER_ID:
           return "Facebook" + (this.isLinked(id) ? " リンク解除" : "");
-        case auth.TwitterAuthProvider.PROVIDER_ID:
+        case TwitterAuthProvider.PROVIDER_ID:
           return "Twitter" + (this.isLinked(id) ? " リンク解除" : "");
-        case auth.GithubAuthProvider.PROVIDER_ID:
+        case GithubAuthProvider.PROVIDER_ID:
           return "GitHub" + (this.isLinked(id) ? " リンク解除" : "");
         default:
           throw new Error("未対応プロバイダ");
@@ -115,50 +127,13 @@ export default class Account extends Vue {
   }
 
   private async linkedRedirect() {
-    const result = await auth().getRedirectResult();
-    if (result.operationType !== "link") {
+    const result = await getRedirectResult(auth);
+    if (result?.operationType !== "link") {
       return;
     }
-    const info = result.additionalUserInfo;
-    assertIsDefined(info?.profile);
-    switch (info.providerId) {
-      case auth.GoogleAuthProvider.PROVIDER_ID:
-        this.linkedGoogle(info.profile);
-        break;
-      case auth.GithubAuthProvider.PROVIDER_ID:
-        this.linkedGitHub(info.profile);
-        break;
-      default:
-        throw new Error("未対応プロバイダ");
-    }
-  }
-
-  private async linkedGoogle(profile: Record<string, any>) {
-    const newProf: Record<string, any> = {};
-    if (!this.user.displayName && profile["name"]) {
-      newProf.displayName = profile["name"];
-    }
-    if (!this.user.photoURL && profile["picture"]) {
-      newProf.photoURL = profile["picture"];
-    }
-    await this.user.updateProfile(newProf);
-    const user = auth().currentUser;
-    assertIsDefined(user);
-    this.user = user;
-  }
-
-  private async linkedGitHub(profile: Record<string, any>) {
-    const newProf: Record<string, any> = {};
-    if (!this.user.displayName && profile["name"]) {
-      newProf.displayName = profile["name"];
-    }
-    if (!this.user.photoURL && profile["avatar_url"]) {
-      newProf.photoURL = profile["avatar_url"];
-    }
-    await this.user.updateProfile(newProf);
-    const user = auth().currentUser;
-    assertIsDefined(user);
-    this.user = user;
+    const info = result.user.providerData.find(i => i.providerId === result.providerId);
+    assertIsDefined(info);
+    updateProfile(this.user, info);
   }
 
   private async deleteMe() {
@@ -180,24 +155,24 @@ export default class Account extends Vue {
   private async link(id: string) {
     this.linking.push(id);
     if (this.isLinked(id)) {
-      await this.user.unlink(id);
+      await unlink(this.user, id);
       this.linkedProviders = this.user.providerData.map(p => p?.providerId ?? "");
     } else {
-      await this.user.linkWithRedirect(this.getProvider(id));
+      await linkWithRedirect(this.user, this.getProvider(id));
     }
     this.linking = this.linking.filter(i => i !== id);
   }
 
-  private getProvider(id: string): auth.AuthProvider {
+  private getProvider(id: string): AuthProvider {
     switch (id) {
-      case auth.GoogleAuthProvider.PROVIDER_ID:
-        return new auth.GoogleAuthProvider();
-      case auth.FacebookAuthProvider.PROVIDER_ID:
-        return new auth.FacebookAuthProvider();
-      case auth.TwitterAuthProvider.PROVIDER_ID:
-        return new auth.TwitterAuthProvider();
-      case auth.GithubAuthProvider.PROVIDER_ID:
-        return new auth.GithubAuthProvider();
+      case GoogleAuthProvider.PROVIDER_ID:
+        return new GoogleAuthProvider();
+      case FacebookAuthProvider.PROVIDER_ID:
+        return new FacebookAuthProvider();
+      case TwitterAuthProvider.PROVIDER_ID:
+        return new TwitterAuthProvider();
+      case GithubAuthProvider.PROVIDER_ID:
+        return new GithubAuthProvider();
       default:
         throw new Error("未対応プロバイダ");
     }

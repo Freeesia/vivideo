@@ -10,34 +10,38 @@
 <script lang="ts">
 import Vue from "vue";
 import { auth as authui } from "firebaseui";
-import firebase from "firebase/app";
-import "firebase/auth";
+import {
+  getAuth,
+  useDeviceLanguage,
+  EmailAuthProvider,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  User,
+} from "firebase/auth";
 import Component from "vue-class-component";
 import "firebaseui/dist/firebaseui.css";
-import auth = firebase.auth;
-import User = firebase.User;
 
 @Component
 export default class Signin extends Vue {
   private codeError = false;
 
   private created() {
-    auth().useDeviceLanguage();
+    useDeviceLanguage(getAuth());
   }
 
   private mounted() {
     let ui = authui.AuthUI.getInstance();
     if (!ui) {
-      ui = new authui.AuthUI(auth());
+      ui = new authui.AuthUI(getAuth());
     }
     ui.start("#auth-container", {
       signInOptions: [
         {
-          provider: auth.EmailAuthProvider.PROVIDER_ID,
+          provider: EmailAuthProvider.PROVIDER_ID,
           requireDisplayName: false,
         },
-        auth.GoogleAuthProvider.PROVIDER_ID,
-        auth.GithubAuthProvider.PROVIDER_ID,
+        GoogleAuthProvider.PROVIDER_ID,
+        GithubAuthProvider.PROVIDER_ID,
       ],
       credentialHelper: authui.CredentialHelper.NONE,
       callbacks: {
