@@ -27,7 +27,7 @@ jobs:
             docker-buildx-
       - uses: gittools/actions/gitversion/setup@v0.9.13
         with:
-            versionSpec: '5.x'
+          versionSpec: "5.x"
       - id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.13
       - id: image-tag
