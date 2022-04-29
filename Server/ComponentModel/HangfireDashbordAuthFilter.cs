@@ -1,12 +1,11 @@
 using Hangfire.Annotations;
 using Hangfire.Dashboard;
 
-namespace StudioFreesia.Vivideo.Server.ComponentModel
+namespace StudioFreesia.Vivideo.Server.ComponentModel;
+
+public class HangfireDashbordAuthFilter : IDashboardAuthorizationFilter
 {
-    public class HangfireDashbordAuthFilter : IDashboardAuthorizationFilter
-    {
-        public bool Authorize([NotNull] DashboardContext context)
-            // => context.GetHttpContext().User.Identity.IsAuthenticated;
-            => true;
-    }
+    public bool Authorize([NotNull] DashboardContext context)
+        // => context.GetHttpContext().User.Identity.IsAuthenticated;
+        => true;
 }

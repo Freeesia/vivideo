@@ -2,15 +2,14 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
-namespace StudioFreesia.Vivideo.Server
+namespace StudioFreesia.Vivideo.Server.Controllers;
+
+[ApiController]
+[Produces("application/json")]
+[Route("[controller]/[action]")]
+public class InfoController : ControllerBase
 {
-    [ApiController]
-    [Produces("application/json")]
-    [Route("[controller]/[action]")]
-    public class InfoController : ControllerBase
-    {
-        [HttpGet]
-        public string Version()
-            => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
-    }
+    [HttpGet]
+    public string Version()
+        => FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion;
 }
