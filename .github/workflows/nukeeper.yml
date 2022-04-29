@@ -10,6 +10,6 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@v1.4.0
     - run: |
-        dotnet new manifest
+        dotnet new tool-manifest
         dotnet tool install nukeeper
         dotnet nukeeper repo https://github.com/${{ github.repository }} ${{ secrets.GitHubToken }}
