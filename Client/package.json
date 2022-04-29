@@ -12,7 +12,7 @@
     "@sentry/integrations": "^5.12.5",
     "axios": "^0.22.0",
     "firebase": "^9.6.5",
-    "firebaseui": "^4.4.0",
+    "firebaseui": "^6.0.1",
     "natural-orderby": "^2.0.3",
     "register-service-worker": "^1.6.2",
     "shaka-player": "3.0.5",

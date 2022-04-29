@@ -10,29 +10,27 @@
 <script lang="ts">
 import Vue from "vue";
 import { auth as authui } from "firebaseui";
-import {
-  getAuth,
-  useDeviceLanguage,
-  EmailAuthProvider,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  User,
-} from "firebase/auth";
+import { useDeviceLanguage, EmailAuthProvider, GoogleAuthProvider, GithubAuthProvider, User } from "firebase/auth";
 import Component from "vue-class-component";
 import "firebaseui/dist/firebaseui.css";
+// firebaseuiがまだv9に対応していないので、互換ライブラリを利用する
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import { firebaseOptions } from "../firebase";
 
 @Component
 export default class Signin extends Vue {
   private codeError = false;
 
   private created() {
-    useDeviceLanguage(getAuth());
+    firebase.initializeApp(firebaseOptions);
+    useDeviceLanguage(firebase.auth());
   }
 
   private mounted() {
     let ui = authui.AuthUI.getInstance();
     if (!ui) {
-      ui = new authui.AuthUI(getAuth());
+      ui = new authui.AuthUI(firebase.auth());
     }
     ui.start("#auth-container", {
       signInOptions: [

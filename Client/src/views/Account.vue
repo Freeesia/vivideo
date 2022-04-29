@@ -62,20 +62,17 @@ import {
   getRedirectResult,
   AuthProvider,
   FacebookAuthProvider,
-  getAuth,
   GithubAuthProvider,
   GoogleAuthProvider,
   TwitterAuthProvider,
   User,
   updateProfile,
   unlink,
-  linkWithCredential,
   linkWithRedirect,
 } from "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
-
-const auth = getAuth();
+import { auth } from "../firebase";
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {

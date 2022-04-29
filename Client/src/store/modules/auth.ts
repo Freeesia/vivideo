@@ -1,8 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
-import { getAuth, User } from "firebase/auth";
+import { User } from "firebase/auth";
 import Axios from "axios";
-
-const auth = getAuth();
+import { auth } from "@/firebase";
 
 @Module({ namespaced: true, name: "auth" })
 export default class Auth extends VuexModule {
