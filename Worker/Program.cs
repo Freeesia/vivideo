@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using Hangfire;
 using StackExchange.Redis;
 using StudioFreesia.Vivideo.Core;

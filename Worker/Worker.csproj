@@ -5,7 +5,6 @@
     <ServerGarbageCollection>true</ServerGarbageCollection>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-    <PublishTrimmed>true</PublishTrimmed>
     <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
   <ItemGroup>
