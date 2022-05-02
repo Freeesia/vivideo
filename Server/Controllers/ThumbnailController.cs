@@ -1,9 +1,10 @@
+using System.Diagnostics;
+using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.Model;
-using System.Diagnostics;
-using Microsoft.Extensions.Caching.Distributed;
-using Hangfire;
 
 namespace StudioFreesia.Vivideo.Server.Controllers;
 
@@ -20,13 +21,13 @@ public class ThumbnailController : ControllerBase
     private readonly DistributedCacheEntryOptions cacheOption;
     private readonly ILogger<ThumbnailController> logger;
 
-    public ThumbnailController(IConfiguration config, IHostEnvironment env, IDistributedCache cache, ILogger<ThumbnailController> logger)
+    public ThumbnailController(IOptions<ContentDirSetting> contentOptions, IOptions<ThumbnailSetting> thumbOptions, IHostEnvironment env, IDistributedCache cache, ILogger<ThumbnailController> logger)
     {
-        var content = config.GetSection("Content").Get<ContentDirSetting>();
-        this.contentDir = content?.List ?? throw new ArgumentException();
-        var trans = config.GetSection("Thumbnail").Get<ThumbnailSetting>();
-        this.file = trans.File ?? throw new ArgumentException();
-        this.args = trans.Args ?? throw new ArgumentException();
+        var content = contentOptions.Value;
+        this.contentDir = content?.List ?? throw new ArgumentException(nameof(content.List));
+        var trans = thumbOptions.Value;
+        this.file = trans.File ?? throw new ArgumentException(nameof(trans.File));
+        this.args = trans.Args ?? throw new ArgumentException(nameof(trans.Args));
         this.tmpDir = Path.Combine(Path.GetTempPath(), "VivideoThumb");
         Directory.CreateDirectory(this.tmpDir);
         this.rootDir = env.ContentRootPath;
@@ -81,7 +82,7 @@ public class ThumbnailController : ControllerBase
             RedirectStandardError = true,
             Arguments = string.Format(this.args, path.Replace('\\', '/'), tmp.Replace('\\', '/')),
         };
-        this.logger.LogDebug("サムネイル生成開始:{0}", name);
+        this.logger.LogDebug($"サムネイル生成開始:{name}");
         using var p = Process.Start(info);
         p.ErrorDataReceived += (s, e) =>
             {
@@ -96,7 +97,7 @@ public class ThumbnailController : ControllerBase
         {
             throw new Exception($"「{name}」のサムネイル出力に失敗しました");
         }
-        this.logger.LogDebug("サムネイル生成終了:{0}", name);
+        this.logger.LogDebug($"サムネイル生成終了:{name}");
         return await System.IO.File.ReadAllBytesAsync(tmp);
     }
 
@@ -112,6 +113,6 @@ public class ThumbnailController : ControllerBase
     }
 
     [HttpPost]
-    public void SetLogo([FromBody]LogoQueue queue, [FromServices] IBackgroundJobClient jobClient)
+    public void SetLogo([FromBody] LogoQueue queue, [FromServices] IBackgroundJobClient jobClient)
         => jobClient.Enqueue<ILogoDownload>(d => d.DownLoad(queue));
 }

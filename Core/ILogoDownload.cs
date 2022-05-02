@@ -1,10 +1,6 @@
-using System;
-using System.Threading.Tasks;
+namespace StudioFreesia.Vivideo.Core;
 
-namespace StudioFreesia.Vivideo.Core
+public interface ILogoDownload
 {
-    public interface ILogoDownload
-    {
-        Task DownLoad(LogoQueue queue);
-    }
+    Task DownLoad(LogoQueue queue);
 }

@@ -1,8 +1,7 @@
-namespace StudioFreesia.Vivideo.Core
+namespace StudioFreesia.Vivideo.Core;
+
+public class ContentDirSetting
 {
-    public class ContentDirSetting
-    {
-        public string? Work { get; set; }
-        public string? List { get; set; }
-    }
+    public string? Work { get; set; }
+    public string? List { get; set; }
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using StudioFreesia.Vivideo.Core;
 
 namespace StudioFreesia.Vivideo.Worker.Jobs;
@@ -9,10 +10,10 @@ public class LogoDownloadImpl : ILogoDownload
     private readonly ILogger<LogoDownloadImpl> logger;
     private readonly IHttpClientFactory httpClientFactory;
 
-    public LogoDownloadImpl(IConfiguration config, ILogger<LogoDownloadImpl> logger, IHttpClientFactory httpClientFactory)
+    public LogoDownloadImpl(IOptions<ContentDirSetting> contentOptions, ILogger<LogoDownloadImpl> logger, IHttpClientFactory httpClientFactory)
     {
-        var content = config.GetSection("Content").Get<ContentDirSetting>();
-        this.listDir = content?.List ?? throw new ArgumentException();
+        var content = contentOptions.Value;
+        this.listDir = content?.List ?? throw new ArgumentException(nameof(content.List));
         this.logger = logger;
         this.httpClientFactory = httpClientFactory;
     }
@@ -20,12 +21,12 @@ public class LogoDownloadImpl : ILogoDownload
     public async Task DownLoad(LogoQueue queue)
     {
         var client = this.httpClientFactory.CreateClient();
-        this.logger.LogInformation("path: {0} target: {1}", queue.Output, queue.Url);
+        this.logger.LogInformation($"path: {queue.Output} target: {queue.Url}");
         var ext = Path.GetExtension(queue.Url.LocalPath);
         var res = await client.GetAsync(queue.Url);
         res.EnsureSuccessStatusCode();
         using var stream = await res.Content.ReadAsStreamAsync();
-        if (string.IsNullOrEmpty(ext))
+        if (string.IsNullOrEmpty(ext) && !string.IsNullOrEmpty(res.Content.Headers.ContentType?.MediaType))
         {
             var mt = res.Content.Headers.ContentType.MediaType.Split("/");
             ext = "." + mt[1];

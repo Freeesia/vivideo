@@ -1,11 +1,12 @@
-﻿using Hangfire;
-using Microsoft.AspNetCore.Mvc;
-using StudioFreesia.Vivideo.Core;
-using StudioFreesia.Vivideo.Server.Model;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.Extensions;
+using StudioFreesia.Vivideo.Server.Model;
 
 namespace StudioFreesia.Vivideo.Server.Controllers;
 
@@ -19,11 +20,11 @@ public class VideoController : ControllerBase
     private readonly string inputDir;
     private readonly string outDir;
 
-    public VideoController(IConfiguration config, IBackgroundJobClient jobClient, ILogger<VideoController> logger)
+    public VideoController(IOptions<ContentDirSetting> options, IBackgroundJobClient jobClient, ILogger<VideoController> logger)
     {
-        var content = config.GetSection("Content").Get<ContentDirSetting>();
-        this.inputDir = content?.List ?? throw new ArgumentException();
-        this.outDir = content?.Work ?? throw new ArgumentException();
+        var setting = options.Value;
+        this.inputDir = setting.List ?? throw new ArgumentException(nameof(setting.List));
+        this.outDir = setting.Work ?? throw new ArgumentException(nameof(setting.Work));
         this.jobClient = jobClient;
         this.logger = logger;
     }
@@ -106,21 +107,16 @@ public class VideoController : ControllerBase
                 var hash = GetHash(path);
                 var outPath = GetOutPath(hash);
                 var exists = System.IO.File.Exists(outPath);
-                this.logger.LogTrace("{0}:{1}:{2}", path, exists, hash);
+                this.logger.LogTrace($"{path}:{exists}:{hash}");
                 return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists);
             })));
     }
 
-    private string GetHash(string path)
+    private static string GetHash(string path)
     {
         using var md5 = MD5.Create();
         return BitConverter.ToString(md5.ComputeHash(Encoding.UTF8.GetBytes(path))).Replace("-", string.Empty);
     }
 
     private string GetOutPath(string hash) => Path.Combine(this.outDir, hash, "master.mpd");
-}
-
-public class TranscodeRequest
-{
-    public string? Path { get; set; }
 }

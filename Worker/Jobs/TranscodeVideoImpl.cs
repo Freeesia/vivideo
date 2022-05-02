@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Model;
@@ -16,16 +17,16 @@ public class TranscodeVideoImpl : ITranscodeVideo
     private readonly string ffprobe;
     private readonly Dictionary<string, string> args;
 
-    public TranscodeVideoImpl(IConfiguration config, IHostEnvironment env, ILogger<TranscodeVideoImpl> logger)
+    public TranscodeVideoImpl(IOptions<ContentDirSetting> contentOptions, IOptions<TranscodeSetting> transOptions, IHostEnvironment env, ILogger<TranscodeVideoImpl> logger)
     {
         this.logger = logger;
-        var content = config.GetSection("Content").Get<ContentDirSetting>();
-        this.workDir = content?.Work ?? throw new ArgumentException();
-        this.inputDir = content?.List ?? throw new ArgumentException();
-        var trans = config.GetSection("Transcode").Get<TranscodeSetting>();
-        this.ffmpeg = trans.Ffmpeg ?? throw new ArgumentException();
-        this.ffprobe = trans.Ffprobe ?? throw new ArgumentException();
-        this.args = trans.Args ?? throw new ArgumentException();
+        var content = contentOptions.Value;
+        this.workDir = content?.Work ?? throw new ArgumentException(nameof(content.Work));
+        this.inputDir = content?.List ?? throw new ArgumentException(nameof(content.List));
+        var trans = transOptions.Value;
+        this.ffmpeg = trans.Ffmpeg ?? throw new ArgumentException(nameof(trans.Ffmpeg));
+        this.ffprobe = trans.Ffprobe ?? throw new ArgumentException(nameof(trans.Ffprobe));
+        this.args = trans.Args ?? throw new ArgumentException(nameof(trans.Args));
         this.rootDir = env.ContentRootPath;
     }
 
@@ -36,12 +37,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
         var name = Path.GetFileNameWithoutExtension(queue.Input);
         if (File.Exists(outPath))
         {
-            this.logger.LogInformation("トランスコードスキップ: {0}", name);
+            this.logger.LogInformation($"トランスコードスキップ: {name}");
             return;
         }
         Directory.CreateDirectory(dir);
         var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
-        this.logger.LogInformation("トランスコード開始:{0}", name);
+        this.logger.LogInformation($"トランスコード開始:{name}");
         RunProcess(this.ffmpeg, string.Format(GetArgs(input), input.Replace('\\', '/'), outPath.Replace('\\', '/')));
         if (!File.Exists(outPath))
         {
@@ -60,7 +61,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
                 Thread.Sleep(100);
             }
         }
-        this.logger.LogInformation("トランスコード終了:{0}", name);
+        this.logger.LogInformation($"トランスコード終了:{name}");
     }
 
     private string GetArgs(string input)

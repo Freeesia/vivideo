@@ -8,12 +8,16 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.ComponentModel;
+using StudioFreesia.Vivideo.Server.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
 #if !DEBUG
 builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801");
 #endif
+
+builder.Services.Configure<ContentDirSetting>(builder.Configuration.GetSection("Content"));
+builder.Services.Configure<ThumbnailSetting>(builder.Configuration.GetSection("Thumbnail"));
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
@@ -107,7 +111,9 @@ app.Map("/api", api =>
 });
 
 app.UseRouting();
+#pragma warning disable ASP0001
 app.UseAuthorization();
+#pragma warning restore ASP0001
 
 app.UseEndpoints(ep =>
 {

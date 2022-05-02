@@ -4,6 +4,7 @@ using StackExchange.Redis;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker;
 using StudioFreesia.Vivideo.Worker.Jobs;
+using StudioFreesia.Vivideo.Worker.Model;
 
 var host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
@@ -18,6 +19,9 @@ var host = Host.CreateDefaultBuilder(args)
 #endif
     .ConfigureServices((hostContext, services) =>
     {
+        services.Configure<ContentDirSetting>(hostContext.Configuration.GetSection("Content"));
+        services.Configure<TranscodeSetting>(hostContext.Configuration.GetSection("Transcode"));
+
         services.AddHttpClient();
         services.AddHangfire(config =>
             {
