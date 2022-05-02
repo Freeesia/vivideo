@@ -52,6 +52,16 @@
           "Microsoft.Extensions.FileProviders.Physical": "6.0.0"
         }
       },
+      "Nito.AsyncEx.Coordination": {
+        "type": "Direct",
+        "requested": "[5.1.2, )",
+        "resolved": "5.1.2",
+        "contentHash": "QMyUfsaxov//0ZMbOHWr9hJaBFteZd66DV1ay4J5wRODDb8+K/uHC7+3VsOflo6SVw/29mu8OWZp8vMDSuzc0w==",
+        "dependencies": {
+          "Nito.AsyncEx.Tasks": "5.1.2",
+          "Nito.Collections.Deque": "1.1.1"
+        }
+      },
       "Sentry.AspNetCore": {
         "type": "Direct",
         "requested": "[2.1.6, )",
@@ -59,6 +69,15 @@
         "contentHash": "Ha/3FtpgErhh9wm1nj/rf6Y54HN9n691zJK2KV+rMdRA6MyVE86JD4vT/77aBw3WVuSJ2L4CGlFeqjoIUbF4WA==",
         "dependencies": {
           "Sentry.Extensions.Logging": "2.1.6"
+        }
+      },
+      "Xabe.FFmpeg": {
+        "type": "Direct",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "Fis91fB69gt0oU2SlbDT8Q3L0ujU/vSxGP/1JAanIy5+jezDf6SwRTBBdY5NaibgtqGSUY8lrzB7uYV+x5wg0w==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
         }
       },
       "Hangfire.Core": {
@@ -702,6 +721,27 @@
           "Newtonsoft.Json": "12.0.1"
         }
       },
+      "Nito.AsyncEx.Tasks": {
+        "type": "Transitive",
+        "resolved": "5.1.2",
+        "contentHash": "jEkCfR2/M26OK/U4G7SEN063EU/F4LiVA06TtpZILMdX/quIHCg+wn31Zerl2LC+u1cyFancjTY3cNAr2/89PA==",
+        "dependencies": {
+          "Nito.Disposables": "2.2.1"
+        }
+      },
+      "Nito.Collections.Deque": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "CU0/Iuv5VDynK8I8pDLwkgF0rZhbQoZahtodfL0M3x2gFkpBRApKs8RyMyNlAi1mwExE4gsmqQXk4aFVvW9a4Q=="
+      },
+      "Nito.Disposables": {
+        "type": "Transitive",
+        "resolved": "2.2.1",
+        "contentHash": "6sZ5uynQeAE9dPWBQGKebNmxbY4xsvcc5VplB5WkYEESUS7oy4AwnFp0FhqxTSKm/PaFrFqLrYr696CYN8cugg==",
+        "dependencies": {
+          "System.Collections.Immutable": "1.7.1"
+        }
+      },
       "Pipelines.Sockets.Unofficial": {
         "type": "Transitive",
         "resolved": "2.1.6",
@@ -882,6 +922,11 @@
           "System.Threading": "4.3.0",
           "System.Threading.Tasks": "4.3.0"
         }
+      },
+      "System.Collections.Immutable": {
+        "type": "Transitive",
+        "resolved": "1.7.1",
+        "contentHash": "B43Zsz5EfMwyEbnObwRxW5u85fzJma3lrDeGcSAV1qkhSRTNY5uXAByTn9h9ddNdhM+4/YoLc/CI43umjwIl9Q=="
       },
       "System.Collections.NonGeneric": {
         "type": "Transitive",

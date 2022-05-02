@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.ComponentModel;
-using StudioFreesia.Vivideo.Server.Model;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +16,6 @@ builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/24
 #endif
 
 builder.Services.Configure<ContentDirSetting>(builder.Configuration.GetSection("Content"));
-builder.Services.Configure<ThumbnailSetting>(builder.Configuration.GetSection("Thumbnail"));
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
