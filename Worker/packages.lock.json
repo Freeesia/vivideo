@@ -80,6 +80,15 @@
           "Sentry.Extensions.Logging": "2.1.6"
         }
       },
+      "Xabe.FFmpeg": {
+        "type": "Direct",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "Fis91fB69gt0oU2SlbDT8Q3L0ujU/vSxGP/1JAanIy5+jezDf6SwRTBBdY5NaibgtqGSUY8lrzB7uYV+x5wg0w==",
+        "dependencies": {
+          "Newtonsoft.Json": "9.0.1"
+        }
+      },
       "Hangfire.Core": {
         "type": "Transitive",
         "resolved": "1.7.17",
