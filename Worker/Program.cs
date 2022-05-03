@@ -5,6 +5,8 @@ using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker;
 using StudioFreesia.Vivideo.Worker.Jobs;
 using StudioFreesia.Vivideo.Worker.Model;
+using Xabe.FFmpeg;
+using Xabe.FFmpeg.Downloader;
 
 var host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
@@ -36,5 +38,15 @@ var host = Host.CreateDefaultBuilder(args)
             .AddTransient<ILogoDownload, LogoDownloadImpl>();
     })
     .Build();
+
+
+await using (var scope = host.Services.CreateAsyncScope())
+{
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<FFmpegDownloader>>();
+    await FFmpegDownloader.GetLatestVersion(
+        FFmpegVersion.Official,
+        "ffmpeg",
+        new Progress<ProgressInfo>(p => logger.LogTrace($"{p.DownloadedBytes * 100f / p.TotalBytes:f2}% {p.DownloadedBytes / 1024f:f2}/{p.TotalBytes / 1024f:f2} MB")));
+}
 
 await host.RunAsync();

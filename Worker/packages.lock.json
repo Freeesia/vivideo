@@ -89,6 +89,15 @@
           "Newtonsoft.Json": "9.0.1"
         }
       },
+      "Xabe.FFmpeg.Downloader": {
+        "type": "Direct",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "55H6zXwwEEV2UeVM2Re0oJBs5KmRz5T32Tp3/bvrJ6b4ozKhW9PYkEIlwyHM/H0nqk6pKhTVUh+6xulqYOaivw==",
+        "dependencies": {
+          "Xabe.FFmpeg": "5.1.0"
+        }
+      },
       "Hangfire.Core": {
         "type": "Transitive",
         "resolved": "1.7.17",
