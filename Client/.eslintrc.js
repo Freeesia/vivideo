@@ -10,7 +10,6 @@ module.exports = {
     "plugin:prettier/recommended",
     "plugin:vue/recommended",
     "prettier",
-    "prettier/@typescript-eslint",
     "@vue/prettier",
     "@vue/typescript",
   ],
@@ -33,7 +32,6 @@ module.exports = {
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off", // 出来れば対応したい
-    "@typescript-eslint/explicit-member-accessibility": ["error", { accessibility: "no-public" }],
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
   },
@@ -44,4 +42,5 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: "module",
   },
+  ignorePatterns: ["src/components.d.ts"],
 };
