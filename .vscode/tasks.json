@@ -95,7 +95,7 @@
       "isBackground": true,
       "options": {
         "env": {
-          "VUE_APP_VERSION": "0.0.0-local"
+          "VITE_APP_VERSION": "0.0.0-local"
         }
       },
       "problemMatcher": {
@@ -103,7 +103,7 @@
         "background": {
           "activeOnStart": true,
           "beginsPattern": "^\\s*WAIT\\s+Compiling",
-          "endsPattern": "^\\s*(DONE|WARNING)\\s+Compiled"
+          "endsPattern": "^\\s+ready in \\d+ms\\.$"
         }
       }
     },

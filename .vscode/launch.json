@@ -36,21 +36,16 @@
     },
     {
       "name": "client",
-      "type": "chrome",
+      "type": "pwa-chrome",
       "request": "launch",
       "preLaunchTask": "serve:client",
-      "url": "http://localhost:8080",
+      "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}/Client",
       "userDataDir": "${workspaceFolder}/Client/.debug",
       "smartStep": true,
       "skipFiles": [
         "node_modules",
-        "webpack/bootstrap",
       ],
-      "sourceMapPathOverrides": {
-        "webpack:///./src/*": "${webRoot}/src/*",
-        "webpack:///../node_modules/*": "${webRoot}/../node_modules/*"
-      },
     }
   ],
   "compounds": [
