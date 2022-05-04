@@ -59,18 +59,18 @@ import { compareFunc } from "../utilities/sortUtility";
 
 @Component({ components: { Player, ShakaPlayer } })
 export default class Play extends Vue {
-  private streamPath = "";
-  private thumbnailPath = "";
-  private autoNext = true;
-  private percent = 0;
+  public streamPath = "";
+  public thumbnailPath = "";
+  public autoNext = true;
+  public percent = 0;
 
   @Prop({ required: true, type: String, default: "" })
-  path!: string;
+  public readonly path!: string;
 
-  private contents: ContentNode[] = [];
+  public contents: ContentNode[] = [];
   private axios?: AxiosInstance;
 
-  private getThumbnailPath = getThumbnailPath;
+  public readonly getThumbnailPath = getThumbnailPath;
 
   private async created() {
     assert(this.path);
@@ -96,11 +96,11 @@ export default class Play extends Vue {
     this.contents = res.data.filter(c => !c.isDirectory).sort(comp);
   }
 
-  private isPlaying(item: ContentNode) {
+  public isPlaying(item: ContentNode) {
     return this.path === item.contentPath;
   }
 
-  private async ended() {
+  public async ended() {
     const index = this.contents.findIndex(c => c.contentPath === this.path);
     if (index < 0 || this.contents.length - 1 <= index) {
       this.autoNext = false;
@@ -124,11 +124,11 @@ export default class Play extends Vue {
     this.select(next);
   }
 
-  private cancelAuto() {
+  public cancelAuto() {
     this.autoNext = false;
   }
 
-  private async select(item: ContentNode) {
+  public async select(item: ContentNode) {
     await this.$router.push({
       name: "play",
       query: {

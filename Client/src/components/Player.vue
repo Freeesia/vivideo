@@ -26,7 +26,7 @@ import "video.js/dist/video-js.css";
 @Component({})
 export default class Player extends Vue {
   private player!: VideoJsPlayer;
-  private isEnded = false;
+  public isEnded = false;
 
   @Prop({ type: String, required: true, default: "" })
   private streamPath!: string;
@@ -63,7 +63,7 @@ export default class Player extends Vue {
     this.player.on("play", () => this.play());
   }
 
-  private replay() {
+  public replay() {
     this.player.currentTime(0);
     this.player.play();
   }

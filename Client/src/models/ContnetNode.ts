@@ -3,4 +3,5 @@ export default interface ContentNode {
   contentPath: string;
   isDirectory: boolean;
   createdAt: string;
+  transcoded: boolean;
 }

@@ -46,20 +46,20 @@ import { functions } from "../firebase";
 export default class Signup extends Vue {
   private readonly checkCode = httpsCallable<{ invitationCode: string }>(functions, "checkInvitationCode");
   private readonly signup = httpsCallable(functions, "signup");
-  private readonly emailRules = [
+  public readonly emailRules = [
     (v: string) => !!v || "E-mail is required",
     (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
   ];
-  private readonly passwordRules = [
+  public readonly passwordRules = [
     (v: string) => !!v || "Password is required",
     (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満",
   ];
-  private isCodeValid: boolean | null = null;
-  private code = "";
-  private valid = false;
-  private email = "";
-  private password = "";
-  private isSubmiting = false;
+  public isCodeValid: boolean | null = null;
+  public code = "";
+  public valid = false;
+  public email = "";
+  public password = "";
+  public isSubmiting = false;
 
   private async mounted() {
     this.code = this.$route.params.code;
@@ -76,7 +76,7 @@ export default class Signup extends Vue {
     this.isCodeValid = true;
   }
 
-  private async submit() {
+  public async submit() {
     try {
       this.isSubmiting = true;
       await this.signup({

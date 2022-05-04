@@ -70,7 +70,7 @@ import { SortType, OrderType } from "./store/modules/search";
 
 @Component({})
 export default class App extends Vue {
-  private search = "";
+  public search = "";
   private sort = SortType.Name;
   private order = OrderType.Asc;
 
@@ -112,7 +112,7 @@ export default class App extends Vue {
     this.sort = sortOrder?.sort ?? SortType.Name;
   }
 
-  private selectSort(sort: SortType) {
+  public selectSort(sort: SortType) {
     if (this.sort === sort) {
       switch (this.order) {
         case OrderType.Asc:
@@ -130,7 +130,7 @@ export default class App extends Vue {
     SearchModule.setSortOrder({ path: this.currentPath, sort: this.sort, order: this.order });
   }
 
-  private isOrderSelected(sort: SortType): string {
+  public isOrderSelected(sort: SortType): string {
     if (this.sort === sort) {
       switch (this.order) {
         case OrderType.Asc:

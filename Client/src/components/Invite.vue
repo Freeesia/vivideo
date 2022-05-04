@@ -17,10 +17,10 @@ import Component from "vue-class-component";
 
 @Component({})
 export default class Invite extends Vue {
-  private invite = httpsCallable<void, string>(functions, "invite");
-  private generating = false;
-  private host = window.location.origin + "/signup/";
-  private code: string | null = null;
+  private readonly invite = httpsCallable<void, string>(functions, "invite");
+  public readonly host = window.location.origin + "/signup/";
+  public generating = false;
+  public code: string | null = null;
 
   async onInviteClick() {
     this.generating = true;

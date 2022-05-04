@@ -76,9 +76,9 @@ import { auth } from "../firebase";
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {
-  private user!: User;
-  private activeTab: any = null;
-  private targetProviders = [
+  public user!: User;
+  public activeTab: any = null;
+  public readonly targetProviders = [
     GoogleAuthProvider.PROVIDER_ID,
     // FacebookAuthProvider.PROVIDER_ID,
     // TwitterAuthProvider.PROVIDER_ID,
@@ -116,7 +116,7 @@ export default class Account extends Vue {
     this.linkedRedirect();
   }
 
-  private async signOut() {
+  public async signOut() {
     GeneralModule.setLoading(true);
     await AuthModule.signOut();
     GeneralModule.setLoading(false);
@@ -133,7 +133,7 @@ export default class Account extends Vue {
     updateProfile(this.user, info);
   }
 
-  private async deleteMe() {
+  public async deleteMe() {
     GeneralModule.setLoading(true);
     try {
       if (!this.user) {
@@ -149,7 +149,7 @@ export default class Account extends Vue {
     this.$router.push("/");
   }
 
-  private async link(id: string) {
+  public async link(id: string) {
     this.linking.push(id);
     if (this.isLinked(id)) {
       await unlink(this.user, id);

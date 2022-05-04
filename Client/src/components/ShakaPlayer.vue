@@ -26,13 +26,13 @@ import "shaka-player/dist/controls.css";
 @Component
 export default class ShakaPlayer extends Vue {
   private player?: Player;
-  private isEnded = false;
+  public isEnded = false;
 
   @Prop({ type: String, required: true, default: "" })
-  private streamPath!: string;
+  public readonly streamPath!: string;
 
   @Prop({ type: String, required: true, default: "" })
-  private thumbnailPath!: string;
+  public readonly thumbnailPath!: string;
 
   @Watch("streamPath", { immediate: true })
   private onPathChanged(newPath: string) {
@@ -94,7 +94,7 @@ export default class ShakaPlayer extends Vue {
     this.isEnded = false;
   }
 
-  private replay() {
+  public replay() {
     assertIsDefined(this.player);
     const video = this.player.getMediaElement();
     video.play();

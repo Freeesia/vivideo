@@ -32,21 +32,21 @@ import { AuthModule } from "../store";
 @Component
 export default class Logo extends Vue {
   @Model("update", { type: Boolean, required: true })
-  private value!: boolean;
+  public value!: boolean;
 
   @Prop({ required: true })
-  private target!: ContentNode | null;
+  public readonly target!: ContentNode | null;
 
-  private url = "";
-  private rules = [
+  public url = "";
+  public readonly rules = [
     (v: string) => !!v || "Required.",
     (v: string) => {
       const pattern = /^https?:\/\/.+$/;
       return pattern.test(v) || "Invalid url";
     },
   ];
-  private valid = false;
-  private setting = false;
+  public valid = false;
+  public setting = false;
 
   get name() {
     return this.target?.name;
@@ -63,13 +63,13 @@ export default class Logo extends Vue {
   }
 
   @Emit("update")
-  private close() {
+  public close() {
     this.url = "";
     this.setting = false;
     return false;
   }
 
-  private async submit() {
+  public async submit() {
     if (!this.target) {
       return;
     }

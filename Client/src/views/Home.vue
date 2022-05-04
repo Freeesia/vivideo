@@ -58,12 +58,12 @@ export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
   private contents: ContentNode[] = [];
   private axios?: AxiosInstance;
-  private logoDialog = false;
-  private logoTarget: ContentNode | null = null;
-  private getThumbnailPath = getThumbnailPath;
+  public logoDialog = false;
+  public logoTarget: ContentNode | null = null;
+  public readonly getThumbnailPath = getThumbnailPath;
 
   @Prop({ required: true, type: String, default: "" })
-  path!: string;
+  public readonly path!: string;
 
   mounted() {
     this.$store.watch(
@@ -94,7 +94,7 @@ export default class Home extends Vue {
     return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
   }
 
-  private selectContent(content: ContentNode) {
+  public selectContent(content: ContentNode) {
     this.selectedContent = content;
     if (this.selectedContent ? !this.selectedContent.isDirectory : false) {
       this.$router.push({
@@ -113,12 +113,12 @@ export default class Home extends Vue {
     }
   }
 
-  private openLogoDialog(content: ContentNode) {
+  public openLogoDialog(content: ContentNode) {
     this.logoTarget = content;
     this.logoDialog = true;
   }
 
-  private async queuingAll(content: ContentNode) {
+  public async queuingAll(content: ContentNode) {
     assertIsDefined(this.axios);
     try {
       await this.axios.post<string>(`/api/video/transcode/all/?path=${encodeURIComponent(content.contentPath)}`);

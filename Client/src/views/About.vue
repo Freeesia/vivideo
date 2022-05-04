@@ -27,7 +27,7 @@ import Axios from "axios";
 @Component
 export default class About extends Vue {
   get clientVersion() {
-    return process.env.VUE_APP_VERSION;
+    return import.meta.env.VITE_APP_VERSION;
   }
   serverVersion = "Checking...";
 

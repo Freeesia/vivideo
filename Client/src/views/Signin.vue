@@ -20,7 +20,7 @@ import { firebaseOptions } from "../firebase";
 
 @Component
 export default class Signin extends Vue {
-  private codeError = false;
+  public codeError = false;
 
   private created() {
     firebase.initializeApp(firebaseOptions);
