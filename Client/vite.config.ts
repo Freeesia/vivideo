@@ -17,6 +17,11 @@ export default defineConfig({
       dts: "src/components.d.ts",
     }),
   ],
+  server: {
+    proxy: {
+      "/api": "http://localhost:5000",
+    },
+  },
   build: {
     chunkSizeWarningLimit: 1500,
   },
