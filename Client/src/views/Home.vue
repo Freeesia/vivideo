@@ -38,7 +38,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <logo v-model="logoDialog" :target="logoTarget"></logo>
   </v-container>
 </template>
 
@@ -53,13 +52,11 @@ import { getThumbnailPath } from "../utilities/pathUtility";
 import { compareFunc } from "../utilities/sortUtility";
 import { assertIsDefined } from "../utilities/assert";
 
-@Component({ components: { Logo } })
+@Component
 export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
   private contents: ContentNode[] = [];
   private axios?: AxiosInstance;
-  public logoDialog = false;
-  public logoTarget: ContentNode | null = null;
   public readonly getThumbnailPath = getThumbnailPath;
 
   @Prop({ required: true, type: String, default: "" })
@@ -113,9 +110,10 @@ export default class Home extends Vue {
     }
   }
 
-  public openLogoDialog(content: ContentNode) {
-    this.logoTarget = content;
-    this.logoDialog = true;
+  public openLogoDialog(target: ContentNode) {
+    this.$dialog.show(Logo, {
+      target,
+    });
   }
 
   public async queuingAll(content: ContentNode) {
@@ -125,13 +123,6 @@ export default class Home extends Vue {
     } catch (error) {
       const e = error as AxiosError;
       this.$dialog.notify.error(e.message);
-    }
-  }
-
-  @Watch("logoDialog")
-  private async logoDialogChanged(newValue: boolean) {
-    if (!newValue) {
-      this.logoTarget = null;
     }
   }
 }
