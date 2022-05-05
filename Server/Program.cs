@@ -4,10 +4,9 @@ using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.FileProviders;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.ComponentModel;
+using StudioFreesia.Vivideo.Server.Modules;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +20,7 @@ builder.Services.AddControllers()
     .AddNewtonsoftJson();
 builder.Services.AddHangfire(config
     => config.UseRedisStorage(builder.Configuration.GetConnectionString("Redis")));
+builder.Services.AddSingleton<ITranscodedCache, TranscodedCache>();
 builder.Services.AddDirectoryBrowser();
 builder.Services.AddSpaStaticFiles(config => config.RootPath = "Client");
 
@@ -69,37 +69,6 @@ if (env.IsDevelopment())
 app.UseResponseCompression();
 app.UseResponseCaching();
 app.UseSpaStaticFiles();
-
-app.Map("/stream", app1 =>
-{
-    var content = config.GetSection("Content").Get<ContentDirSetting>();
-    var work = content.Work ?? throw new InvalidOperationException($"{nameof(content.Work)}が指定されていません");
-    Directory.CreateDirectory(work);
-    app1.UseFileServer(new FileServerOptions()
-    {
-        FileProvider = new PhysicalFileProvider(work)
-        {
-            UseActivePolling = true,
-            UsePollingFileWatcher = true,
-        },
-        EnableDirectoryBrowsing = env.IsDevelopment(),
-        EnableDefaultFiles = false,
-        StaticFileOptions =
-        {
-            ContentTypeProvider = new FileExtensionContentTypeProvider()
-            {
-                Mappings = {
-                    [".mpd"] = "application/dash+xml",
-                    [".m3u8"] = "application/x-mpegURL",
-                }
-            },
-            OnPrepareResponse = ctx => {
-                ctx.Context.Response.Headers["Cache-Control"] = "public, no-store";
-            },
-            ServeUnknownFileTypes = true,
-        },
-    });
-});
 
 app.Map("/api", api =>
 {

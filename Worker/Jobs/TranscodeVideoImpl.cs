@@ -8,7 +8,6 @@ namespace StudioFreesia.Vivideo.Worker.Jobs;
 public class TranscodeVideoImpl : ITranscodeVideo
 {
     private readonly ILogger<TranscodeVideoImpl> logger;
-    private readonly string workDir;
     private readonly string inputDir;
     private readonly TranscodeSetting transSetting;
 
@@ -16,26 +15,18 @@ public class TranscodeVideoImpl : ITranscodeVideo
     {
         this.logger = logger;
         var content = contentOptions.Value;
-        this.workDir = content?.Work ?? throw new ArgumentException(nameof(content.Work));
         this.inputDir = content?.List ?? throw new ArgumentException(nameof(content.List));
         this.transSetting = transOptions.Value;
     }
 
     public async Task Transcode(TranscodeQueue queue)
     {
-        var dir = Path.Combine(this.workDir, queue.Output);
-        var outPath = Path.Combine(dir, "master.mpd");
         var name = Path.GetFileNameWithoutExtension(queue.Input);
-        if (File.Exists(outPath))
-        {
-            this.logger.LogInformation($"トランスコードスキップ: {name}");
-            return;
-        }
-        Directory.CreateDirectory(dir);
         var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
         this.logger.LogInformation($"トランスコード開始:{name}");
         var conv = await GetConversion(input, this.transSetting);
-        conv = conv.SetOutput(outPath);
+        var uri = this.transSetting.OutputHost ?? throw new InvalidOperationException($"{nameof(TranscodeSetting.OutputHost)}が設定されていません");
+        conv = conv.SetOutput(new Uri(uri, $"{queue.Output}/master.mpd").ToString());
         // conv.OnDataReceived += (s, e) => this.logger.LogTrace(e.Data);
         conv.OnProgress += (s, e) => this.logger.LogTrace($"Transcoding... {e.Percent}%");
         try
@@ -61,7 +52,8 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .AddStream(videos)
             .AddStream(audios)
             .AddParameter(setting.AdditionalParams)
-            .AddParameter("-window_size 0 -hls_playlist 1 -movflags +faststart");
+            .AddParameter("-window_size 0 -hls_playlist 1 -movflags +faststart")
+            .SetOutputFormat(Format.dash);
         if (!string.IsNullOrEmpty(setting.HWAccel))
         {
             conv = conv.UseHardwareAcceleration(setting.HWAccel, videos.First().Codec, setting.HWEncoder);
