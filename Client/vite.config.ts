@@ -5,13 +5,18 @@ import { VuetifyResolver } from "unplugin-vue-components/resolvers";
 import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 
+// esbuildではなぜかpolyfil出来ないので直接書く
+const serveAlias = {
+  assert: "rollup-plugin-node-polyfills/polyfills/assert",
+  path: "rollup-plugin-node-polyfills/polyfills/path",
+};
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(env => ({
   resolve: {
     alias: {
       "@": __dirname + "/src",
-      assert: "rollup-plugin-node-polyfills/polyfills/assert",
-      path: "rollup-plugin-node-polyfills/polyfills/path",
+      ...(env.command === "serve" ? serveAlias : {}),
     },
   },
   plugins: [
@@ -59,4 +64,4 @@ export default defineConfig({
       ],
     },
   },
-});
+}));
