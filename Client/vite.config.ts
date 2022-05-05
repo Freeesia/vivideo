@@ -2,12 +2,16 @@ import { defineConfig } from "vite";
 import { createVuePlugin } from "vite-plugin-vue2";
 import Components from "unplugin-vue-components/vite";
 import { VuetifyResolver } from "unplugin-vue-components/resolvers";
+import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
+import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     alias: {
       "@": __dirname + "/src",
+      assert: "rollup-plugin-node-polyfills/polyfills/assert",
+      path: "rollup-plugin-node-polyfills/polyfills/path",
     },
   },
   plugins: [
@@ -23,8 +27,16 @@ export default defineConfig({
       "/hangfire": "http://localhost:5000",
     },
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      plugins: [NodeModulesPolyfills()],
+    },
+  },
   build: {
     chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      plugins: [rollupNodePolyFill()],
+    },
   },
   css: {
     // sassのバージョン上げれば動くけど、Vuetifyで警告が出る…
