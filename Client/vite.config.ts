@@ -5,6 +5,7 @@ import Components from "unplugin-vue-components/vite";
 import { VuetifyResolver } from "unplugin-vue-components/resolvers";
 import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // esbuildではなぜかpolyfil出来ないので直接書く
 const serveAlias = {
@@ -13,11 +14,11 @@ const serveAlias = {
 };
 
 // https://vitejs.dev/config/
-export default defineConfig(env => ({
+export default defineConfig(({ command, mode }) => ({
   resolve: {
     alias: {
       "@": __dirname + "/src",
-      ...(env.command === "serve" ? serveAlias : {}),
+      ...(command === "serve" ? serveAlias : {}),
     },
   },
   plugins: [
@@ -85,7 +86,16 @@ export default defineConfig(env => ({
   build: {
     chunkSizeWarningLimit: 3000,
     rollupOptions: {
-      plugins: [rollupNodePolyFill()],
+      plugins: [
+        rollupNodePolyFill(),
+        mode === "analyze" &&
+          visualizer({
+            open: true,
+            filename: "dist/stats.html",
+            gzipSize: true,
+            brotliSize: true,
+          }),
+      ],
     },
   },
   css: {
