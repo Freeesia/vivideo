@@ -1,7 +1,9 @@
+using System.Reactive.Linq;
 using Microsoft.Extensions.Options;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Model;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Events;
 
 namespace StudioFreesia.Vivideo.Worker.Jobs;
 
@@ -27,8 +29,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
         var conv = await GetConversion(input, this.transSetting);
         var uri = this.transSetting.OutputHost ?? throw new InvalidOperationException($"{nameof(TranscodeSetting.OutputHost)}が設定されていません");
         conv = conv.SetOutput(new Uri(uri, $"{queue.Output}/master.mpd").ToString());
-        // conv.OnDataReceived += (s, e) => this.logger.LogTrace(e.Data);
-        conv.OnProgress += (s, e) => this.logger.LogTrace($"Transcoding... {e.Percent}%");
+        using var progress = Observable.FromEvent<ConversionProgressEventHandler, ConversionProgressEventArgs>(
+            h => (s, e) => h(e),
+            h => conv.OnProgress += h,
+            h => conv.OnProgress -= h)
+            .Sample(TimeSpan.FromSeconds(1))
+            .Subscribe(e => this.logger.LogTrace($"Transcoding... {e.Percent:d3}% ({e.Duration}/{e.TotalLength})"));
         try
         {
             await conv.Start();
