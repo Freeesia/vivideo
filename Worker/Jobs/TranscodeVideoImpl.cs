@@ -26,9 +26,10 @@ public class TranscodeVideoImpl : ITranscodeVideo
         var name = Path.GetFileNameWithoutExtension(queue.Input);
         var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
         this.logger.LogInformation($"トランスコード開始:{name}");
-        var conv = await GetConversion(input, this.transSetting);
+        var conv = await GetConversion(input.Normalize(), this.transSetting);
         var uri = this.transSetting.OutputHost ?? throw new InvalidOperationException($"{nameof(TranscodeSetting.OutputHost)}が設定されていません");
         conv = conv.SetOutput(new Uri(uri, $"{queue.Output}/master.mpd").ToString());
+        this.logger.LogInformation(conv.Build());
         using var progress = Observable.FromEvent<ConversionProgressEventHandler, ConversionProgressEventArgs>(
             h => (s, e) => h(e),
             h => conv.OnProgress += h,
@@ -62,7 +63,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .SetOutputFormat(Format.dash);
         if (!string.IsNullOrEmpty(setting.HWAccel))
         {
-            conv = conv.UseHardwareAcceleration(setting.HWAccel, videos.First().Codec, setting.HWEncoder);
+            var decoder = videos.First().Codec;
+            if (setting.HWDecoders.TryGetValue(decoder, out var hwDecoder))
+            {
+                decoder = hwDecoder;
+            }
+            conv = conv.UseHardwareAcceleration(setting.HWAccel, decoder, setting.HWEncoder);
         }
         return conv;
     }
