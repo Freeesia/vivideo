@@ -29,6 +29,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
         var conv = await GetConversion(input.Normalize(), this.transSetting);
         var uri = this.transSetting.OutputHost ?? throw new InvalidOperationException($"{nameof(TranscodeSetting.OutputHost)}が設定されていません");
         conv = conv.SetOutput(new Uri(uri, $"{queue.Output}/master.mpd").ToString());
+        this.logger.LogInformation(conv.Build());
         using var progress = Observable.FromEvent<ConversionProgressEventHandler, ConversionProgressEventArgs>(
             h => (s, e) => h(e),
             h => conv.OnProgress += h,
