@@ -26,7 +26,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
         var name = Path.GetFileNameWithoutExtension(queue.Input);
         var input = Path.IsPathRooted(queue.Input) ? queue.Input : Path.Combine(this.inputDir, queue.Input);
         this.logger.LogInformation($"トランスコード開始:{name}");
-        var conv = await GetConversion(input, this.transSetting);
+        var conv = await GetConversion(input.Normalize(), this.transSetting);
         var uri = this.transSetting.OutputHost ?? throw new InvalidOperationException($"{nameof(TranscodeSetting.OutputHost)}が設定されていません");
         conv = conv.SetOutput(new Uri(uri, $"{queue.Output}/master.mpd").ToString());
         using var progress = Observable.FromEvent<ConversionProgressEventHandler, ConversionProgressEventArgs>(
