@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => ({
         runtimeCaching: [
           {
             urlPattern: /\/api\/thumbnail\//,
-            handler: "StaleWhileRevalidate",
+            handler: "CacheFirst",
             method: "GET",
             options: {
               cacheName: "thumbnail-cache",
