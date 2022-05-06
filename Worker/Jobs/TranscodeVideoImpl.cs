@@ -62,7 +62,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .SetOutputFormat(Format.dash);
         if (!string.IsNullOrEmpty(setting.HWAccel))
         {
-            conv = conv.UseHardwareAcceleration(setting.HWAccel, videos.First().Codec, setting.HWEncoder);
+            var decoder = videos.First().Codec;
+            if (setting.HWDecoders.TryGetValue(decoder, out var hwDecoder))
+            {
+                decoder = hwDecoder;
+            }
+            conv = conv.UseHardwareAcceleration(setting.HWAccel, decoder, setting.HWEncoder);
         }
         return conv;
     }
