@@ -24,7 +24,6 @@ export default defineConfig(({ mode }) => ({
       dts: "src/components.d.ts",
     }),
     VitePWA({
-      disable: true,
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
@@ -34,6 +33,7 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        navigateFallbackDenylist: [/\/hangfire/],
         runtimeCaching: [
           {
             urlPattern: /\/api\/thumbnail\//,
