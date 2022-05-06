@@ -26,6 +26,9 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
+      // devOptions: {
+      //   enabled: true,
+      // },
       manifest: {
         name: "Frix TV Prime",
         theme_color: "#FF9800",
@@ -62,6 +65,10 @@ export default defineConfig(({ mode }) => ({
               },
               cacheableResponse: {
                 statuses: [0, 200],
+              },
+              broadcastUpdate: {
+                channelName: "video-list",
+                options: {},
               },
             },
           },
