@@ -43,10 +43,12 @@ var host = Host.CreateDefaultBuilder(args)
 await using (var scope = host.Services.CreateAsyncScope())
 {
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<FFmpegDownloader>>();
+    var dir = "ffmpeg";
     await FFmpegDownloader.GetLatestVersion(
         FFmpegVersion.Official,
-        "ffmpeg",
+        dir,
         new Progress<ProgressInfo>(p => logger.LogTrace($"{p.DownloadedBytes * 100f / p.TotalBytes:f2}% {p.DownloadedBytes / 1024f:f2}/{p.TotalBytes / 1024f:f2} MB")));
+    FFmpeg.SetExecutablesPath(dir);
 }
 
 await host.RunAsync();
