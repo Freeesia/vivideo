@@ -19,3 +19,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# 開発時SWの出力パス
+/dev-dist/
