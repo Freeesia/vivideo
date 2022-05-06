@@ -52,6 +52,8 @@ import { getThumbnailPath } from "../utilities/pathUtility";
 import { compareFunc } from "../utilities/sortUtility";
 import { assertIsDefined } from "../utilities/assert";
 
+const cacheUpdateChannel = new BroadcastChannel("video-list");
+
 @Component
 export default class Home extends Vue {
   private selectedContent: ContentNode | null = null;
@@ -70,6 +72,11 @@ export default class Home extends Vue {
       },
       { immediate: true, deep: true }
     );
+    cacheUpdateChannel.addEventListener("message", this.updatedCache);
+  }
+
+  beforeDestroy() {
+    cacheUpdateChannel.removeEventListener("message", this.updatedCache);
   }
 
   @Watch("$route", { immediate: true, deep: true })
@@ -83,6 +90,10 @@ export default class Home extends Vue {
     this.contents = res.data;
     SearchModule.setFilter("");
     GeneralModule.setLoading(false);
+  }
+
+  private updatedCache(ev: MessageEvent) {
+    console.log(ev.data);
   }
 
   get filtered() {
