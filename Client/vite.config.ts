@@ -7,18 +7,14 @@ import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 import { visualizer } from "rollup-plugin-visualizer";
 
-// esbuildではなぜかpolyfil出来ないので直接書く
-const serveAlias = {
-  assert: "rollup-plugin-node-polyfills/polyfills/assert",
-  path: "rollup-plugin-node-polyfills/polyfills/path",
-};
-
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": __dirname + "/src",
-      ...(command === "serve" ? serveAlias : {}),
+      assert: "rollup-plugin-node-polyfills/polyfills/assert",
+      path: "rollup-plugin-node-polyfills/polyfills/path",
+      util: "rollup-plugin-node-polyfills/polyfills/util",
     },
   },
   plugins: [
@@ -28,6 +24,7 @@ export default defineConfig(({ command, mode }) => ({
       dts: "src/components.d.ts",
     }),
     VitePWA({
+      disable: true,
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
