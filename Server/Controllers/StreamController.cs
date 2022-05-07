@@ -38,6 +38,7 @@ public class StreamController : ControllerBase
     }
 
     [HttpPost("{key}/{file}")]
+    [RequestSizeLimit(long.MaxValue)]
     public async Task Store([FromRoute] string key, [FromRoute] string file)
     {
         using var ms = new MemoryStream();
