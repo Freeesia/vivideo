@@ -44,6 +44,12 @@ public class TranscodedCache : ITranscodedCache
         var db = await GetDatabase();
         return await db.KeyExistsAsync(KeyPrefix.Append(key));
     }
+
+    public async Task Delete(string key)
+    {
+        var db = await GetDatabase();
+        await db.KeyDeleteAsync(KeyPrefix.Append(key));
+    }
 }
 
 public interface ITranscodedCache
@@ -51,4 +57,5 @@ public interface ITranscodedCache
     Task Set(string key, string file, ReadOnlyMemory<byte> buf);
     Task<ReadOnlyMemory<byte>> Get(string key, string file);
     Task<bool> Exist(string key);
+    Task Delete(string key);
 }

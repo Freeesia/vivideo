@@ -11,21 +11,25 @@
             </template>
             <template #default>
               <v-row class="pa-4" align="start" justify="end">
-                <v-menu v-if="item.isDirectory" offset-y>
+                <v-avatar v-if="item.transcoded" color="white" size="32">
+                  <v-icon large color="teal">play_circle_filled</v-icon>
+                </v-avatar>
+                <v-menu offset-y>
                   <template #activator="{ on }">
                     <v-btn small icon v-on="on">
                       <v-icon>more_vert</v-icon>
                     </v-btn>
                   </template>
-
-                  <v-list>
-                    <v-list-item dense @click.stop="openLogoDialog(item)">Logo</v-list-item>
-                    <v-list-item dense @click.stop="queuingAll(item)">全ての動画を再生可能にする</v-list-item>
+                  <v-list v-if="item.isDirectory">
+                    <v-list-item dense @click="openLogoDialog(item)">Logo</v-list-item>
+                    <v-list-item dense @click="queuingAll(item)">全ての動画を再生可能にする</v-list-item>
+                  </v-list>
+                  <v-list v-else>
+                    <v-list-item :disabled="!item.transcoded" dense @click="deleteCache(item)">
+                      キャッシュの削除
+                    </v-list-item>
                   </v-list>
                 </v-menu>
-                <v-avatar v-else-if="item.transcoded" color="white" size="32">
-                  <v-icon large color="teal">play_circle_filled</v-icon>
-                </v-avatar>
               </v-row>
             </template>
           </v-img>
@@ -119,11 +123,17 @@ export default class Home extends Vue {
   public async queuingAll(content: ContentNode) {
     assertIsDefined(this.axios);
     try {
-      await this.axios.post<string>(`/api/video/transcode/all/?path=${encodeURIComponent(content.contentPath)}`);
+      await this.axios.post<string>(`/api/video/transcode/all/${content.contentPath}`);
     } catch (error) {
       const e = error as AxiosError;
       this.$dialog.notify.error(e.message);
     }
+  }
+
+  public async deleteCache(content: ContentNode) {
+    assertIsDefined(this.axios);
+    await this.axios.delete(`/api/video/${content.contentPath}`);
+    content.transcoded = false;
   }
 }
 </script>

@@ -51,7 +51,7 @@ public class VideoController : ControllerBase
         return output;
     }
 
-    [HttpPost("transcode/all")]
+    [HttpPost("transcode/all/{*path}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
@@ -110,6 +110,16 @@ public class VideoController : ControllerBase
                 this.logger.LogTrace($"{path}:{exists}:{hash}");
                 return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists);
             })));
+    }
+
+    [HttpDelete("{*path}")]
+    public async Task DeleteVideoCache([FromRoute] string path)
+    {
+        var key = GetHash(path);
+        if (await this.cache.Exist(key))
+        {
+            await this.cache.Delete(key);
+        }
     }
 
     private static string GetHash(string path)
