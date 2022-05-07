@@ -9,6 +9,8 @@ namespace StudioFreesia.Vivideo.Worker.Jobs;
 
 public class TranscodeVideoImpl : ITranscodeVideo
 {
+    private const string TargetVideoCodec = "h264";
+    private const string TargetAudioCodec = "aac";
     private readonly ILogger<TranscodeVideoImpl> logger;
     private readonly string inputDir;
     private readonly TranscodeSetting transSetting;
@@ -50,8 +52,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
     private static async Task<IConversion> GetConversion(string input, TranscodeSetting setting)
     {
         var info = await FFmpeg.GetMediaInfo(input);
-        var videos = info.VideoStreams.Select(v => v.SetCodec(VideoCodec.h264));
-        var audios = info.AudioStreams;
+        var videos = info.VideoStreams.Select(v => v.Codec == TargetVideoCodec ? v.CopyStream() : v.SetCodec(TargetVideoCodec));
+        var audios = info.AudioStreams
+            .Select(a => a.Codec == TargetAudioCodec ? a.CopyStream() :
+                a.SetCodec(TargetAudioCodec)
+                    .SetSampleRate(48_000)
+                    .SetBitrate(128_000));
         var conv = FFmpeg.Conversions
             .New()
             .UseShortest(true)
@@ -61,7 +67,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .AddParameter(setting.AdditionalParams)
             .AddParameter("-hls_playlist 1 -http_persistent 1 -movflags +faststart")
             .SetOutputFormat(Format.dash);
-        if (!string.IsNullOrEmpty(setting.HWAccel))
+        if (!videos.All(v => v.Codec == TargetVideoCodec) && !string.IsNullOrEmpty(setting.HWAccel))
         {
             var decoder = videos.First().Codec;
             if (setting.HWDecoders.TryGetValue(decoder, out var hwDecoder))
