@@ -59,7 +59,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .AddStream(videos)
             .AddStream(audios)
             .AddParameter(setting.AdditionalParams)
-            .AddParameter("-window_size 0 -hls_playlist 1 -movflags +faststart")
+            .AddParameter("-hls_playlist 1 -movflags +faststart")
             .SetOutputFormat(Format.dash);
         if (!string.IsNullOrEmpty(setting.HWAccel))
         {
