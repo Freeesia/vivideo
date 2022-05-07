@@ -1,5 +1,12 @@
 <template>
   <v-container fluid>
+    <v-toolbar v-if="segments.length > 0" flat>
+      <v-toolbar-title v-for="(segment, index) in segments" :key="segment" class="ma-2 text-h5">
+        / <router-link v-if="index + 1 !== segments.length" :to="getPath(segment)">{{ segment }}</router-link>
+        <span v-else>{{ segment }}</span>
+      </v-toolbar-title>
+      <v-divider vertical class="pa-2" />
+    </v-toolbar>
     <v-row dense>
       <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
         <v-card height="240" @click="selectContent(item)">
@@ -66,6 +73,16 @@ export default class Home extends Vue {
   @Prop({ required: true, type: String, default: "" })
   public readonly path!: string;
 
+  get segments() {
+    return this.path.split("/").filter(v => v !== "");
+  }
+
+  get filtered() {
+    const search = SearchModule.filter.toUpperCase();
+    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
+    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
+  }
+
   mounted() {
     this.$store.watch(
       state => state.search.path,
@@ -89,28 +106,22 @@ export default class Home extends Vue {
     GeneralModule.setLoading(false);
   }
 
-  get filtered() {
-    const search = SearchModule.filter.toUpperCase();
-    const comp = compareFunc(SearchModule.sorts.find(v => v.path === this.path));
-    return this.contents.filter(n => (search ? n.name.toUpperCase().includes(search) : true)).sort(comp);
+  public getPath(segment: string) {
+    let path = "";
+    for (const s of this.segments) {
+      path += "/" + s;
+      if (s === segment) {
+        return path;
+      }
+    }
   }
 
   public selectContent(content: ContentNode) {
     this.selectedContent = content;
     if (this.selectedContent ? !this.selectedContent.isDirectory : false) {
-      this.$router.push({
-        name: "play",
-        query: {
-          path: content.contentPath,
-        },
-      });
+      this.$router.push(`/play/${content.contentPath}`);
     } else {
-      this.$router.push({
-        name: "home",
-        params: {
-          request: content.contentPath,
-        },
-      });
+      this.$router.push("/" + content.contentPath);
     }
   }
 

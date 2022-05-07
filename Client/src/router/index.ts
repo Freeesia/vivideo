@@ -38,20 +38,16 @@ const routes: RouteConfig[] = [
     component: About,
   },
   {
-    path: "/play/",
+    path: "/play/:path*",
     name: "play",
     component: Play,
-    props: (route: Route) => ({
-      path: route.query.path,
-    }),
+    props: true,
   },
   {
-    path: "/:request*",
+    path: "/:path*",
     name: "home",
     component: Home,
-    props: (route: Route) => ({
-      path: route.params.request,
-    }),
+    props: true,
   },
 ];
 
