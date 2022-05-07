@@ -53,7 +53,10 @@ public class TranscodeVideoImpl : ITranscodeVideo
     {
         var info = await FFmpeg.GetMediaInfo(input);
         var videos = info.VideoStreams
-            .Select(v => v.Codec == TargetVideoCodec ? v.CopyStream() : v.SetCodec(TargetVideoCodec));
+            .Select(v => v.Codec == TargetVideoCodec ? v.CopyStream() :
+                v.SetCodec(TargetVideoCodec)
+                    // 自動で設定だと低くなりすぎるかもなので、設定する
+                    .SetBitrate(4_000_000));
         var audios = info.AudioStreams
             .Select(a => a.Codec == TargetAudioCodec ? a.CopyStream() : a.SetCodec(TargetAudioCodec));
         var conv = FFmpeg.Conversions
