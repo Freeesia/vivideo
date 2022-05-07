@@ -52,19 +52,16 @@ public class TranscodeVideoImpl : ITranscodeVideo
     private static async Task<IConversion> GetConversion(string input, TranscodeSetting setting)
     {
         var info = await FFmpeg.GetMediaInfo(input);
-        var videos = info.VideoStreams.Select(v => v.Codec == TargetVideoCodec ? v.CopyStream() : v.SetCodec(TargetVideoCodec));
+        var videos = info.VideoStreams
+            .Select(v => v.Codec == TargetVideoCodec ? v.CopyStream() : v.SetCodec(TargetVideoCodec));
         var audios = info.AudioStreams
-            .Select(a => a.Codec == TargetAudioCodec ? a.CopyStream() :
-                a.SetCodec(TargetAudioCodec)
-                    .SetSampleRate(48_000)
-                    .SetBitrate(128_000));
+            .Select(a => a.Codec == TargetAudioCodec ? a.CopyStream() : a.SetCodec(TargetAudioCodec));
         var conv = FFmpeg.Conversions
             .New()
             .UseShortest(true)
             .UseMultiThread(true)
             .AddStream(videos)
             .AddStream(audios)
-            .AddParameter(setting.AdditionalParams)
             .AddParameter("-hls_playlist 1 -http_persistent 1 -movflags +faststart")
             .SetOutputFormat(Format.dash);
         if (!videos.All(v => v.Codec == TargetVideoCodec) && !string.IsNullOrEmpty(setting.HWAccel))
@@ -74,7 +71,8 @@ public class TranscodeVideoImpl : ITranscodeVideo
             {
                 decoder = hwDecoder;
             }
-            conv = conv.UseHardwareAcceleration(setting.HWAccel, decoder, setting.HWEncoder);
+            conv = conv.UseHardwareAcceleration(setting.HWAccel, decoder, setting.HWEncoder)
+                .AddParameter(setting.HWAdditionalParams);
         }
         return conv;
     }
