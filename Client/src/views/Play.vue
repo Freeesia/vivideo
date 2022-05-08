@@ -46,7 +46,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import Player from "@/components/Player.vue";
 import ShakaPlayer from "@/components/ShakaPlayer.vue";
-import { AuthModule, GeneralModule, SearchModule } from "../store";
+import { AuthModule, GeneralModule, GlobalModule, SearchModule } from "../store";
 import { Prop } from "vue-property-decorator";
 import ContentNode from "../models/ContnetNode";
 import { AxiosInstance } from "axios";
@@ -61,7 +61,6 @@ import { compareFunc } from "../utilities/sortUtility";
 export default class Play extends Vue {
   public streamPath = "";
   public thumbnailPath = "";
-  public autoNext = true;
   public percent = 0;
 
   @Prop({ required: true, type: String, default: "" })
@@ -71,6 +70,13 @@ export default class Play extends Vue {
   private axios?: AxiosInstance;
 
   public readonly getThumbnailPath = getThumbnailPath;
+
+  get autoNext() {
+    return GlobalModule.auto;
+  }
+  set autoNext(value: boolean) {
+    GlobalModule.setAuto(value);
+  }
 
   private async created() {
     assert(this.path);
