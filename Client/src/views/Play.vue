@@ -10,7 +10,7 @@
             <v-btn @click="cancelAuto">キャンセル</v-btn>
           </template>
         </ShakaPlayer>
-        <div>{{ path }}</div>
+        <h2 class="ma-4">{{ title }}</h2>
       </v-col>
       <v-col md="4">
         <v-list>
@@ -78,6 +78,10 @@ export default class Play extends Vue {
     GlobalModule.setAuto(value);
   }
 
+  get title() {
+    return path.basename(this.path, path.extname(this.path));
+  }
+
   private async created() {
     assert(this.path);
     this.axios = await AuthModule.getAxios();
@@ -135,12 +139,7 @@ export default class Play extends Vue {
   }
 
   public async select(item: ContentNode) {
-    await this.$router.push({
-      name: "play",
-      query: {
-        path: item.contentPath,
-      },
-    });
+    await this.$router.push(`/paly/${item.contentPath}`);
     this.loadVideo();
   }
 }
