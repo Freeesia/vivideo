@@ -5,11 +5,12 @@ import VuexPersistence from "vuex-persist";
 import Auth from "./modules/auth";
 import Search from "./modules/search";
 import General from "./modules/general";
+import Global from "./modules/global";
 
 Vue.use(Vuex);
 
 const persist = new VuexPersistence({
-  modules: ["search"],
+  modules: ["search", "global"],
 });
 
 export const store = new Vuex.Store({
@@ -17,6 +18,7 @@ export const store = new Vuex.Store({
     auth: Auth,
     search: Search,
     general: General,
+    global: Global,
   },
   plugins: [persist.plugin],
 });
@@ -24,3 +26,4 @@ export const store = new Vuex.Store({
 export const AuthModule = getModule(Auth, store);
 export const SearchModule = getModule(Search, store);
 export const GeneralModule = getModule(General, store);
+export const GlobalModule = getModule(Global, store);

@@ -17,7 +17,9 @@
         flat
         solo-inverted
       />
-
+      <v-btn icon @click="toggleTheme">
+        <v-icon>{{ themeIcon }} </v-icon>
+      </v-btn>
       <v-menu v-if="isSignedIn && isHome" offset-y open-on-hover :close-on-content-click="false">
         <template #activator="{ on }">
           <v-btn icon v-on="on">
@@ -65,7 +67,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Watch } from "vue-property-decorator";
-import { AuthModule, SearchModule, GeneralModule } from "./store";
+import { AuthModule, SearchModule, GeneralModule, GlobalModule } from "./store";
 import { SortType, OrderType } from "./store/modules/search";
 
 @Component({})
@@ -90,6 +92,10 @@ export default class App extends Vue {
     return AuthModule.user ? true : false;
   }
 
+  get themeIcon() {
+    return this.$vuetify.theme.dark ? "dark_mode" : "light_mode";
+  }
+
   private mounted() {
     this.$store.watch(
       state => state.search.filter,
@@ -110,6 +116,11 @@ export default class App extends Vue {
     const sortOrder = SearchModule.sorts.find(v => v.path === this.currentPath);
     this.order = sortOrder?.order ?? OrderType.Asc;
     this.sort = sortOrder?.sort ?? SortType.Name;
+  }
+
+  public toggleTheme() {
+    this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+    GlobalModule.setDark(this.$vuetify.theme.dark);
   }
 
   public selectSort(sort: SortType) {
