@@ -16,8 +16,7 @@ builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/24
 
 builder.Services.Configure<ContentDirSetting>(builder.Configuration.GetSection("Content"));
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
+builder.Services.AddControllers();
 builder.Services.AddHangfire(config
     => config.UseRedisStorage(builder.Configuration.GetConnectionString("Redis")));
 builder.Services.AddSingleton<ITranscodedCache, TranscodedCache>();
