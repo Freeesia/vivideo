@@ -87,19 +87,19 @@ public class VideoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async Task<ActionResult<IEnumerable<ContentNode>>> List([FromRoute] string? path)
+    public async IAsyncEnumerable<ContentNode> List([FromRoute] string? path)
     {
         var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
         if (!dir.Exists)
         {
-            return NotFound();
+            yield break;
         }
 
-        return await Task.WhenAll(dir.GetFileSystemInfos()
+        var nodes = dir.GetFileSystemInfos()
             .Where(i => !i.Name.StartsWith('.') && i switch
             {
                 DirectoryInfo _ => true,
-                FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi"),
+                FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi", ".wmv"),
                 _ => throw new InvalidOperationException(),
             })
             .Select(i => Task.Run(async () =>
@@ -109,7 +109,13 @@ public class VideoController : ControllerBase
                 var exists = await this.cache.Exist(hash);
                 this.logger.LogTrace($"{path}:{exists}:{hash}");
                 return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists);
-            })));
+            }))
+            .ToArray();
+
+        await foreach (var node in nodes.WhenEach().ConfigureAwait(false))
+        {
+            yield return node;
+        }
     }
 
     [HttpDelete("{*path}")]
