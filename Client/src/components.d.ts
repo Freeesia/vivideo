@@ -27,6 +27,7 @@ declare module '@vue/runtime-core' {
     VForm: typeof import('vuetify/lib')['VForm']
     VIcon: typeof import('vuetify/lib')['VIcon']
     VImg: typeof import('vuetify/lib')['VImg']
+    VLazy: typeof import('vuetify/lib')['VLazy']
     VList: typeof import('vuetify/lib')['VList']
     VListItem: typeof import('vuetify/lib')['VListItem']
     VListItemAvatar: typeof import('vuetify/lib')['VListItemAvatar']
@@ -49,6 +50,7 @@ declare module '@vue/runtime-core' {
     VToolbar: typeof import('vuetify/lib')['VToolbar']
     VToolbarTitle: typeof import('vuetify/lib')['VToolbarTitle']
     VTooltip: typeof import('vuetify/lib')['VTooltip']
+    VVirtualScroll: typeof import('vuetify/lib')['VVirtualScroll']
   }
 }
 

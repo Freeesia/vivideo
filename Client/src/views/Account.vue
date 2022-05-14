@@ -1,5 +1,5 @@
 <template>
-  <v-container fill-height>
+  <v-container>
     <v-row no-gutters class="fill-height mt-4">
       <v-col md="4" cols="12" class="pa-2">
         <section class="d-flex align-center flex-column">
@@ -11,7 +11,7 @@
                 </v-row>
               </template>
             </v-img>
-            <span v-else class="white--text display-4">{{ user.email[0] }}</span>
+            <span v-else class="white--text display-4">{{ user.email }}</span>
           </v-avatar>
           <p class="headline font-weight-bold ma-2">{{ user.displayName }}</p>
           <address class="caption">{{ user.email }}</address>

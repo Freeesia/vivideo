@@ -1,11 +1,12 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig, Route } from "vue-router";
+import VueRouter, { RouteConfig } from "vue-router";
 import About from "@/views/About.vue";
 import Home from "@/views/Home.vue";
 import Play from "@/views/Play.vue";
 import Signin from "@/views/Signin.vue";
 import Signup from "@/views/Signup.vue";
 import Account from "@/views/Account.vue";
+import History from "@/views/History.vue";
 import { AuthModule } from "@/store";
 
 Vue.use(VueRouter);
@@ -42,6 +43,11 @@ const routes: RouteConfig[] = [
     name: "play",
     component: Play,
     props: true,
+  },
+  {
+    path: "/history",
+    name: "history",
+    component: History,
   },
   {
     path: "/:path*",

@@ -52,10 +52,10 @@ import type { ContentNode } from "@/model";
 import type { AxiosInstance } from "axios";
 import path from "path";
 import assert from "assert";
-import { assertIsDefined } from "../utilities/assert";
-import { getThumbnailPath } from "../utilities/pathUtility";
-import { delay } from "../utilities/systemUtility";
-import { compareFunc } from "../utilities/sortUtility";
+import { assertIsDefined } from "@/utilities/assert";
+import { getThumbnailPath, getTitle } from "@/utilities/pathUtility";
+import { delay } from "@/utilities/systemUtility";
+import { compareFunc } from "@/utilities/sortUtility";
 
 @Component({ components: { Player, ShakaPlayer } })
 export default class Play extends Vue {
@@ -80,7 +80,7 @@ export default class Play extends Vue {
   }
 
   get title() {
-    return path.basename(this.path, path.extname(this.path));
+    return getTitle(this.path);
   }
 
   private async created() {

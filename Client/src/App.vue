@@ -44,7 +44,8 @@
         </template>
 
         <v-list>
-          <v-list-item dense :disabled="!isSignedIn" to="/account">Account</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" to="/account">アカウント</v-list-item>
+          <v-list-item dense :disabled="!isSignedIn" to="/history">履歴</v-list-item>
           <v-list-item dense :disabled="!isSignedIn" to="/about">About</v-list-item>
         </v-list>
       </v-menu>

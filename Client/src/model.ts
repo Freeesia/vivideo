@@ -9,5 +9,5 @@ export interface ContentNode {
 export interface HistoryVideo {
   path: string;
   current: number;
-  lastUpdate: Date;
+  lastUpdate: number;
 }
