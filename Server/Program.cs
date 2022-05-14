@@ -1,4 +1,5 @@
 
+using System.Reflection;
 using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,8 +8,18 @@ using Microsoft.AspNetCore.HttpOverrides;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.ComponentModel;
 using StudioFreesia.Vivideo.Server.Modules;
+using Xabe.FFmpeg;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// FFmpegを並列で呼ぶと落ちる問題の回避策
+// https://github.com/tomaszzmuda/Xabe.FFmpeg/issues/413
+{
+    var type = typeof(FFmpeg).Assembly.GetType("Xabe.FFmpeg.FFmpegWrapper");
+    var ffmpeg = Activator.CreateInstance(type!, true) as FFmpeg;
+    var path = typeof(FFmpeg)!.GetProperty("FFmpegPath", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(ffmpeg) as string;
+    FFmpeg.SetExecutablesPath(Path.GetDirectoryName(path));
+}
 
 #if !DEBUG
 builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801");

@@ -12,7 +12,6 @@ namespace StudioFreesia.Vivideo.Server.Controllers;
 [Route("[controller]")]
 public class ThumbnailController : ControllerBase
 {
-    private static readonly AsyncLock mediaLock = new();
     private readonly string contentDir;
     private readonly IDistributedCache cache;
     private readonly DistributedCacheEntryOptions cacheOption;
@@ -70,11 +69,7 @@ public class ThumbnailController : ControllerBase
         this.logger.LogDebug($"サムネイル生成開始:{name}");
         try
         {
-            IMediaInfo info;
-            using (await mediaLock.LockAsync(cancellationToken))
-            {
-                info = await FFmpeg.GetMediaInfo(path, cancellationToken);
-            }
+            var info = await FFmpeg.GetMediaInfo(path, cancellationToken);
             var videoStream = info.VideoStreams.First()
                 .SetCodec(VideoCodec.png)
                 .SetSeek(this.ssTime > info.Duration ? TimeSpan.Zero : this.ssTime)
