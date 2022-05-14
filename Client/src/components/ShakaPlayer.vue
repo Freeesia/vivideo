@@ -18,13 +18,14 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { Prop, Watch, Emit } from "vue-property-decorator";
+import { Prop, Watch, Emit, PropSync } from "vue-property-decorator";
 import { polyfill, Player, ui } from "shaka-player/dist/shaka-player.ui";
 import { assertIsDefined } from "../utilities/assert";
 import "shaka-player/dist/controls.css";
 
 @Component
 export default class ShakaPlayer extends Vue {
+  private updateCurrentTimer!: number;
   private player?: Player;
   public isEnded = false;
 
@@ -33,6 +34,9 @@ export default class ShakaPlayer extends Vue {
 
   @Prop({ type: String, required: true, default: "" })
   public readonly thumbnailPath!: string;
+
+  @PropSync("current", { type: Number, default: 0 })
+  public _current!: number;
 
   @Watch("streamPath", { immediate: true })
   private onPathChanged(newPath: string) {
@@ -47,6 +51,7 @@ export default class ShakaPlayer extends Vue {
   }
 
   mounted() {
+    this.updateCurrentTimer = window.setInterval(this.updateCurrent, 1_000);
     const video = this.$refs.video as HTMLMediaElement;
     this.player = new Player(video);
     this.player.configure({
@@ -78,9 +83,9 @@ export default class ShakaPlayer extends Vue {
     assertIsDefined(this.player);
     const supportType = await Player.probeSupport();
     if (supportType.manifest["application/dash+xml"]) {
-      await this.player.load(this.streamPath + "/master.mpd", 0, "application/dash+xml");
+      await this.player.load(this.streamPath + "/master.mpd", this._current, "application/dash+xml");
     } else {
-      await this.player.load(this.streamPath + "/master.m3u8", 0, "application/x-mpegURL");
+      await this.player.load(this.streamPath + "/master.m3u8", this._current, "application/x-mpegURL");
     }
   }
 
@@ -94,6 +99,12 @@ export default class ShakaPlayer extends Vue {
     this.isEnded = false;
   }
 
+  private updateCurrent() {
+    assertIsDefined(this.player);
+    const video = this.player?.getMediaElement();
+    this._current = video.currentTime;
+  }
+
   public replay() {
     assertIsDefined(this.player);
     const video = this.player.getMediaElement();
@@ -104,6 +115,7 @@ export default class ShakaPlayer extends Vue {
     if (this.player) {
       this.player.destroy();
     }
+    clearInterval(this.updateCurrentTimer);
   }
 }
 </script>

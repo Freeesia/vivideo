@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row no-gutters dense>
       <v-col cols="12" md="8">
-        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" @ended="ended">
+        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" :current.sync="current" @ended="ended">
           <template v-if="autoNext" #overlay>
             <v-row justify="center">
               <v-progress-circular class="ma-2" rotate="-90" size="60" :value="percent"></v-progress-circular>
@@ -24,7 +24,7 @@
               <v-overlay absolute :value="isPlaying(item)">
                 <v-icon>play_arrow</v-icon>
               </v-overlay>
-              <v-img :src="getThumbnailPath(item)">
+              <v-img :src="getThumbnailPath(item.contentPath)">
                 <template #placeholder>
                   <v-row class="fill-height" align="center" justify="center">
                     <v-icon>movie</v-icon>
@@ -46,10 +46,10 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import Player from "@/components/Player.vue";
 import ShakaPlayer from "@/components/ShakaPlayer.vue";
-import { AuthModule, GeneralModule, GlobalModule, SearchModule } from "../store";
-import { Prop } from "vue-property-decorator";
-import ContentNode from "../models/ContnetNode";
-import { AxiosInstance } from "axios";
+import { AuthModule, GeneralModule, GlobalModule, HistoryModule, SearchModule } from "@/store";
+import { Prop, Watch } from "vue-property-decorator";
+import type { ContentNode } from "@/model";
+import type { AxiosInstance } from "axios";
 import path from "path";
 import assert from "assert";
 import { assertIsDefined } from "../utilities/assert";
@@ -62,6 +62,7 @@ export default class Play extends Vue {
   public streamPath = "";
   public thumbnailPath = "";
   public percent = 0;
+  public current = 0;
 
   @Prop({ required: true, type: String, default: "" })
   public readonly path!: string;
@@ -92,7 +93,11 @@ export default class Play extends Vue {
   private async loadVideo() {
     assertIsDefined(this.axios);
     GeneralModule.setLoading(true);
-    this.thumbnailPath = "/api/thumbnail/?path=" + encodeURIComponent(this.path);
+    this.thumbnailPath = getThumbnailPath(this.path);
+    const video = HistoryModule.videos.find(v => v.path === this.path);
+    if (video && video.current > 0) {
+      this.current = Math.max(video.current - 1, 0);
+    }
     const res = await this.axios.post<string>(`/api/video/transcode/?path=${encodeURIComponent(this.path)}`);
     this.streamPath = res.data;
     GeneralModule.setLoading(false);
@@ -111,6 +116,7 @@ export default class Play extends Vue {
   }
 
   public async ended() {
+    HistoryModule.end(this.path);
     const index = this.contents.findIndex(c => c.contentPath === this.path);
     if (index < 0 || this.contents.length - 1 <= index) {
       this.autoNext = false;
@@ -141,6 +147,11 @@ export default class Play extends Vue {
   public async select(item: ContentNode) {
     await this.$router.push(`/paly/${item.contentPath}`);
     this.loadVideo();
+  }
+
+  @Watch("current")
+  private updatedCurrent() {
+    HistoryModule.watch({ path: this.path, current: this.current });
   }
 }
 </script>

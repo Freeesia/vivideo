@@ -1,4 +1,4 @@
-import ContentNode from "@/models/ContnetNode";
+import { ContentNode } from "@/model";
 import { OrderType, SortType, SortOrder } from "@/store/modules/search";
 import { compare } from "natural-orderby";
 
