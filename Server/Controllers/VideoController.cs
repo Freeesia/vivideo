@@ -85,10 +85,11 @@ public class VideoController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("content/{*path}")]
+    public Task<ContentNode> ContentNode([FromRoute] string path)
+        => GetContent(new FileInfo(Path.Combine(this.inputDir, path)));
+
     [HttpGet("{*path}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesDefaultResponseType]
     public async IAsyncEnumerable<ContentNode> List([FromRoute] string? path)
     {
         var dir = new DirectoryInfo(Path.Combine(this.inputDir, path ?? string.Empty));
@@ -104,20 +105,22 @@ public class VideoController : ControllerBase
                 FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi", ".wmv"),
                 _ => throw new InvalidOperationException(),
             })
-            .Select(i => Task.Run(async () =>
-            {
-                var path = Path.GetRelativePath(this.inputDir, i.FullName);
-                var hash = GetHash(path);
-                var (exists, duration) = await ValueTaskEx.WhenAll(this.cache.Exist(hash), GetVideoDuration(i));
-                this.logger.LogTrace($"{path}:{exists}:{hash}:{duration}");
-                return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists, duration.TotalSeconds);
-            }))
+            .Select(i => Task.Run(() => GetContent(i)))
             .ToArray();
 
         await foreach (var node in nodes.WhenEach().ConfigureAwait(false))
         {
             yield return node;
         }
+    }
+
+    private async Task<ContentNode> GetContent(FileSystemInfo fsInfo)
+    {
+        var path = Path.GetRelativePath(this.inputDir, fsInfo.FullName);
+        var hash = GetHash(path);
+        var (exists, duration) = await ValueTaskEx.WhenAll(this.cache.Exist(hash), GetVideoDuration(fsInfo));
+        this.logger.LogTrace($"{path}:{exists}:{hash}:{duration}");
+        return new ContentNode(path, fsInfo is DirectoryInfo, fsInfo.LastWriteTimeUtc, exists, duration.TotalSeconds);
     }
 
     private static async ValueTask<TimeSpan> GetVideoDuration(FileSystemInfo fsInfo, CancellationToken cancellationToken = default)

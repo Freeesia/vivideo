@@ -1863,6 +1863,11 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/format-duration@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/format-duration/-/format-duration-1.0.1.tgz#6dad5abde010ae98ed89caa83057141e9e8367f0"
+  integrity sha512-rdzo+sQkmWPPJh1Axr+7iPEQ1KkahAODn8mxKUeJ0m9u3dwp1hTJcNFdWWf+UCvLV8AvJSAy9Whsajf9siLU8Q==
+
 "@types/fs-extra@^8.0.1":
   version "8.1.2"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-8.1.2.tgz#7125cc2e4bdd9bd2fc83005ffdb1d0ba00cca61f"
@@ -4443,6 +4448,11 @@ form-data@~2.3.2:
     asynckit "^0.4.0"
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
+
+format-duration@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/format-duration/-/format-duration-2.0.0.tgz#334d6c7e17c25e40ac7d5b80f9e7fb9a02cbc0b9"
+  integrity sha512-ARqJ9qXm71pw3SGAY7bibf8lRLvltOXLjWjzzR3UrUjHu1zdeYpA/Z+u+ltdhrfRa440OjEsHNzdmuZViqqQWQ==
 
 forwarded@0.2.0:
   version "0.2.0"

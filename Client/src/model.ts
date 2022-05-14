@@ -4,6 +4,7 @@ export interface ContentNode {
   isDirectory: boolean;
   createdAt: string;
   transcoded: boolean;
+  duration: number;
 }
 
 export interface HistoryVideo {

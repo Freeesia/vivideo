@@ -26,6 +26,7 @@ declare module '@vue/runtime-core' {
     VDivider: typeof import('vuetify/lib')['VDivider']
     VForm: typeof import('vuetify/lib')['VForm']
     VIcon: typeof import('vuetify/lib')['VIcon']
+    VideoThumbnail: typeof import('./components/VideoThumbnail.vue')['default']
     VImg: typeof import('vuetify/lib')['VImg']
     VLazy: typeof import('vuetify/lib')['VLazy']
     VList: typeof import('vuetify/lib')['VList']

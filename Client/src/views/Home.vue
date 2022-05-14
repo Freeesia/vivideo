@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-toolbar v-if="segments.length > 0" flat>
+    <v-toolbar v-if="segments.length > 0" flat class="mb-2">
       <v-toolbar-title v-for="(segment, index) in segments" :key="segment" class="ma-2 text-h5">
         / <router-link v-if="index + 1 !== segments.length" :to="getPath(segment)">{{ segment }}</router-link>
         <span v-else>{{ segment }}</span>
@@ -9,37 +9,30 @@
     </v-toolbar>
     <v-row dense>
       <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
-        <v-card height="240" @click="selectContent(item)">
-          <v-img contain height="160" :src="getThumbnailPath(item.contentPath)">
-            <template #placeholder>
-              <v-row class="fill-height" align="center" justify="center">
-                <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
-              </v-row>
-            </template>
-            <template #default>
-              <v-row class="pa-4" align="start" justify="end">
-                <v-avatar v-if="item.transcoded" color="white" size="32">
-                  <v-icon large color="teal">play_circle_filled</v-icon>
-                </v-avatar>
-                <v-menu offset-y>
-                  <template #activator="{ on }">
-                    <v-btn small icon v-on="on">
-                      <v-icon>more_vert</v-icon>
-                    </v-btn>
-                  </template>
-                  <v-list v-if="item.isDirectory">
-                    <v-list-item dense @click="openLogoDialog(item)">Logo</v-list-item>
-                    <v-list-item dense @click="queuingAll(item)">全ての動画を再生可能にする</v-list-item>
-                  </v-list>
-                  <v-list v-else>
-                    <v-list-item :disabled="!item.transcoded" dense @click="deleteCache(item)">
-                      キャッシュの削除
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
-              </v-row>
-            </template>
-          </v-img>
+        <v-card height="260" @click="selectContent(item)">
+          <video-thumbnail class="ma-1" :content="item" :history="histories[item.contentPath]">
+            <v-row class="pa-4" align="start" justify="end">
+              <v-avatar v-if="item.transcoded" color="white" size="32">
+                <v-icon large color="teal">play_circle_filled</v-icon>
+              </v-avatar>
+              <v-menu offset-y>
+                <template #activator="{ on }">
+                  <v-btn small icon v-on="on">
+                    <v-icon>more_vert</v-icon>
+                  </v-btn>
+                </template>
+                <v-list v-if="item.isDirectory">
+                  <v-list-item dense @click="openLogoDialog(item)">Logo</v-list-item>
+                  <v-list-item dense @click="queuingAll(item)">全ての動画を再生可能にする</v-list-item>
+                </v-list>
+                <v-list v-else>
+                  <v-list-item :disabled="!item.transcoded" dense @click="deleteCache(item)">
+                    キャッシュの削除
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+            </v-row>
+          </video-thumbnail>
           <v-tooltip top>
             <template #activator="{ on }">
               <v-card-title v-on="on">{{ item.name }}</v-card-title>
@@ -56,12 +49,13 @@
 import Vue from "vue";
 import Logo from "@/components/Logo.vue";
 import { Component, Watch, Prop } from "vue-property-decorator";
-import { ContentNode } from "@/model";
+import { ContentNode, HistoryVideo } from "@/model";
 import { AxiosError, AxiosInstance } from "axios";
-import { AuthModule, SearchModule, GeneralModule } from "../store";
+import { AuthModule, SearchModule, GeneralModule, HistoryModule } from "../store";
 import { getThumbnailPath } from "../utilities/pathUtility";
 import { compareFunc } from "../utilities/sortUtility";
 import { assertIsDefined } from "../utilities/assert";
+import { toRecord } from "@/utilities/systemUtility";
 
 @Component
 export default class Home extends Vue {
@@ -69,6 +63,7 @@ export default class Home extends Vue {
   private contents: ContentNode[] = [];
   private axios?: AxiosInstance;
   public readonly getThumbnailPath = getThumbnailPath;
+  public histories: Record<string, HistoryVideo> = {};
 
   @Prop({ required: true, type: String, default: "" })
   public readonly path!: string;
@@ -103,6 +98,10 @@ export default class Home extends Vue {
     const res = await this.axios.get<ContentNode[]>("/api/video/" + this.path);
     this.contents = res.data;
     SearchModule.setFilter("");
+    this.histories = toRecord(
+      HistoryModule.videos.filter(h => h.path.startsWith(this.path)),
+      "path"
+    );
     GeneralModule.setLoading(false);
   }
 
