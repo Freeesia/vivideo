@@ -21,33 +21,33 @@ public class TranscodedCache : ITranscodedCache
         this.con = new(() => ConnectionMultiplexer.ConnectAsync(this.connectionString));
     }
 
-    private async Task<IDatabase> GetDatabase()
+    private async ValueTask<IDatabase> GetDatabase()
     {
         var con = await this.con;
         return con.GetDatabase().WithKeyPrefix(nameof(TranscodedCache) + ":");
     }
 
-    public async Task<ReadOnlyMemory<byte>> Get(string key, string file)
+    public async ValueTask<ReadOnlyMemory<byte>> Get(string key, string file)
     {
         var db = await GetDatabase();
         var lease = await db.HashGetLeaseAsync(key, file);
         return lease.Memory;
     }
 
-    public async Task Set(string key, string file, ReadOnlyMemory<byte> buf)
+    public async ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf)
     {
         var db = await GetDatabase();
         await db.HashSetAsync(key, file, buf);
         await db.KeyExpireAsync(key, expiry);
     }
 
-    public async Task<bool> Exist(string key)
+    public async ValueTask<bool> Exist(string key)
     {
         var db = await GetDatabase();
         return await db.KeyExistsAsync(key);
     }
 
-    public async Task Delete(string key)
+    public async ValueTask Delete(string key)
     {
         var db = await GetDatabase();
         await db.KeyDeleteAsync(key);
@@ -56,8 +56,8 @@ public class TranscodedCache : ITranscodedCache
 
 public interface ITranscodedCache
 {
-    Task Set(string key, string file, ReadOnlyMemory<byte> buf);
-    Task<ReadOnlyMemory<byte>> Get(string key, string file);
-    Task<bool> Exist(string key);
-    Task Delete(string key);
+    ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf);
+    ValueTask<ReadOnlyMemory<byte>> Get(string key, string file);
+    ValueTask<bool> Exist(string key);
+    ValueTask Delete(string key);
 }

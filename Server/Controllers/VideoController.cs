@@ -8,6 +8,8 @@ using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.Extensions;
 using StudioFreesia.Vivideo.Server.Model;
 using StudioFreesia.Vivideo.Server.Modules;
+using ValueTaskSupplement;
+using Xabe.FFmpeg;
 
 namespace StudioFreesia.Vivideo.Server.Controllers;
 
@@ -106,15 +108,28 @@ public class VideoController : ControllerBase
             {
                 var path = Path.GetRelativePath(this.inputDir, i.FullName);
                 var hash = GetHash(path);
-                var exists = await this.cache.Exist(hash);
-                this.logger.LogTrace($"{path}:{exists}:{hash}");
-                return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists);
+                var (exists, duration) = await ValueTaskEx.WhenAll(this.cache.Exist(hash), GetVideoDuration(i));
+                this.logger.LogTrace($"{path}:{exists}:{hash}:{duration}");
+                return new ContentNode(path, i is DirectoryInfo, i.LastWriteTimeUtc, exists, duration.TotalSeconds);
             }))
             .ToArray();
 
         await foreach (var node in nodes.WhenEach().ConfigureAwait(false))
         {
             yield return node;
+        }
+    }
+
+    private static async ValueTask<TimeSpan> GetVideoDuration(FileSystemInfo fsInfo, CancellationToken cancellationToken = default)
+    {
+        if (fsInfo is FileInfo)
+        {
+            var info = await FFmpeg.GetMediaInfo(fsInfo.FullName, cancellationToken);
+            return info.Duration;
+        }
+        else
+        {
+            return TimeSpan.Zero;
         }
     }
 

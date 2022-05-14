@@ -10,6 +10,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.4" />
     <PackageReference Include="AspNetCore.Firebase.Authentication" Version="2.0.1" />
     <PackageReference Include="Sentry.AspNetCore" Version="2.1.6" />
+    <PackageReference Include="ValueTaskSupplement" Version="1.1.0" />
     <PackageReference Include="Xabe.FFmpeg" Version="5.1.0" />
   </ItemGroup>
   <ItemGroup>
