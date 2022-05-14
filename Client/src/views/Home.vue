@@ -10,7 +10,7 @@
     <v-row dense>
       <v-col v-for="item in filtered" :key="item.name" cols="12" sm="6" md="4" lg="3" xl="2">
         <v-card height="240" @click="selectContent(item)">
-          <v-img contain height="160" :src="getThumbnailPath(item)">
+          <v-img contain height="160" :src="getThumbnailPath(item.contentPath)">
             <template #placeholder>
               <v-row class="fill-height" align="center" justify="center">
                 <v-icon size="100">{{ item.isDirectory ? "video_library" : "movie" }}</v-icon>
@@ -56,7 +56,7 @@
 import Vue from "vue";
 import Logo from "@/components/Logo.vue";
 import { Component, Watch, Prop } from "vue-property-decorator";
-import ContentNode from "../models/ContnetNode";
+import { ContentNode } from "@/model";
 import { AxiosError, AxiosInstance } from "axios";
 import { AuthModule, SearchModule, GeneralModule } from "../store";
 import { getThumbnailPath } from "../utilities/pathUtility";
