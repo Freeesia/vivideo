@@ -9,8 +9,8 @@
     "analyze": "vite build --mode analyze"
   },
   "dependencies": {
-    "@sentry/browser": "^5.12.5",
-    "@sentry/integrations": "^5.12.5",
+    "@sentry/tracing": "^6.19.7",
+    "@sentry/vue": "^6.19.7",
     "@types/format-duration": "^1.0.1",
     "axios": "^0.27.2",
     "firebase": "^9.6.5",
