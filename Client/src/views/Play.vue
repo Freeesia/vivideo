@@ -54,7 +54,7 @@ import Player from "@/components/Player.vue";
 import ShakaPlayer from "@/components/ShakaPlayer.vue";
 import { AuthModule, GeneralModule, GlobalModule, HistoryModule, SearchModule } from "@/store";
 import { Prop, Watch } from "vue-property-decorator";
-import type { ContentNode } from "@/model";
+import type { ContentNode, HistoryVideo } from "@/model";
 import type { AxiosInstance } from "axios";
 import path from "path";
 import assert from "assert";
@@ -62,6 +62,16 @@ import { assertIsDefined } from "@/utilities/assert";
 import { getThumbnailPath, getTitle } from "@/utilities/pathUtility";
 import { delay } from "@/utilities/systemUtility";
 import { compareFunc } from "@/utilities/sortUtility";
+import { db } from "@/plugins/firebase";
+import {
+  collection,
+  CollectionReference,
+  doc,
+  DocumentData,
+  DocumentReference,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 
 @Component({ components: { Player, ShakaPlayer } })
 export default class Play extends Vue {
@@ -75,6 +85,7 @@ export default class Play extends Vue {
 
   public contents: ContentNode[] = [];
   private axios?: AxiosInstance;
+  private historyRef?: DocumentReference<DocumentData>;
 
   public readonly getThumbnailPath = getThumbnailPath;
 
@@ -112,8 +123,10 @@ export default class Play extends Vue {
     if (video && video.current > 0) {
       this.current = Math.max(video.current - 1, 0);
     }
-    const res = await this.axios.post<string>(`/api/video/transcode/?path=${encodeURIComponent(this.path)}`);
-    this.streamPath = res.data;
+    const { data } = await this.axios.post<string>(`/api/video/transcode/?path=${encodeURIComponent(this.path)}`);
+    const videosRef = collection(db, `users/${AuthModule.user?.uid}/histoy`);
+    this.historyRef = doc(videosRef, path.basename(data, path.extname(data)));
+    this.streamPath = data;
     GeneralModule.loading = false;
   }
 
@@ -166,6 +179,8 @@ export default class Play extends Vue {
   @Watch("current")
   private updatedCurrent() {
     HistoryModule.watch({ path: this.path, current: this.current });
+    assertIsDefined(this.historyRef);
+    setDoc(this.historyRef, { path: this.path, current: this.current, lastUpdate: serverTimestamp() });
   }
 }
 </script>

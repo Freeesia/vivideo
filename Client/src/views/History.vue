@@ -24,8 +24,10 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { orderBy } from "lodash";
 import type { AxiosInstance } from "axios";
-import { ContentNode } from "@/model";
+import { ContentNode, HistoryVideo } from "@/model";
 import { toRecord } from "@/utilities/systemUtility";
+import { collection, DocumentData, getDocs, QueryDocumentSnapshot, SnapshotOptions, WithFieldValue } from "@firebase/firestore";
+import { db } from "@/plugins/firebase";
 
 @Component
 export default class History extends Vue {
@@ -37,6 +39,8 @@ export default class History extends Vue {
 
   private async created() {
     this.axios = await AuthModule.getAxios();
+    const videosRef = collection(db, `users/${AuthModule.user?.uid}/histoy`);
+    const videos = (await getDocs(videosRef)).docs.map(d => d.data()) as HistoryVideo[];
     const promises = this.videos
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       .map(v => this.axios!.get<ContentNode>("/api/video/content/" + v.path, { validateStatus: () => true }));
