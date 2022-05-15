@@ -1,7 +1,7 @@
 import { action, createModule } from "vuex-class-component";
 import { User } from "firebase/auth";
 import Axios from "axios";
-import { auth } from "@/firebase";
+import { auth } from "@/plugins/firebase";
 
 const VuexModule = createModule({
   namespaced: "auth",

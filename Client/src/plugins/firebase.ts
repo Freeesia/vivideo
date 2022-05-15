@@ -4,6 +4,7 @@ import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { getAuth } from "firebase/auth";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import axios from "axios";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 
 export const firebaseOptions: FirebaseOptions = {
   apiKey: "AIzaSyCwqZqUUMbE6n5T3gdMFrLNW30VYvrKh20",
@@ -20,8 +21,10 @@ getAnalytics(app);
 
 export const auth = getAuth(app);
 export const functions = getFunctions(app, "asia-northeast1");
+export const db = getFirestore(app);
 if (process.env.NODE_ENV !== "production") {
-  connectFunctionsEmulator(functions, "localhost", 5000);
+  connectFunctionsEmulator(functions, "localhost", 3001);
+  connectFirestoreEmulator(db, "localhost", 3002);
 }
 
 (async function () {

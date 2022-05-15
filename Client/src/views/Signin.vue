@@ -16,7 +16,7 @@ import "firebaseui/dist/firebaseui.css";
 // firebaseuiがまだv9に対応していないので、互換ライブラリを利用する
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { firebaseOptions } from "../firebase";
+import { firebaseOptions } from "@/plugins/firebase";
 
 @Component
 export default class Signin extends Vue {
