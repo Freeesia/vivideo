@@ -6,6 +6,7 @@ import { VuetifyResolver } from "unplugin-vue-components/resolvers";
 import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 import { visualizer } from "rollup-plugin-visualizer";
+import pluginRewriteAll from "vite-plugin-rewrite-all";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -75,6 +76,7 @@ export default defineConfig(({ mode }) => ({
         ],
       },
     }),
+    pluginRewriteAll(),
   ],
   server: {
     proxy: {
