@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import VuexPersistence from "vuex-persist";
+import { vuexfireMutations } from "vuexfire";
 import Auth from "./modules/auth";
 import Search from "./modules/search";
 import General from "./modules/general";
@@ -21,6 +22,9 @@ export const store = new Vuex.Store({
     ...extractVuexModule(General),
     ...extractVuexModule(Global),
     ...extractVuexModule(History),
+  },
+  mutations: {
+    ...vuexfireMutations,
   },
   plugins: [persist.plugin],
 });
