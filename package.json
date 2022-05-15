@@ -4,6 +4,10 @@
   "repository": "https://github.com/Freeesia/vivideo",
   "author": "Freesia <freesia@studiofreesia.com>",
   "private": true,
+  "scripts": {
+    "setup:emulators": "firebase setup:emulators:firestore && firebase setup:emulators:ui",
+    "serve:firestore": "firebase emulators:start --only firestore"
+  },
   "workspaces": [
     "Client",
     "functions"
