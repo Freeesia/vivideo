@@ -2,6 +2,8 @@ import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 import { getAuth } from "firebase/auth";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import axios from "axios";
 
 export const firebaseOptions: FirebaseOptions = {
   apiKey: "AIzaSyCwqZqUUMbE6n5T3gdMFrLNW30VYvrKh20",
@@ -20,4 +22,16 @@ export const auth = getAuth(app);
 export const functions = getFunctions(app, "asia-northeast1");
 if (process.env.NODE_ENV !== "production") {
   connectFunctionsEmulator(functions, "localhost", 5000);
+}
+
+(async function () {
+  const { data: info } = await axios.get<ClientInfo>("/api/info/clientinfo");
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(info.reCaptchaPublicKey),
+    isTokenAutoRefreshEnabled: true,
+  });
+})();
+
+interface ClientInfo {
+  readonly reCaptchaPublicKey: string;
 }
