@@ -1,4 +1,9 @@
-import { VuexModule, Module, Mutation } from "vuex-module-decorators";
+import { createModule, mutation } from "vuex-class-component";
+
+const VuexModule = createModule({
+  namespaced: "search",
+  strict: false,
+});
 
 export const enum SortType {
   Name,
@@ -16,17 +21,11 @@ export interface SortOrder {
   order: OrderType;
 }
 
-@Module({ namespaced: true, name: "search" })
 export default class Search extends VuexModule {
   filter = "";
   sorts: SortOrder[] = [];
 
-  @Mutation
-  setFilter(value: string) {
-    this.filter = value;
-  }
-
-  @Mutation
+  @mutation
   setSortOrder(value: SortOrder) {
     const index = this.sorts.findIndex(s => s.path === value.path);
     if (index >= 0) {

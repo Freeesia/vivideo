@@ -1,24 +1,27 @@
-import { VuexModule, Module, Mutation, Action } from "vuex-module-decorators";
+import { action, createModule } from "vuex-class-component";
 import { User } from "firebase/auth";
 import Axios from "axios";
 import { auth } from "@/firebase";
 
-@Module({ namespaced: true, name: "auth" })
-export default class Auth extends VuexModule {
-  user: User | null = null;
+const VuexModule = createModule({
+  namespaced: "auth",
+  strict: false,
+});
 
-  @Mutation
-  private setUser(user: User | null) {
-    this.user = user;
+export default class Auth extends VuexModule {
+  private _user: User | null = null;
+
+  get user() {
+    return this._user;
   }
 
-  @Action
+  @action
   async signOut() {
     await auth.signOut();
-    this.context.commit("setUser", null);
+    this._user = null;
   }
 
-  @Action
+  @action
   async isSignedIn() {
     let user = this.user;
     if (!user) {
@@ -31,12 +34,12 @@ export default class Auth extends VuexModule {
       if (!user) {
         auth.signOut();
       }
-      this.context.commit("setUser", user);
+      this._user = user;
     }
     return user ? true : false;
   }
 
-  @Action
+  @action
   async getAxios() {
     if (!this.user) {
       throw new Error("ログインされていません");

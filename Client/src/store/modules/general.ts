@@ -1,11 +1,10 @@
-import { VuexModule, Mutation, Module } from "vuex-module-decorators";
+import { createModule } from "vuex-class-component";
 
-@Module({ namespaced: true, name: "general" })
+const VuexModule = createModule({
+  namespaced: "general",
+  strict: false,
+});
+
 export default class General extends VuexModule {
   loading = false;
-
-  @Mutation
-  setLoading(value: boolean) {
-    this.loading = value;
-  }
 }

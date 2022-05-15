@@ -1,11 +1,15 @@
-import { VuexModule, Mutation, Module } from "vuex-module-decorators";
 import { HistoryVideo } from "@/model";
+import { createModule, mutation } from "vuex-class-component";
 
-@Module({ namespaced: true, name: "history" })
+const VuexModule = createModule({
+  namespaced: "history",
+  strict: false,
+});
+
 export default class History extends VuexModule {
   public videos: HistoryVideo[] = [];
 
-  @Mutation
+  @mutation
   public watch(payload: { path: string; current: number }) {
     const { path, current } = payload;
     const i = this.videos.findIndex(v => v.path === path);
@@ -16,7 +20,7 @@ export default class History extends VuexModule {
     }
   }
 
-  @Mutation
+  @mutation
   public end(path: string) {
     const i = this.videos.findIndex(v => v.path === path);
     if (i === -1) {

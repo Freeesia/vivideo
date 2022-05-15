@@ -27,7 +27,7 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { Prop, Emit } from "vue-property-decorator";
-import ContentNode from "../models/ContnetNode";
+import { ContentNode } from "@/model";
 import { getThumbnailPath } from "../utilities/pathUtility";
 import { AuthModule } from "../store";
 
@@ -55,7 +55,7 @@ export default class Logo extends Vue {
     if (this.url) {
       return this.url;
     } else if (this.target) {
-      return getThumbnailPath(this.target);
+      return getThumbnailPath(this.target.contentPath);
     } else {
       return "";
     }

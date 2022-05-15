@@ -82,7 +82,7 @@ export default class Play extends Vue {
     return GlobalModule.auto;
   }
   set autoNext(value: boolean) {
-    GlobalModule.setAuto(value);
+    GlobalModule.auto = value;
   }
 
   get volume() {
@@ -90,7 +90,7 @@ export default class Play extends Vue {
   }
 
   set volume(value: number) {
-    GlobalModule.setVolume(value);
+    GlobalModule.volume = value;
   }
 
   get title() {
@@ -106,7 +106,7 @@ export default class Play extends Vue {
 
   private async loadVideo() {
     assertIsDefined(this.axios);
-    GeneralModule.setLoading(true);
+    GeneralModule.loading = true;
     this.thumbnailPath = getThumbnailPath(this.path);
     const video = HistoryModule.videos.find(v => v.path === this.path);
     if (video && video.current > 0) {
@@ -114,7 +114,7 @@ export default class Play extends Vue {
     }
     const res = await this.axios.post<string>(`/api/video/transcode/?path=${encodeURIComponent(this.path)}`);
     this.streamPath = res.data;
-    GeneralModule.setLoading(false);
+    GeneralModule.loading = false;
   }
 
   private async loadList() {

@@ -109,7 +109,7 @@ export default class App extends Vue {
 
   @Watch("search")
   private onSearchChanged() {
-    SearchModule.setFilter(this.search ?? "");
+    SearchModule.filter = this.search ?? "";
   }
 
   @Watch("currentPath", { immediate: true })
@@ -121,7 +121,7 @@ export default class App extends Vue {
 
   public toggleTheme() {
     this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-    GlobalModule.setDark(this.$vuetify.theme.dark);
+    GlobalModule.dark = this.$vuetify.theme.dark;
   }
 
   public selectSort(sort: SortType) {

@@ -117,9 +117,9 @@ export default class Account extends Vue {
   }
 
   public async signOut() {
-    GeneralModule.setLoading(true);
+    GeneralModule.loading = true;
     await AuthModule.signOut();
-    GeneralModule.setLoading(false);
+    GeneralModule.loading = false;
     this.$router.push("/");
   }
 
@@ -134,7 +134,7 @@ export default class Account extends Vue {
   }
 
   public async deleteMe() {
-    GeneralModule.setLoading(true);
+    GeneralModule.loading = true;
     try {
       if (!this.user) {
         throw new Error("ログインしていません");
@@ -142,10 +142,10 @@ export default class Account extends Vue {
       await this.user.delete();
     } catch (error) {
       alert("退会処理が正常に完了しませんでした。再度ログインして退会してください");
-      GeneralModule.setLoading(false);
       this.$router.push("/signin");
+    } finally {
+      GeneralModule.loading = false;
     }
-    GeneralModule.setLoading(false);
     this.$router.push("/");
   }
 

@@ -90,19 +90,19 @@ export default class Home extends Vue {
 
   @Watch("$route", { immediate: true, deep: true })
   private async onRequestChanged() {
-    GeneralModule.setLoading(true);
+    GeneralModule.loading = true;
     this.contents = [];
     if (!this.axios) {
       this.axios = await AuthModule.getAxios();
     }
     const res = await this.axios.get<ContentNode[]>("/api/video/" + this.path);
     this.contents = res.data;
-    SearchModule.setFilter("");
+    SearchModule.filter = "";
     this.histories = toRecord(
       HistoryModule.videos.filter(h => h.path.startsWith(this.path)),
       "path"
     );
-    GeneralModule.setLoading(false);
+    GeneralModule.loading = false;
   }
 
   public getPath(segment: string) {
