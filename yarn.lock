@@ -1627,6 +1627,11 @@
   resolved "https://registry.yarnpkg.com/@panva/asn1.js/-/asn1.js-1.0.0.tgz#dd55ae7b8129e02049f009408b97c61ccf9032f6"
   integrity sha512-UdkG3mLEqXgnlKsWanWcgb6dOjUzJ+XC5f+aWw30qrtjxeNUSfKX1cd5FBzOaXQumoe9nIqeZUvrRJS03HCCtw==
 
+"@posva/vuefire-core@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@posva/vuefire-core/-/vuefire-core-2.3.4.tgz#58a2561c957c982a9dea26a559c018756e30f035"
+  integrity sha512-jumUMMDBMDRtx9reIKCkC92TRwxJ/vG0+7iX2gQNXbS9cIVh4iI78PQm8e9ztCiBmdlALuBvfbcvDoD60cvJuw==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -4526,7 +4531,7 @@ firebase-tools@^10.9.2:
     winston-transport "^4.4.0"
     ws "^7.2.3"
 
-firebase@^9.6.5:
+firebase@^9.8.1:
   version "9.8.1"
   resolved "https://registry.yarnpkg.com/firebase/-/firebase-9.8.1.tgz#502e186078d69d72ab8d4f1b5befa287e0858276"
   integrity sha512-VyM+3ijzB1Q24b9v6HzVOB0bXNy0a/maOZlmv2P8M29VXfrS/npo6zntNiOEtcjrCoItZIuWFH4oDGiYkPHxbg==
@@ -8651,6 +8656,13 @@ vuex@^3.1.2:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
+
+vuexfire@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/vuexfire/-/vuexfire-3.2.5.tgz#d176b655d6a103b5bcee19bdeeb8b3ec6eeff48b"
+  integrity sha512-fztRzKljqTjNmNexAzKkk7b9h/xrNu3e2hI05VZAT6/hRljRUJavxO5ATXZCXG4rQE3kNHODpMJG6BiR2T8u0g==
+  dependencies:
+    "@posva/vuefire-core" "^2.3.4"
 
 wcwidth@^1.0.1:
   version "1.0.1"
