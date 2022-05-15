@@ -38,6 +38,9 @@ export default class ShakaPlayer extends Vue {
   @PropSync("current", { type: Number, default: 0 })
   public _current!: number;
 
+  @PropSync("volume")
+  public _volume!: number;
+
   @Watch("streamPath", { immediate: true })
   private onPathChanged(newPath: string) {
     if (!newPath || !this.player) {
@@ -53,6 +56,7 @@ export default class ShakaPlayer extends Vue {
   mounted() {
     this.updateCurrentTimer = window.setInterval(this.updateCurrent, 1_000);
     const video = this.$refs.video as HTMLMediaElement;
+    video.volume = this._volume;
     this.player = new Player(video);
     this.player.configure({
       streaming: {
@@ -74,8 +78,9 @@ export default class ShakaPlayer extends Vue {
       overflowMenuButtons: ["picture_in_picture"],
       doubleClickForFullscreen: true,
     });
-    video.addEventListener("playing", () => this.play());
-    video.addEventListener("ended", () => this.ended());
+    video.addEventListener("playing", this.play);
+    video.addEventListener("ended", this.ended);
+    video.addEventListener("volumechange", this.volumeChanged);
   }
 
   private async load() {
@@ -97,6 +102,11 @@ export default class ShakaPlayer extends Vue {
   @Emit()
   private play() {
     this.isEnded = false;
+  }
+
+  private volumeChanged(ev: Event) {
+    const video = ev.currentTarget as HTMLVideoElement;
+    this._volume = video.volume;
   }
 
   private updateCurrent() {

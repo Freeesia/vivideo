@@ -2,7 +2,13 @@
   <v-container fluid>
     <v-row no-gutters dense>
       <v-col cols="12" md="8">
-        <ShakaPlayer :stream-path="streamPath" :thumbnail-path="thumbnailPath" :current.sync="current" @ended="ended">
+        <ShakaPlayer
+          :stream-path="streamPath"
+          :thumbnail-path="thumbnailPath"
+          :current.sync="current"
+          :volume.sync="volume"
+          @ended="ended"
+        >
           <template v-if="autoNext" #overlay>
             <v-row justify="center">
               <v-progress-circular class="ma-2" rotate="-90" size="60" :value="percent"></v-progress-circular>
@@ -77,6 +83,14 @@ export default class Play extends Vue {
   }
   set autoNext(value: boolean) {
     GlobalModule.setAuto(value);
+  }
+
+  get volume() {
+    return GlobalModule.volume;
+  }
+
+  set volume(value: number) {
+    GlobalModule.setVolume(value);
   }
 
   get title() {
