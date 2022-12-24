@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import { createVuePlugin } from "vite-plugin-vue2";
+import { defineConfig, PluginOption } from "vite";
+import vue from "@vitejs/plugin-vue2";
 import { VitePWA } from "vite-plugin-pwa";
 import Components from "unplugin-vue-components/vite";
 import { VuetifyResolver } from "unplugin-vue-components/resolvers";
@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   plugins: [
-    createVuePlugin(),
+    vue(),
     Components({
       resolvers: [VuetifyResolver()],
       dts: "src/components.d.ts",
@@ -95,12 +95,12 @@ export default defineConfig(({ mode }) => ({
       plugins: [
         rollupNodePolyFill(),
         mode === "analyze" &&
-          visualizer({
+          (visualizer({
             open: true,
             filename: "dist/stats.html",
             gzipSize: true,
             brotliSize: true,
-          }),
+          }) as PluginOption),
       ],
     },
   },
