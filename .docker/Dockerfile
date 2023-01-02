@@ -52,4 +52,5 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.description="Vivideo is video streming server" \
       org.label-schema.vcs-url="https://github.com/Freeesia/vivideo" \
       org.label-schema.vcs-ref=$Sha \
-      org.label-schema.version=$InformationalVersion
+      org.label-schema.version=$InformationalVersion \
+      org.opencontainers.image.source="https://github.com/Freeesia/vivideo"
