@@ -43,7 +43,7 @@ jobs:
           echo "image_tag=$IMAGE_ID:$VERSION" >> $GITHUB_ENV
       - uses: docker/build-push-action@v3
         with:
-          file: .docker/Dockerfile
+          file: Server/Dockerfile
           build-args: |
             Version=${{ steps.gitversion.outputs.fullSemVer }}
             AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }}
