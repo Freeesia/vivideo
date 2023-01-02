@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net$([System.IO.File]::ReadAllText('.net-version').Trim())</TargetFramework>
+    <DotnetVersionPath>$([System.IO.Path]::Combine($(MSBuildThisFileDirectory), '.net-version'))</DotnetVersionPath>
+    <TargetFramework>net$([System.IO.File]::ReadAllText($(DotnetVersionPath)).Trim())</TargetFramework>
     <Version Condition="'$(Version)' == ''">0.0.0-local</Version>
     <Deterministic>true</Deterministic>
     <LangVersion>latest</LangVersion>
