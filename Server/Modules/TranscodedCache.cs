@@ -17,7 +17,7 @@ public class TranscodedCache : ITranscodedCache
 
     public TranscodedCache(IConfiguration configuration)
     {
-        this.connectionString = configuration.GetConnectionString("Redis");
+        this.connectionString = configuration.GetConnectionString("Redis") ?? throw new InvalidOperationException("Redis");
         this.con = new(() => ConnectionMultiplexer.ConnectAsync(this.connectionString));
     }
 

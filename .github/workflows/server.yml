@@ -41,10 +41,15 @@ jobs:
           VERSION=$(echo ${{ steps.branch-name.outputs.current_branch }} | sed -e 's,.*/\(.*\),\1,')
           [ "$VERSION" == "master" ] && VERSION=latest
           echo "image_tag=$IMAGE_ID:$VERSION" >> $GITHUB_ENV
+      - id: dotnet-version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./.net-version
       - uses: docker/build-push-action@v3
         with:
           file: Server/Dockerfile
           build-args: |
+            DOTNET_VERSION=${{ steps.dotnet-version.outputs.content }}
             Version=${{ steps.gitversion.outputs.fullSemVer }}
             AssemblyVersion=${{ steps.gitversion.outputs.assemblySemVer }}
             FileVersion=${{ steps.gitversion.outputs.assemblySemFileVer }}

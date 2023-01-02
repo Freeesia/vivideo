@@ -94,12 +94,9 @@ app.UseRouting();
 app.UseAuthorization();
 #pragma warning restore ASP0001
 
-app.UseEndpoints(ep =>
+app.MapHangfireDashboard(new DashboardOptions()
 {
-    ep.MapHangfireDashboard(new DashboardOptions()
-    {
-        Authorization = new[] { new HangfireDashbordAuthFilter() },
-    });
+    Authorization = new[] { new HangfireDashbordAuthFilter() },
 });
 
 app.UseSpa(_ => { });

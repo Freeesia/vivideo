@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net$([System.IO.File]::ReadAllText('.net-version').Trim())</TargetFramework>
     <Version Condition="'$(Version)' == ''">0.0.0-local</Version>
     <Deterministic>true</Deterministic>
     <LangVersion>latest</LangVersion>

@@ -12,7 +12,7 @@ public static class HostBuilderExtensions
         {
             using var process = Process.GetCurrentProcess();
             var pathToExe = process?.MainModule?.FileName ?? throw new InvalidOperationException("モジュールが取れない");
-            hostBuilder = hostBuilder.UseContentRoot(Path.GetDirectoryName(pathToExe));
+            hostBuilder = hostBuilder.UseContentRoot(Path.GetDirectoryName(pathToExe)!);
         }
         return hostBuilder;
     }

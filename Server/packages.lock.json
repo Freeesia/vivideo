@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net6.0": {
+    "net7.0": {
       "AspNetCore.Firebase.Authentication": {
         "type": "Direct",
         "requested": "[2.0.1, )",
@@ -1669,7 +1669,7 @@
       "core": {
         "type": "Project",
         "dependencies": {
-          "Hangfire.Core": "1.7.17"
+          "Hangfire.Core": "[1.7.17, )"
         }
       }
     }

@@ -1,4 +1,5 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS dotnet-build
+ARG DOTNET_VERSION
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} AS dotnet-build
 WORKDIR /build
 
 ARG Version
@@ -29,7 +30,7 @@ RUN yarn install \
  && yarn build
 
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS runtime
 
 ARG InformationalVersion
 ARG BuildDate
