@@ -45,6 +45,7 @@ jobs:
         uses: juliangruber/read-file-action@v1
         with:
           path: ./.net-version
+          trim: true
       - uses: docker/build-push-action@v3
         with:
           file: Server/Dockerfile
