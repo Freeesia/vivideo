@@ -2,7 +2,7 @@ using System.IO.Compression;
 using Hangfire;
 using StackExchange.Redis;
 using StudioFreesia.Vivideo.Core;
-using StudioFreesia.Vivideo.Worker;
+using StudioFreesia.Vivideo.Worker.Extensions;
 using StudioFreesia.Vivideo.Worker.Jobs;
 using StudioFreesia.Vivideo.Worker.Model;
 using Xabe.FFmpeg;

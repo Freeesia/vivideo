@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Sentry.Extensions.Logging;
 
-namespace StudioFreesia.Vivideo.Worker;
+namespace StudioFreesia.Vivideo.Worker.Extensions;
 
 public static class HostBuilderExtensions
 {
