@@ -10,7 +10,7 @@ jobs:
       packages: write
     strategy:
       matrix:
-        build_type: [server, worker]
+        build_type: [Server, Worker]
     env:
       IMAGE_NAME: ${{ matrix.build_type }}
     steps:
