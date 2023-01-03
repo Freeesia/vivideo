@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  app:
+    image: mcr.microsoft.com/vscode/devcontainers/dotnet:0-7.0
+    command: sleep infinity
+    volumes:
+      - ..:/workspace:cached
+      - node-module:/workspace/node_modules
+  job-storage:
+    image: redis:alpine
+  job-storage-gui:
+    image: redislabs/redisinsight
+    volumes:
+      - redisinsight:/db
+volumes:
+  redisinsight:
+  node-module:
