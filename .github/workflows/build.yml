@@ -30,7 +30,7 @@ jobs:
           path: /tmp/.buildx-cache
           key: docker-${{ matrix.build_type }}-${{ github.sha }}
           restore-keys: |
-            docker-buildx-
+            docker-${{ matrix.build_type }}-
       - uses: gittools/actions/gitversion/setup@v0.9.15
         with:
           versionSpec: "5.x"
