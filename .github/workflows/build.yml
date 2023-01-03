@@ -1,16 +1,18 @@
-name: Server
+name: Build
 
 on:
   push:
-env:
-  IMAGE_NAME: server
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
+    strategy:
+      matrix:
+        build_type: [server, worker]
+    env:
+      IMAGE_NAME: ${{ matrix.build_type }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,7 +28,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: docker-buildx-${{ github.sha }}
+          key: docker-${{ matrix.build_type }}-${{ github.sha }}
           restore-keys: |
             docker-buildx-
       - uses: gittools/actions/gitversion/setup@v0.9.15
@@ -48,7 +50,7 @@ jobs:
           trim: true
       - uses: docker/build-push-action@v3
         with:
-          file: Server/Dockerfile
+          file: ${{ matrix.build_type }}/Dockerfile
           build-args: |
             DOTNET_VERSION=${{ steps.dotnet-version.outputs.content }}
             Version=${{ steps.gitversion.outputs.fullSemVer }}
