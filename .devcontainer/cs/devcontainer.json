@@ -1,9 +1,6 @@
 {
     "name": "C# (.NET)",
-    "dockerComposeFile": [
-        "docker-compose.debug.yml",
-        "docker-compose.video.yml"
-    ],
+    "dockerComposeFile": "docker-compose.debug.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
     "customizations": {
@@ -14,8 +11,5 @@
         }
     },
     "postCreateCommand": "./.devcontainer/postCreate.sh",
-    "remoteUser": "vscode",
-    "features": {
-        "docker-from-docker": "latest"
-    }
+    "remoteUser": "vscode"
 }

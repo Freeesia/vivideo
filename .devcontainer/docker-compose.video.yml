@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  app:
+    volumes:
+      - video:/video
+volumes:
+  video:
+    driver_opts:
+      type: nfs
+      o: $VIDEO_NFS_O
+      device: $VIDEO_NFS_DEVICE
