@@ -9,11 +9,28 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-dotnettools.csharp"
-            ]
+				"ms-dotnettools.csharp",
+				"humao.rest-client"
+			]
         }
     },
+    "mounts": [
+        {
+            "source": "${env:HOME}${env:USERPROFILE}/.aspnet/https",
+            "target": "/home/vscode/.aspnet/https",
+            "type": "bind"
+        }
+    ],
     "postCreateCommand": "./.devcontainer/postCreate.sh",
+    "remoteEnv": {
+        "ASPNETCORE_Kestrel__Certificates__Default__Password": "${env:DOTNET_DEVCERTS_PASSWORD}",
+        "ASPNETCORE_Kestrel__Certificates__Default__Path": "/home/vscode/.aspnet/https/aspnetapp.pfx"
+    },
+    "forwardPorts": [
+        3000,
+        5000,
+        5001
+    ],
     "remoteUser": "vscode",
     "features": {
         "docker-from-docker": "latest"

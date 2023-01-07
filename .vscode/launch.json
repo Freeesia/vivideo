@@ -9,13 +9,12 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build:server",
-      "program": "${workspaceFolder}/Server/bin/Debug/net6.0/Server.dll",
+      "program": "${workspaceFolder}/Server/bin/Debug/Server.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Server",
       "stopAtEntry": false,
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DOTNET_CONNECTIONSTRINGS__REDIS": "localhost:6379"
       },
       "envFile": "${workspaceFolder}/.env"
     },
@@ -24,15 +23,12 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build:worker",
-      "program": "${workspaceFolder}/Worker/bin/Debug/net6.0/Worker.dll",
+      "program": "${workspaceFolder}/Worker/bin/Debug/Worker.dll",
       "args": [],
       "cwd": "${workspaceFolder}/Worker",
       "console": "internalConsole",
       "stopAtEntry": false,
       "envFile": "${workspaceFolder}/.env",
-      "env": {
-        "DOTNET_CONNECTIONSTRINGS__REDIS": "localhost:6379"
-      }
     },
     {
       "name": "client",
@@ -56,7 +52,6 @@
         "worker",
         "client"
       ],
-      "preLaunchTask": "compose-up"
     }
   ]
 }

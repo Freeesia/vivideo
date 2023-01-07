@@ -132,33 +132,6 @@
       "problemMatcher": []
     },
     {
-      "label": "compose-up",
-      "command": "docker-compose",
-      "type": "process",
-      "args": [
-        "-p",
-        "vivideo",
-        "-f",
-        ".docker/docker-compose.debug.yml",
-        "up",
-        "-d"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "compose-down",
-      "command": "docker-compose",
-      "type": "process",
-      "args": [
-        "-p",
-        "vivideo",
-        "-f",
-        ".docker/docker-compose.debug.yml",
-        "down"
-      ],
-      "problemMatcher": []
-    },
-    {
       "label": "build",
       "dependsOn": [
         "build:worker",
@@ -169,13 +142,6 @@
         "isDefault": true
       },
       "problemMatcher": []
-    },
-    {
-      "label": "pre-debug",
-      "dependsOn": [
-        "compose-up",
-        "build"
-      ]
     },
     {
       "type": "npm",
