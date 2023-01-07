@@ -7,6 +7,7 @@ services:
     volumes:
       - ..:/workspace:cached
       - node-module:/workspace/node_modules
+      - video:/video
       - ~/.ssh:/home/vscode/.ssh-localhost:ro
   job-storage:
     image: redis:alpine
@@ -17,3 +18,8 @@ services:
 volumes:
   redisinsight:
   node-module:
+  video:
+    driver_opts:
+      type: nfs
+      o: $VIDEO_NFS_O
+      device: $VIDEO_NFS_DEVICE
