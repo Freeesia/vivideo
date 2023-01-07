@@ -1,6 +1,6 @@
 {
     "name": "C# (.NET)",
-    "dockerComposeFile": "docker-compose.debug.yml",
+    "dockerComposeFile": "../docker-compose.debug.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
     "customizations": {
