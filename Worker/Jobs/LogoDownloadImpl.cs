@@ -31,7 +31,9 @@ public class LogoDownloadImpl : ILogoDownload
             var mt = res.Content.Headers.ContentType.MediaType.Split("/");
             ext = "." + mt[1];
         }
-        using var fs = new FileStream(Path.Combine(this.listDir, queue.Output, "logo" + ext), FileMode.OpenOrCreate, FileAccess.Write);
+        var dir = Path.Combine(this.listDir, queue.Output);
+        Directory.CreateDirectory(dir);
+        using var fs = new FileStream(Path.Combine(dir, "logo" + ext), FileMode.OpenOrCreate, FileAccess.Write);
         stream.CopyTo(fs);
     }
 }
