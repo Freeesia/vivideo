@@ -31,7 +31,7 @@ public class TranscodedCache : ITranscodedCache
     {
         var db = await GetDatabase();
         var lease = await db.HashGetLeaseAsync(key, file);
-        return lease.Memory;
+        return lease?.Memory ?? ReadOnlyMemory<byte>.Empty;
     }
 
     public async ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf)

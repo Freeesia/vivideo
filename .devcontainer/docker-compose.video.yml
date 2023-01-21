@@ -8,5 +8,5 @@ volumes:
   video:
     driver_opts:
       type: nfs
-      o: $VIDEO_NFS_O
-      device: $VIDEO_NFS_DEVICE
+      o: "$VIDEO_NFS_O"
+      device: "$VIDEO_NFS_DEVICE"
