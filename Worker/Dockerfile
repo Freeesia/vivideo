@@ -15,7 +15,7 @@ RUN dotnet publish -c Release -o out \
     -p:FileVersion=$FileVersion \
     -p:InformationalVersion=$InformationalVersion
 
-FROM mcr.microsoft.com/dotnet/runtime:${DOTNET_VERSION} AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION} AS runtime
 
 ARG InformationalVersion
 ARG BuildDate
