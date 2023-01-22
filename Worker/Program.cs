@@ -5,12 +5,8 @@ using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Worker.Extensions;
 using StudioFreesia.Vivideo.Worker.Jobs;
 using StudioFreesia.Vivideo.Worker.Model;
-using Xabe.FFmpeg;
-using Xabe.FFmpeg.Downloader;
 
 var host = Host.CreateDefaultBuilder(args)
-    .UseWindowsService()
-    .UseContentRootForSingleFile()
 #if !DEBUG
     .UseSentry(op => {
         op.Dsn = "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801";
@@ -26,29 +22,18 @@ var host = Host.CreateDefaultBuilder(args)
 
         services.AddHttpClient();
         services.AddHangfire(config =>
-            {
-                config.UseRedisStorage(ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("Redis")));
-            })
-            .AddHangfireServer(config =>
-            {
-                // 同時に1つしかトランスコード出来ないので
-                config.WorkerCount = 1;
-            })
-            .AddTransient<ITranscodeVideo, TranscodeVideoImpl>()
-            .AddTransient<ILogoDownload, LogoDownloadImpl>();
+        {
+            var con = hostContext.Configuration.GetConnectionString("Redis") ?? throw new InvalidOperationException();
+            config.UseRedisStorage(ConnectionMultiplexer.Connect(con));
+        })
+        .AddHangfireServer(config =>
+        {
+            // 同時に1つしかトランスコード出来ないので
+            config.WorkerCount = 1;
+        })
+        .AddTransient<ITranscodeVideo, TranscodeVideoImpl>()
+        .AddTransient<ILogoDownload, LogoDownloadImpl>();
     })
     .Build();
-
-
-await using (var scope = host.Services.CreateAsyncScope())
-{
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<FFmpegDownloader>>();
-    var dir = "ffmpeg";
-    await FFmpegDownloader.GetLatestVersion(
-        FFmpegVersion.Official,
-        dir,
-        new Progress<ProgressInfo>(p => logger.LogTrace($"{p.DownloadedBytes * 100f / p.TotalBytes:f2}% {p.DownloadedBytes / 1024f:f2}/{p.TotalBytes / 1024f:f2} MB")));
-    FFmpeg.SetExecutablesPath(dir);
-}
 
 await host.RunAsync();
