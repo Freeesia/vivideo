@@ -39,10 +39,12 @@ ARG Sha
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /app
 EXPOSE 80
-RUN apt update \
- && apt install -y --no-install-recommends ffmpeg \
- && apt clean \
- && rm -rf  /var/lib/apt/lists/*
+RUN echo 'APT::Default-Release "stable";\n' > /etc/apt/apt.conf.d/99target &&\
+    echo 'deb http://ftp.jp.debian.org/debian/ unstable main non-free\n' >> /etc/apt/sources.list &&\
+    apt-get update &&\
+    apt-get install --no-install-recommends -y -t unstable ffmpeg &&\
+    apt-get clean &&\
+    rm -rf  /var/lib/apt/lists/*
 COPY --from=dotnet-build /build/Server/out ./
 COPY --from=node-build /build/Client/dist ./Client/
 ENTRYPOINT ["dotnet", "Server.dll"]

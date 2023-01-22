@@ -2,7 +2,8 @@ version: "3.7"
 
 services:
   app:
-    image: mcr.microsoft.com/vscode/devcontainers/dotnet:0-7.0
+    build:
+      dockerfile: Dockerfile
     command: sleep infinity
     volumes:
       - ..:/workspace:cached
