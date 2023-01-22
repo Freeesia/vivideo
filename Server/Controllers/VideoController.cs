@@ -57,7 +57,7 @@ public class VideoController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesDefaultResponseType]
-    public async ValueTask<IActionResult> TranscodeAll([FromQuery] string? path)
+    public async ValueTask<IActionResult> TranscodeAll([FromRoute] string? path)
     {
         if (string.IsNullOrEmpty(path))
         {
