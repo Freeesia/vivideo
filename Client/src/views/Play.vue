@@ -159,7 +159,12 @@ export default class Play extends Vue {
   }
 
   public async select(item: ContentNode) {
-    await this.$router.push(`/paly/${item.contentPath}`);
+    await this.$router.push({
+      name: "play",
+      params: {
+        path: item.contentPath,
+      },
+    });
     this.loadVideo();
   }
 

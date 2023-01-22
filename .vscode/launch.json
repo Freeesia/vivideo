@@ -32,10 +32,10 @@
     },
     {
       "name": "client",
-      "type": "pwa-chrome",
+      "type": "chrome",
       "request": "launch",
       "preLaunchTask": "serve:client",
-      "url": "http://localhost:3000",
+      "url": "http://localhost:5173",
       "webRoot": "${workspaceFolder}/Client",
       "userDataDir": "${workspaceFolder}/Client/.debug",
       "smartStep": true,

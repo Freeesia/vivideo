@@ -113,12 +113,13 @@ export default class Home extends Vue {
         return path;
       }
     }
+    return path;
   }
 
   public selectContent(content: ContentNode) {
     this.selectedContent = content;
     if (this.selectedContent ? !this.selectedContent.isDirectory : false) {
-      this.$router.push(`/play/${content.contentPath}`);
+      this.$router.push(`/play/${encodeURIComponent(content.contentPath)}`);
     } else {
       this.$router.push("/" + content.contentPath);
     }
