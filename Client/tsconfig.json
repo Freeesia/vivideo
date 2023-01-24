@@ -41,11 +41,6 @@
     }
   ],
   "vueCompilerOptions": {
-    "experimentalCompatMode": 2,
-    "experimentalTemplateCompilerOptions": {
-      "compatConfig": {
-        "MODE": 2
-      }
-    }
+    "target": 2.7,
   }
 }
