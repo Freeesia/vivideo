@@ -65,7 +65,12 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .UseMultiThread(true)
             .AddStream(videos)
             .AddStream(audios)
-            .AddParameter("-hls_playlist 1 -http_persistent 1 -timeout 10 -update_period 5 -movflags +faststart")
+            .AddParameter("-hls_playlist 1")
+            .AddParameter("-http_persistent 1")
+            .AddParameter("-timeout 10")
+            .AddParameter("-update_period 5")
+            .AddParameter("-method POST")
+            .AddParameter("-movflags +faststart")
             .SetOutputFormat(Format.dash);
         if (!videos.All(v => v.Codec == TargetVideoCodec) && !string.IsNullOrEmpty(setting.HWAccel))
         {
