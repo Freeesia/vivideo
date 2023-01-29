@@ -28,6 +28,7 @@ builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/24
 
 builder.Services.Configure<ContentDirSetting>(builder.Configuration.GetSection("Content"));
 builder.Services.Configure<ClientInfo>(builder.Configuration.GetSection(nameof(ClientInfo)));
+builder.Services.Configure<MinioOptions>(builder.Configuration.GetSection("Minio"));
 
 builder.Services.AddControllers();
 builder.Services.AddHangfire(config
@@ -38,6 +39,7 @@ builder.Services.AddSpaStaticFiles(config => config.RootPath = "Client");
 
 builder.Services.AddResponseCompression();
 builder.Services.AddResponseCaching();
+builder.Services.AddHttpClient();
 
 var firebase = builder.Configuration.GetSection("FirebaseAuthentication");
 builder.Services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
@@ -100,5 +102,8 @@ app.MapHangfireDashboard(new DashboardOptions()
 });
 
 app.UseSpa(_ => { });
+
+var transcodedCache = app.Services.GetRequiredService<ITranscodedCache>();
+await transcodedCache.Init();
 
 await app.RunAsync();
