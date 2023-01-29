@@ -103,7 +103,7 @@
         "background": {
           "activeOnStart": true,
           "beginsPattern": "^\\s*WAIT\\s+Compiling",
-          "endsPattern": "^\\s+ready in \\d+ms\\.$"
+          "endsPattern": "ready in"
         }
       }
     },
