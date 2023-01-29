@@ -4,7 +4,6 @@ using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
-using StackExchange.Redis;
 using ValueTaskSupplement;
 
 namespace StudioFreesia.Vivideo.Server.Modules
@@ -13,14 +12,16 @@ namespace StudioFreesia.Vivideo.Server.Modules
     {
         private const string BucketName = "transcoded-cache";
         private readonly MinioClient minio;
+        private readonly ILogger<TranscodedCache> logger;
 
-        public TranscodedCache(IHttpClientFactory clientFactory, IOptions<MinioOptions> minioOptions)
+        public TranscodedCache(IHttpClientFactory clientFactory, IOptions<MinioOptions> minioOptions, ILogger<TranscodedCache> logger)
         {
             this.minio = new MinioClient()
                 .WithHttpClient(clientFactory.CreateClient(nameof(TranscodedCache)))
                 .WithEndpoint(minioOptions.Value.Endpoint, minioOptions.Value.Port)
                 .WithCredentials(minioOptions.Value.User, minioOptions.Value.Passowrd)
                 .Build();
+            this.logger = logger;
         }
 
         public async ValueTask Init()
@@ -53,6 +54,7 @@ namespace StudioFreesia.Vivideo.Server.Modules
 
         public async ValueTask<ReadOnlyMemory<byte>> Get(string key, string file)
         {
+            this.logger.LogDebug($"get {GetObjectName(key, file)}");
             try
             {
                 using var ms = new MemoryStream();
@@ -71,6 +73,7 @@ namespace StudioFreesia.Vivideo.Server.Modules
 
         public async ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf)
         {
+            this.logger.LogDebug($"set {GetObjectName(key, file)}");
             using var st = buf.AsStream();
             await this.minio.PutObjectAsync(
                 new PutObjectArgs()
