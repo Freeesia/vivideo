@@ -6,6 +6,7 @@ using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
+using Sentry;
 using ValueTaskSupplement;
 
 namespace StudioFreesia.Vivideo.Server.Modules;
@@ -113,15 +114,24 @@ public class TranscodedCache : ITranscodedCache
     {
         while (await this.chunnel.Reader.WaitToReadAsync())
         {
-            var (key, file, size, buf) = await this.chunnel.Reader.ReadAsync();
-            using var st = buf.AsStream();
-            await this.minio.PutObjectAsync(
-                new PutObjectArgs()
-                    .WithBucket(BucketName)
-                    .WithObject(GetObjectName(key, file))
-                    .WithObjectSize(size)
-                    .WithStreamData(st));
-            buf.Dispose();
+            try
+            {
+                var (key, file, size, buf) = await this.chunnel.Reader.ReadAsync();
+                using var st = buf.AsStream();
+                await this.minio.PutObjectAsync(
+                    new PutObjectArgs()
+                        .WithBucket(BucketName)
+                        .WithObject(GetObjectName(key, file))
+                        .WithObjectSize(size)
+                        .WithStreamData(st));
+                buf.Dispose();
+            }
+            catch (Exception e)
+            {
+                // 投げれてない気がするから投げる
+                SentrySdk.CaptureException(e);
+                this.logger.LogError("追加エラッた。Sentryに送られているはず");
+            }
         }
     }
 

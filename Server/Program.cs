@@ -41,6 +41,10 @@ builder.Services.AddResponseCompression();
 builder.Services.AddResponseCaching();
 builder.Services.AddHttpClient();
 
+#if !DEBUG
+builder.Services.AddSentryTunneling();
+#endif
+
 var firebase = builder.Configuration.GetSection("FirebaseAuthentication");
 builder.Services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
 builder.Services.AddAuthorization(op
@@ -72,6 +76,10 @@ builder.Services.AddDistributedMemoryCache();
 var app = builder.Build();
 var env = app.Environment;
 var config = app.Configuration;
+#if !DEBUG
+app.UseSentryTracing();
+app.UseSentryTunneling();    
+#endif
 app.UseForwardedHeaders();
 if (env.IsDevelopment())
 {

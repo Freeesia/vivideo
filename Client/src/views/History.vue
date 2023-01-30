@@ -4,7 +4,7 @@
       <v-toolbar-title>視聴履歴</v-toolbar-title>
     </v-toolbar>
     <v-lazy v-for="video in videos" :key="video.path" class="pa-1">
-      <v-card :to="'/play/' + video.path">
+      <v-card @click="play(video.path)">
         <v-row no-gutters wrap>
           <v-col cols="12" sm="4">
             <video-thumbnail :content="contents[video.path]" :history="video" />
@@ -45,6 +45,13 @@ export default class History extends Vue {
       results.map(r => r.data).filter(d => d),
       "contentPath"
     );
+  }
+
+  public async play(path: string) {
+    await this.$router.push({
+      name: "play",
+      params: { path },
+    });
   }
 }
 </script>
