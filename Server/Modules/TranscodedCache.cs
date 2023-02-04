@@ -1,8 +1,7 @@
-using System.Buffers;
+using System.IO.Pipelines;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
 using System.Threading.Channels;
-using CommunityToolkit.HighPerformance;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.Exceptions;
@@ -27,7 +26,7 @@ public class TranscodedCache : ITranscodedCache
             .WithCredentials(minioOptions.Value.User, minioOptions.Value.Passowrd)
             .Build();
         this.logger = logger;
-        this.chunnel = Channel.CreateUnbounded<StoreQueue>(new() { SingleReader = true });
+        this.chunnel = Channel.CreateUnbounded<StoreQueue>(new() { SingleReader = true, SingleWriter = false });
         this.worker = Task.Run(Work);
     }
 
@@ -61,7 +60,6 @@ public class TranscodedCache : ITranscodedCache
 
     public async ValueTask<ReadOnlyMemory<byte>> Get(string key, string file)
     {
-        this.logger.LogDebug($"get {GetObjectName(key, file)}");
         try
         {
             using var ms = new MemoryStream();
@@ -78,12 +76,21 @@ public class TranscodedCache : ITranscodedCache
         }
     }
 
-    public ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf)
+    public async ValueTask Set(PipeReader reader, string key, string file)
     {
-        this.logger.LogDebug($"set {GetObjectName(key, file)}");
-        var memory = MemoryPool<byte>.Shared.Rent(buf.Length);
-        buf.CopyTo(memory.Memory);
-        return this.chunnel.Writer.WriteAsync(new(key, file, buf.Length, memory));
+        try
+        {
+            using var from = reader.AsStream();
+            var ms = new MemoryStream();
+            await from.CopyToAsync(ms);
+            this.logger.LogDebug($"set:{file}:{ms.Length}");
+            ms.Seek(0, SeekOrigin.Begin);
+            await this.chunnel.Writer.WriteAsync(new(key, file, ms));
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"{key}:{file}", e);
+        }
     }
 
     public ValueTask<bool> Exist(string key)
@@ -116,15 +123,15 @@ public class TranscodedCache : ITranscodedCache
         {
             try
             {
-                var (key, file, size, buf) = await this.chunnel.Reader.ReadAsync();
-                using var st = buf.AsStream();
+                var (key, file, st) = await this.chunnel.Reader.ReadAsync();
+                this.logger.LogDebug($"work:{file}:{st.Length}");
                 await this.minio.PutObjectAsync(
                     new PutObjectArgs()
                         .WithBucket(BucketName)
                         .WithObject(GetObjectName(key, file))
-                        .WithObjectSize(size)
+                        .WithObjectSize(st.Length)
                         .WithStreamData(st));
-                buf.Dispose();
+                st.Dispose();
             }
             catch (Exception e)
             {
@@ -135,13 +142,13 @@ public class TranscodedCache : ITranscodedCache
         }
     }
 
-    private record StoreQueue(string key, string file, int size, IMemoryOwner<byte> buf);
+    private record StoreQueue(string key, string file, Stream buf);
 }
 
 public interface ITranscodedCache
 {
     ValueTask Init();
-    ValueTask Set(string key, string file, ReadOnlyMemory<byte> buf);
+    ValueTask Set(PipeReader reader, string key, string file);
     ValueTask<ReadOnlyMemory<byte>> Get(string key, string file);
     ValueTask<bool> Exist(string key);
     ValueTask Delete(string key);

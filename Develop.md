@@ -11,3 +11,11 @@ https://github.com/dotnet/extensions/issues/2148
     * カレントディレクトリ
   * サービス起動時
     * C:\WINDOWS\TEMP\.net\Worker\y0rqdap5.lvp\
+
+## Server
+
+* たまに後ろにnullがくっついてる
+  * このセグメントにくると再生がストップする
+* h264の動画でもくっつくからエンコーダーではなさそう？
+  * ローカルでもやってみる
+* proxyは通してない
