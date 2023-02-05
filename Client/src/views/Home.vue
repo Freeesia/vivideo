@@ -51,11 +51,12 @@ import Logo from "@/components/Logo.vue";
 import { Component, Watch, Prop } from "vue-property-decorator";
 import { ContentNode, HistoryVideo } from "@/model";
 import { AxiosError, AxiosInstance } from "axios";
-import { AuthModule, SearchModule, GeneralModule, HistoryModule } from "../store";
+import { AuthModule, SearchModule, GeneralModule } from "../store";
 import { getThumbnailPath } from "../utilities/pathUtility";
 import { compareFunc } from "../utilities/sortUtility";
 import { assertIsDefined } from "../utilities/assert";
 import { toRecord } from "@/utilities/systemUtility";
+import { getHistories } from "@/firebase/firestore";
 
 @Component
 export default class Home extends Vue {
@@ -95,13 +96,12 @@ export default class Home extends Vue {
     if (!this.axios) {
       this.axios = await AuthModule.getAxios();
     }
+    const last = this.segments.slice(-1)[0];
+    document.title = last ? `Frix TV Prime: ${last}` : "Frix TV Prime";
     const res = await this.axios.get<ContentNode[]>("/api/video/" + this.path);
     this.contents = res.data;
     SearchModule.filter = "";
-    this.histories = toRecord(
-      HistoryModule.videos.filter(h => h.path.startsWith(this.path)),
-      "path"
-    );
+    this.histories = toRecord(await getHistories(this.path), "path");
     GeneralModule.loading = false;
   }
 

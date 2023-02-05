@@ -85,8 +85,8 @@ public class VideoController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("content/{*path}")]
-    public Task<ContentNode> ContentNode([FromRoute] string path)
+    [HttpGet("content")]
+    public Task<ContentNode> ContentNode([FromQuery] string path)
         => GetContent(new FileInfo(Path.Combine(this.inputDir, path)));
 
     [HttpGet("{*path}")]

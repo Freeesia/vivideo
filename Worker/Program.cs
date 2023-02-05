@@ -11,6 +11,7 @@ var host = Host.CreateDefaultBuilder(args)
     .UseSentry(op => {
         op.Dsn = "https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801";
         op.RequestBodyCompressionLevel = CompressionLevel.Optimal;
+        op.MinimumBreadcrumbLevel = LogLevel.Trace;
         op.MinimumEventLevel = LogLevel.Error;
         op.Environment = "Production";
     })

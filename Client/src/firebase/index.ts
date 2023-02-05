@@ -15,7 +15,7 @@ export const firebaseOptions: FirebaseOptions = {
   appId: "1:313434128507:web:8246d5fac382681b6962de",
   measurementId: "G-TE802BVQ2K",
 };
-const app = initializeApp(firebaseOptions);
+export const app = initializeApp(firebaseOptions);
 getAnalytics(app);
 
 export const auth = getAuth(app);

@@ -39,11 +39,6 @@ public class StreamController : ControllerBase
 
     [HttpPost("{key}/{file}")]
     [RequestSizeLimit(long.MaxValue)]
-    public async Task Store([FromRoute] string key, [FromRoute] string file)
-    {
-        using var ms = new MemoryStream();
-        await this.Request.BodyReader.CopyToAsync(ms);
-        ReadOnlyMemory<byte> buf = ms.GetBuffer();
-        await this.cache.Set(key, file, buf[..(int)ms.Length]);
-    }
+    public Task Store([FromRoute] string key, [FromRoute] string file)
+        => this.cache.Set(this.Request.BodyReader, key, file).AsTask();
 }
