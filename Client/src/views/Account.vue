@@ -72,7 +72,7 @@ import {
 } from "firebase/auth";
 import { AuthModule, GeneralModule } from "../store";
 import { assertIsDefined } from "../utilities/assert";
-import { auth } from "../firebase";
+import { auth } from "@/firebase";
 
 @Component({ components: { Invite } })
 export default class Account extends Vue {

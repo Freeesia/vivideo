@@ -11,7 +11,7 @@
 </template>
 <script lang="ts">
 import { httpsCallable } from "firebase/functions";
-import { functions } from "../firebase";
+import { functions } from "@/firebase";
 import Vue from "vue";
 import Component from "vue-class-component";
 

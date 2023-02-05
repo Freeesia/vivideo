@@ -40,7 +40,7 @@
 import { httpsCallable } from "firebase/functions";
 import Vue from "vue";
 import Component from "vue-class-component";
-import { functions } from "../firebase";
+import { functions } from "@/firebase";
 
 @Component({})
 export default class Signup extends Vue {
