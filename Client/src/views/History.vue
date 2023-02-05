@@ -23,7 +23,6 @@ import { getThumbnailPath, getTitle } from "@/utilities/pathUtility";
 import Vue from "vue";
 import Component from "vue-class-component";
 import { orderBy } from "lodash";
-import type { AxiosInstance } from "axios";
 import { ContentNode } from "@/model";
 import { toRecord } from "@/utilities/systemUtility";
 
@@ -33,13 +32,17 @@ export default class History extends Vue {
   public readonly getTitle = getTitle;
   public readonly getThumbnailPath = getThumbnailPath;
   public contents: Record<string, ContentNode> = {};
-  private axios?: AxiosInstance;
 
   private async created() {
-    this.axios = await AuthModule.getAxios();
-    const promises = this.videos
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      .map(v => this.axios!.get<ContentNode>("/api/video/content/" + v.path, { validateStatus: () => true }));
+    const axios = await AuthModule.getAxios();
+    const promises = this.videos.map(v =>
+      axios.get<ContentNode>("/api/video/content/", {
+        params: {
+          path: v.path,
+        },
+        validateStatus: () => true,
+      })
+    );
     const results = await Promise.all(promises);
     this.contents = toRecord(
       results.map(r => r.data).filter(d => d),
