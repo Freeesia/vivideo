@@ -27,11 +27,7 @@ var host = Host.CreateDefaultBuilder(args)
             var con = hostContext.Configuration.GetConnectionString("Redis") ?? throw new InvalidOperationException();
             config.UseRedisStorage(ConnectionMultiplexer.Connect(con));
         })
-        .AddHangfireServer(config =>
-        {
-            // 同時に1つしかトランスコード出来ないので
-            config.WorkerCount = 1;
-        })
+        .AddHangfireServer(config => hostContext.Configuration.Bind("Hangfire", config))
         .AddTransient<ITranscodeVideo, TranscodeVideoImpl>()
         .AddTransient<ILogoDownload, LogoDownloadImpl>();
     })
