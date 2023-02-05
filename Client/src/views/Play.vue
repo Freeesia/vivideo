@@ -52,7 +52,7 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import Player from "@/components/Player.vue";
 import ShakaPlayer from "@/components/ShakaPlayer.vue";
-import { AuthModule, GeneralModule, GlobalModule, HistoryModule, SearchModule } from "@/store";
+import { AuthModule, GeneralModule, GlobalModule, SearchModule } from "@/store";
 import { Prop, Watch } from "vue-property-decorator";
 import type { ContentNode } from "@/model";
 import type { AxiosInstance } from "axios";
@@ -62,6 +62,7 @@ import { assertIsDefined } from "@/utilities/assert";
 import { getThumbnailPath, getTitle } from "@/utilities/pathUtility";
 import { delay } from "@/utilities/systemUtility";
 import { compareFunc } from "@/utilities/sortUtility";
+import { getHistory, endPlayingVideo, updatePlayingVideo } from "@/firebase/firestore";
 
 @Component({ components: { Player, ShakaPlayer } })
 export default class Play extends Vue {
@@ -108,7 +109,7 @@ export default class Play extends Vue {
     assertIsDefined(this.axios);
     GeneralModule.loading = true;
     this.thumbnailPath = getThumbnailPath(this.path);
-    const video = HistoryModule.videos.find(v => v.path === this.path);
+    const video = await getHistory(this.path);
     if (video && video.current > 0) {
       this.current = Math.max(video.current - 1, 0);
     }
@@ -130,7 +131,7 @@ export default class Play extends Vue {
   }
 
   public async ended() {
-    HistoryModule.end(this.path);
+    endPlayingVideo(this.path);
     const index = this.contents.findIndex(c => c.contentPath === this.path);
     if (index < 0 || this.contents.length - 1 <= index) {
       this.autoNext = false;
@@ -170,7 +171,7 @@ export default class Play extends Vue {
 
   @Watch("current")
   private updatedCurrent() {
-    HistoryModule.watch({ path: this.path, current: this.current });
+    updatePlayingVideo(this.path, this.current);
   }
 }
 </script>

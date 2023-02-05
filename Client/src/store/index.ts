@@ -5,7 +5,6 @@ import Auth from "./modules/auth";
 import Search from "./modules/search";
 import General from "./modules/general";
 import Global from "./modules/global";
-import History from "./modules/history";
 import { createProxy, extractVuexModule } from "vuex-class-component";
 
 Vue.use(Vuex);
@@ -20,7 +19,6 @@ export const store = new Vuex.Store({
     ...extractVuexModule(Search),
     ...extractVuexModule(General),
     ...extractVuexModule(Global),
-    ...extractVuexModule(History),
   },
   plugins: [persist.plugin],
 });
@@ -29,4 +27,3 @@ export const AuthModule = createProxy(store, Auth);
 export const SearchModule = createProxy(store, Search);
 export const GeneralModule = createProxy(store, General);
 export const GlobalModule = createProxy(store, Global);
-export const HistoryModule = createProxy(store, History);

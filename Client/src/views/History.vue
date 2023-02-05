@@ -18,22 +18,24 @@
   </v-container>
 </template>
 <script lang="ts">
-import { AuthModule, HistoryModule } from "@/store";
+import { AuthModule } from "@/store";
 import { getThumbnailPath, getTitle } from "@/utilities/pathUtility";
 import Vue from "vue";
 import Component from "vue-class-component";
 import { orderBy } from "lodash";
-import { ContentNode } from "@/model";
+import { ContentNode, HistoryVideo } from "@/model";
 import { toRecord } from "@/utilities/systemUtility";
+import { getHistories } from "@/firebase/firestore";
 
 @Component
 export default class History extends Vue {
-  public readonly videos = orderBy(HistoryModule.videos, ["lastUpdate"], ["desc"]);
   public readonly getTitle = getTitle;
   public readonly getThumbnailPath = getThumbnailPath;
+  public videos: HistoryVideo[] = [];
   public contents: Record<string, ContentNode> = {};
 
   private async created() {
+    this.videos = orderBy(await getHistories(), ["lastUpdate"], ["desc"]);
     const axios = await AuthModule.getAxios();
     const promises = this.videos.map(v =>
       axios.get<ContentNode>("/api/video/content/", {
