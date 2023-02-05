@@ -13,7 +13,7 @@
     "@sentry/vue": "^7.33.0",
     "@types/format-duration": "^1.0.1",
     "axios": "^1.2.3",
-    "firebase": "^9.6.5",
+    "firebase": "^9.17.1",
     "firebaseui": "^6.0.1",
     "format-duration": "^3.0.2",
     "natural-orderby": "^3.0.2",
