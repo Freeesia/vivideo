@@ -10,7 +10,12 @@
         "vscode": {
             "extensions": [
 				"ms-dotnettools.csharp",
-				"humao.rest-client"
+				"humao.rest-client",
+				"mutantdino.resourcemonitor",
+				"Vue.volar",
+				"esbenp.prettier-vscode",
+				"GitHub.vscode-pull-request-github",
+				"ms-dotnettools.vscode-dotnet-runtime"
 			]
         }
     },
