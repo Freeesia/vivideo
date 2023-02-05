@@ -66,7 +66,7 @@ public class TranscodeVideoImpl : ITranscodeVideo
             .AddStream(videos)
             .AddStream(audios)
             .AddParameter("-hls_playlist 1")
-            .AddParameter("-http_persistent 1")
+            // .AddParameter("-http_persistent 1")
             .AddParameter("-timeout 10")
             .AddParameter("-update_period 5")
             .AddParameter("-method POST")
