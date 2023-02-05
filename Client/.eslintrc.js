@@ -34,6 +34,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off", // 出来れば対応したい
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/ban-ts-comment": ["error", "allow-with-description"],
     "vue/no-reserved-props": [
       "error",
       {
