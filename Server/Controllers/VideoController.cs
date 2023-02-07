@@ -18,6 +18,7 @@ namespace StudioFreesia.Vivideo.Server.Controllers;
 [Route("[controller]")]
 public class VideoController : ControllerBase
 {
+    private static readonly string[] VideoExtensions = new[] { ".mp4", ".avi", ".wmv" };
     private readonly ITranscodedCache cache;
     private readonly IBackgroundJobClient jobClient;
     private readonly ILogger<VideoController> logger;
@@ -68,8 +69,8 @@ public class VideoController : ControllerBase
         {
             return NotFound();
         }
-        var files = Directory.GetFiles(dirPath, "*", SearchOption.AllDirectories)
-            .Where(f => Path.GetExtension(f).Or(".mp4", ".avi"));
+        var files = Directory.GetFiles(dirPath, "*", SearchOption.TopDirectoryOnly)
+            .Where(f => Path.GetExtension(f).Or(VideoExtensions));
 
         foreach (var filePath in files)
         {
@@ -79,7 +80,8 @@ public class VideoController : ControllerBase
             {
                 continue;
             }
-            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new(relPath, hash)));
+            var output = "/api/stream/" + hash;
+            this.jobClient.Enqueue<ITranscodeVideo>(t => t.Transcode(new(relPath, output)));
         }
 
         return Ok();
@@ -102,7 +104,7 @@ public class VideoController : ControllerBase
             .Where(i => !i.Name.StartsWith('.') && i switch
             {
                 DirectoryInfo _ => true,
-                FileInfo f => Path.GetExtension(f.FullName).Or(".mp4", ".avi", ".wmv"),
+                FileInfo f => Path.GetExtension(f.FullName).Or(VideoExtensions),
                 _ => throw new InvalidOperationException(),
             })
             .Select(i => Task.Run(() => GetContent(i)))
