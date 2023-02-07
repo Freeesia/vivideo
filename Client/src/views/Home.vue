@@ -143,7 +143,11 @@ export default class Home extends Vue {
 
   public async deleteCache(content: ContentNode) {
     assertIsDefined(this.axios);
-    await this.axios.delete(`/api/video/${content.contentPath}`);
+    await this.axios.delete("/api/video", {
+      params: {
+        path: content.contentPath,
+      },
+    });
     content.transcoded = false;
   }
 }

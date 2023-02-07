@@ -138,8 +138,8 @@ public class VideoController : ControllerBase
         }
     }
 
-    [HttpDelete("{*path}")]
-    public async Task DeleteVideoCache([FromRoute] string path)
+    [HttpDelete]
+    public async Task DeleteVideoCache([FromQuery] string path)
     {
         var key = GetHash(path);
         if (await this.cache.Exist(key))
