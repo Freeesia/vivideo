@@ -36,8 +36,11 @@ public class TranscodeVideoImpl : ITranscodeVideo
             h => (s, e) => h(e),
             h => conv.OnProgress += h,
             h => conv.OnProgress -= h)
-            .Sample(TimeSpan.FromSeconds(1))
-            .Subscribe(e => this.logger.LogTrace($"Transcoding... {e.Percent:d3}% ({e.Duration}/{e.TotalLength})"));
+            .Sample(TimeSpan.FromSeconds(5))
+            .Scan(
+                (Percent: 0, Duration: TimeSpan.Zero, Total: TimeSpan.Zero, Speed: 0d),
+                (p, c) => (c.Percent, c.Duration, c.TotalLength, (c.Duration - p.Duration).TotalMilliseconds / 5000d))
+            .Subscribe(e => this.logger.LogTrace($"Transcoding... {e.Percent:d3}% ({e.Duration}/{e.Total}) x {e.Speed:f2}"));
         try
         {
             await conv.Start();
