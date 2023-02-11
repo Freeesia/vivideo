@@ -105,7 +105,10 @@
           "beginsPattern": "^\\s*WAIT\\s+Compiling",
           "endsPattern": "ready in"
         }
-      }
+      },
+      "dependsOn": [
+        "emulators"
+      ]
     },
     {
       "type": "npm",
@@ -167,6 +170,22 @@
       "script": "install",
       "problemMatcher": [],
       "label": "npm: install"
+    },
+    {
+      "type": "npm",
+      "script": "emulators",
+      "problemMatcher": {
+        "pattern": {
+          "regexp": ".",
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "(?!)", // <- 絶対必要なので、何にもマッチしない正規表現にする
+          "endsPattern": "All emulators ready!"
+        }
+      },
+      "label": "emulators",
+      "isBackground": true
     }
   ]
 }
