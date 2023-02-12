@@ -19,6 +19,7 @@ public class TranscodedCache : ITranscodedCache
     private readonly Channel<StoreQueue> chunnel;
     private readonly Task worker;
     private readonly Task queueChecker;
+    private readonly int putWorkerThrethold;
 
     public TranscodedCache(IHttpClientFactory clientFactory, IOptions<MinioOptions> minioOptions, ILogger<TranscodedCache> logger)
     {
@@ -31,6 +32,7 @@ public class TranscodedCache : ITranscodedCache
         this.chunnel = Channel.CreateUnbounded<StoreQueue>();
         this.worker = Task.Run(InfWork);
         this.queueChecker = Task.Run(QueueCheck);
+        this.putWorkerThrethold = minioOptions.Value.PutWorkerThrethold;
     }
 
     public async ValueTask Init()
@@ -126,7 +128,7 @@ public class TranscodedCache : ITranscodedCache
         while (true)
         {
             var now = this.chunnel.Reader.Count;
-            if (now - before > 500)
+            if (now - before > this.putWorkerThrethold)
             {
                 this.logger.LogDebug($"一時ワーカー開始, queue: {now}");
                 _ = Task.Run(Work);
@@ -199,4 +201,5 @@ public record MinioOptions
     public int Port { get; init; } = 9000;
     public string User { get; init; } = "minioadmin";
     public string Passowrd { get; init; } = "minioadmin";
+    public int PutWorkerThrethold { get; init; } = 500;
 }
