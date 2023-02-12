@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO.Pipelines;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
@@ -17,6 +18,7 @@ public class TranscodedCache : ITranscodedCache
     private readonly ILogger<TranscodedCache> logger;
     private readonly Channel<StoreQueue> chunnel;
     private readonly Task worker;
+    private readonly Task queueChecker;
 
     public TranscodedCache(IHttpClientFactory clientFactory, IOptions<MinioOptions> minioOptions, ILogger<TranscodedCache> logger)
     {
@@ -26,8 +28,9 @@ public class TranscodedCache : ITranscodedCache
             .WithCredentials(minioOptions.Value.User, minioOptions.Value.Passowrd)
             .Build();
         this.logger = logger;
-        this.chunnel = Channel.CreateUnbounded<StoreQueue>(new() { SingleReader = true, SingleWriter = false });
-        this.worker = Task.Run(Work);
+        this.chunnel = Channel.CreateUnbounded<StoreQueue>();
+        this.worker = Task.Run(InfWork);
+        this.queueChecker = Task.Run(QueueCheck);
     }
 
     public async ValueTask Init()
@@ -117,21 +120,51 @@ public class TranscodedCache : ITranscodedCache
                 .WithObjects(targets.ToList()));
     }
 
-    private async Task Work()
+    private async void QueueCheck()
+    {
+        var before = 0;
+        while (true)
+        {
+            var now = this.chunnel.Reader.Count;
+            if (now - before > 500)
+            {
+                this.logger.LogDebug($"一時ワーカー開始, queue: {now}");
+                _ = Task.Run(Work);
+            }
+            else
+            {
+                this.logger.LogDebug($"queue: {now}");
+            }
+            before = now;
+            await Task.Delay(10_000);
+        }
+    }
+
+    private async Task InfWork()
     {
         while (await this.chunnel.Reader.WaitToReadAsync())
         {
+            this.logger.LogDebug("常駐ワーカー開始");
+            await Work();
+            this.logger.LogDebug("常駐ワーカー待機");
+        }
+    }
+
+    private async Task Work()
+    {
+        var id = Environment.CurrentManagedThreadId;
+        while (this.chunnel.Reader.TryRead(out var queue))
+        {
+            var (key, file, st) = queue;
+            var sw = Stopwatch.StartNew();
             try
             {
-                var (key, file, st) = await this.chunnel.Reader.ReadAsync();
-                this.logger.LogDebug($"work:{file}:{st.Length}");
                 await this.minio.PutObjectAsync(
                     new PutObjectArgs()
                         .WithBucket(BucketName)
                         .WithObject(GetObjectName(key, file))
                         .WithObjectSize(st.Length)
                         .WithStreamData(st));
-                st.Dispose();
             }
             catch (Exception e)
             {
@@ -139,7 +172,13 @@ public class TranscodedCache : ITranscodedCache
                 SentrySdk.CaptureException(e);
                 this.logger.LogError("追加エラッた。Sentryに送られているはず");
             }
+            finally
+            {
+                st.Dispose();
+            }
+            this.logger.LogDebug($"work{id}:{file}:{sw.Elapsed}");
         }
+        this.logger.LogDebug("ワーカー完了");
     }
 
     private record StoreQueue(string key, string file, Stream buf);
