@@ -38,12 +38,19 @@ public class ThumbnailController : ControllerBase
         var fullPath = Path.Combine(this.contentDir, path);
         if (Directory.Exists(fullPath))
         {
-            var logo = Directory.GetFiles(fullPath, "logo.*").FirstOrDefault();
-            if (string.IsNullOrEmpty(logo))
+            try
             {
-                return NotFound();
+                var logo = Directory.GetFiles(fullPath, "logo.*").FirstOrDefault();
+                if (string.IsNullOrEmpty(logo))
+                {
+                    return NotFound();
+                }
+                return PhysicalFile(logo, GetContentType(logo));
             }
-            return PhysicalFile(logo, GetContentType(logo));
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
         else if (System.IO.File.Exists(fullPath))
         {
