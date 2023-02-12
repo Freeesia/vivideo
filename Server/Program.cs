@@ -26,6 +26,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseSentry("https://6bd5217ab2e24414973357727d9df261@sentry.io/2409801");
 #endif
 
+builder.WebHost.ConfigureKestrel(b => b.Limits.MinRequestBodyDataRate = null);
+
 builder.Services.Configure<ContentDirSetting>(builder.Configuration.GetSection("Content"));
 builder.Services.Configure<ClientInfo>(builder.Configuration.GetSection(nameof(ClientInfo)));
 builder.Services.Configure<MinioOptions>(builder.Configuration.GetSection("Minio"));

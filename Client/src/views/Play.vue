@@ -16,7 +16,7 @@
             <v-btn @click="cancelAuto">キャンセル</v-btn>
           </template>
         </ShakaPlayer>
-        <h2 class="ma-4">{{ title }}</h2>
+        <h3 class="ma-4">{{ title }}</h3>
       </v-col>
       <v-col md="4">
         <v-list>
