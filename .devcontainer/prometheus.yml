@@ -1,0 +1,5 @@
+scrape_configs:
+  - job_name: minio-job
+    metrics_path: /minio/v2/metrics/cluster
+    static_configs:
+      - targets: ["file:9000"]
