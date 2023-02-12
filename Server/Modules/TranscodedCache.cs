@@ -18,8 +18,6 @@ public class TranscodedCache : ITranscodedCache
     private readonly ILogger<TranscodedCache> logger;
     private readonly Channel<StoreQueue> chunnel;
     private readonly Task worker;
-    private readonly Task queueChecker;
-    private readonly int putWorkerThrethold;
 
     public TranscodedCache(IHttpClientFactory clientFactory, IOptions<MinioOptions> minioOptions, ILogger<TranscodedCache> logger)
     {
@@ -29,10 +27,12 @@ public class TranscodedCache : ITranscodedCache
             .WithCredentials(minioOptions.Value.User, minioOptions.Value.Passowrd)
             .Build();
         this.logger = logger;
-        this.chunnel = Channel.CreateUnbounded<StoreQueue>();
-        this.worker = Task.Run(InfWork);
-        this.queueChecker = Task.Run(QueueCheck);
-        this.putWorkerThrethold = minioOptions.Value.PutWorkerThrethold;
+        this.chunnel = Channel.CreateBounded<StoreQueue>(
+            new BoundedChannelOptions(minioOptions.Value.MaxQueue)
+            {
+                SingleReader = true,
+            });
+        this.worker = Task.Run(Work);
     }
 
     public async ValueTask Init()
@@ -122,65 +122,36 @@ public class TranscodedCache : ITranscodedCache
                 .WithObjects(targets.ToList()));
     }
 
-    private async void QueueCheck()
-    {
-        var before = 0;
-        while (true)
-        {
-            var now = this.chunnel.Reader.Count;
-            if (now - before > this.putWorkerThrethold)
-            {
-                this.logger.LogDebug($"一時ワーカー開始, queue: {now}");
-                _ = Task.Run(Work);
-            }
-            else
-            {
-                this.logger.LogDebug($"queue: {now}");
-            }
-            before = now;
-            await Task.Delay(10_000);
-        }
-    }
-
-    private async Task InfWork()
+    private async Task Work()
     {
         while (await this.chunnel.Reader.WaitToReadAsync())
         {
-            this.logger.LogDebug("常駐ワーカー開始");
-            await Work();
-            this.logger.LogDebug("常駐ワーカー待機");
+            while (this.chunnel.Reader.TryRead(out var queue))
+            {
+                var (key, file, st) = queue;
+                var sw = Stopwatch.StartNew();
+                try
+                {
+                    await this.minio.PutObjectAsync(
+                        new PutObjectArgs()
+                            .WithBucket(BucketName)
+                            .WithObject(GetObjectName(key, file))
+                            .WithObjectSize(st.Length)
+                            .WithStreamData(st));
+                }
+                catch (Exception e)
+                {
+                    // 投げれてない気がするから投げる
+                    SentrySdk.CaptureException(e);
+                    this.logger.LogError("追加エラッた。Sentryに送られているはず");
+                }
+                finally
+                {
+                    st.Dispose();
+                }
+                this.logger.LogDebug($"work:{file}:{sw.Elapsed}");
+            }
         }
-    }
-
-    private async Task Work()
-    {
-        var id = Environment.CurrentManagedThreadId;
-        while (this.chunnel.Reader.TryRead(out var queue))
-        {
-            var (key, file, st) = queue;
-            var sw = Stopwatch.StartNew();
-            try
-            {
-                await this.minio.PutObjectAsync(
-                    new PutObjectArgs()
-                        .WithBucket(BucketName)
-                        .WithObject(GetObjectName(key, file))
-                        .WithObjectSize(st.Length)
-                        .WithStreamData(st));
-            }
-            catch (Exception e)
-            {
-                // 投げれてない気がするから投げる
-                SentrySdk.CaptureException(e);
-                this.logger.LogError("追加エラッた。Sentryに送られているはず");
-            }
-            finally
-            {
-                st.Dispose();
-            }
-            this.logger.LogDebug($"work{id}:{file}:{sw.Elapsed}");
-        }
-        this.logger.LogDebug("ワーカー完了");
     }
 
     private record StoreQueue(string key, string file, Stream buf);
@@ -201,5 +172,5 @@ public record MinioOptions
     public int Port { get; init; } = 9000;
     public string User { get; init; } = "minioadmin";
     public string Passowrd { get; init; } = "minioadmin";
-    public int PutWorkerThrethold { get; init; } = 500;
+    public int MaxQueue { get; init; } = 20000;
 }
