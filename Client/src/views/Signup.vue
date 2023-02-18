@@ -9,7 +9,7 @@
         <v-form ref="form" v-model="valid">
           <v-text-field
             v-model="email"
-            type="text"
+            type="email"
             autocomplete="email"
             :rules="emailRules"
             label="E-mail"
