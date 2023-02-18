@@ -10,14 +10,12 @@
   </section>
 </template>
 <script lang="ts">
-import { httpsCallable } from "firebase/functions";
-import { functions } from "@/firebase";
+import { invite } from "@/firebase/functions";
 import Vue from "vue";
 import Component from "vue-class-component";
 
 @Component({})
 export default class Invite extends Vue {
-  private readonly invite = httpsCallable<void, string>(functions, "invite");
   public readonly host = window.location.origin + "/signup/";
   public generating = false;
   public code: string | null = null;
@@ -25,7 +23,7 @@ export default class Invite extends Vue {
   async onInviteClick() {
     this.generating = true;
     try {
-      const res = await this.invite();
+      const res = await invite();
       this.code = res.data;
     } catch (error) {
       alert(error);

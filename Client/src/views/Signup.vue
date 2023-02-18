@@ -37,15 +37,12 @@
 </template>
 
 <script lang="ts">
-import { httpsCallable } from "firebase/functions";
 import Vue from "vue";
 import Component from "vue-class-component";
-import { functions } from "@/firebase";
+import { signup, checkCode } from "@/firebase/functions";
 
 @Component({})
 export default class Signup extends Vue {
-  private readonly checkCode = httpsCallable<{ invitationCode: string }>(functions, "checkInvitationCode");
-  private readonly signup = httpsCallable(functions, "signup");
   public readonly emailRules = [
     (v: string) => !!v || "E-mail is required",
     (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
@@ -68,7 +65,7 @@ export default class Signup extends Vue {
       return;
     }
     try {
-      await this.checkCode({ invitationCode: this.code });
+      await checkCode({ invitationCode: this.code });
     } catch (error) {
       this.isCodeValid = false;
       return;
@@ -79,7 +76,7 @@ export default class Signup extends Vue {
   public async submit() {
     try {
       this.isSubmiting = true;
-      await this.signup({
+      await signup({
         email: this.email,
         password: this.password,
         invitationCode: this.code,
