@@ -7,6 +7,7 @@ import NodeModulesPolyfills from "@esbuild-plugins/node-modules-polyfill";
 import rollupNodePolyFill from "rollup-plugin-node-polyfills";
 import { visualizer } from "rollup-plugin-visualizer";
 import pluginRewriteAll from "vite-plugin-rewrite-all";
+import { sentryVitePlugin } from "@sentry/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -77,6 +78,21 @@ export default defineConfig(({ mode }) => ({
       },
     }),
     pluginRewriteAll(),
+    process.env.SENTRY_AUTH_TOKEN &&
+      sentryVitePlugin({
+        org: "studiofreesia",
+        project: "vivideo",
+        include: "./dist",
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        release: process.env.RELEASE,
+      }),
+    mode === "analyze" &&
+      visualizer({
+        open: true,
+        filename: "dist/stats.html",
+        gzipSize: true,
+        brotliSize: true,
+      }),
   ],
   server: {
     proxy: {
@@ -92,16 +108,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     chunkSizeWarningLimit: 3000,
     rollupOptions: {
-      plugins: [
-        rollupNodePolyFill(),
-        mode === "analyze" &&
-          (visualizer({
-            open: true,
-            filename: "dist/stats.html",
-            gzipSize: true,
-            brotliSize: true,
-          }) as PluginOption),
-      ],
+      plugins: [rollupNodePolyFill()],
     },
   },
   css: {

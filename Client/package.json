@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
+    "@sentry/vite-plugin": "^0.4.0",
     "@types/format-duration": "^1.0.1",
     "@types/node": "^18.11.18",
     "@types/uuid": "^9.0.0",
