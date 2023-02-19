@@ -67,7 +67,7 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
       - uses: getsentry/action-release@v1
-        if: steps.branch-name.outputs.is_default == 'true'
+        if: steps.branch-name.outputs.is_default == 'true' && matrix.build_type == 'Server'
         env:
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
