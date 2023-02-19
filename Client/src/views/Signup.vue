@@ -40,6 +40,9 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { signup, checkCode } from "@/firebase/functions";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase";
+import { Prop } from "vue-property-decorator";
 
 @Component({})
 export default class Signup extends Vue {
@@ -51,15 +54,15 @@ export default class Signup extends Vue {
     (v: string) => !!v || "Password is required",
     (v: string) => v?.length > 8 || v?.length < 16 || "パスワードは8文字以上16文字未満",
   ];
+  @Prop({ required: true, type: String })
+  public readonly code!: string;
   public isCodeValid: boolean | null = null;
-  public code = "";
   public valid = false;
   public email = "";
   public password = "";
   public isSubmiting = false;
 
   private async mounted() {
-    this.code = this.$route.params.code;
     if (!this.code) {
       this.isCodeValid = false;
       return;
@@ -81,6 +84,7 @@ export default class Signup extends Vue {
         password: this.password,
         invitationCode: this.code,
       });
+      await signInWithEmailAndPassword(auth, this.email, this.password);
       this.$router.push({ name: "home" });
     } catch (error) {
       alert(error);

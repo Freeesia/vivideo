@@ -24,6 +24,7 @@ const routes: RouteConfig[] = [
     path: "/signup/:code",
     name: "signup",
     component: Signup,
+    props: true,
     meta: {
       anonymous: true,
     },
