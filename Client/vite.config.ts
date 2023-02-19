@@ -1,4 +1,4 @@
-import { defineConfig, PluginOption } from "vite";
+import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue2";
 import { VitePWA } from "vite-plugin-pwa";
 import Components from "unplugin-vue-components/vite";
@@ -80,11 +80,11 @@ export default defineConfig(({ mode }) => ({
     pluginRewriteAll(),
     process.env.SENTRY_AUTH_TOKEN &&
       sentryVitePlugin({
-        org: "studiofreesia",
-        project: "vivideo",
-        include: "./dist",
+        org: process.env.SENTRY_ORG,
+        project: process.env.SENTRY_PROJECT,
         authToken: process.env.SENTRY_AUTH_TOKEN,
-        release: process.env.RELEASE,
+        release: process.env.InformationalVersion,
+        include: "./dist",
       }),
     mode === "analyze" &&
       visualizer({

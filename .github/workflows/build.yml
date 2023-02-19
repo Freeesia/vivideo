@@ -59,17 +59,19 @@ jobs:
             InformationalVersion=${{ steps.gitversion.outputs.informationalVersion }}
             Sha=${{ steps.gitversion.outputs.Sha }}
             BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            SENTRY_ORG=${{ (steps.branch-name.outputs.is_default == 'true' && secrets.SENTRY_ORG) || '' }}
+            SENTRY_PROJECT=${{ (steps.branch-name.outputs.is_default == 'true' && secrets.SENTRY_PROJECT) || '' }}
             SENTRY_AUTH_TOKEN=${{ (steps.branch-name.outputs.is_default == 'true' && secrets.SENTRY_AUTH_TOKEN) || '' }}
           tags: ghcr.io/${{ env.image_tag }}
           push: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache
-      - uses: dmandrade/sentry-release-github-action@v1
+      - uses: getsentry/action-release@v1
         if: steps.branch-name.outputs.is_default == 'true'
         env:
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: studiofreesia
-          SENTRY_PROJECT: vivideo
         with:
           environment: production
           version: ${{ steps.gitversion.outputs.informationalVersion }}
