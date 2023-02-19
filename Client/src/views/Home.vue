@@ -66,7 +66,7 @@ export default class Home extends Vue {
   public readonly getThumbnailPath = getThumbnailPath;
   public histories: Record<string, HistoryVideo> = {};
 
-  @Prop({ required: true, type: String, default: "" })
+  @Prop({ type: String, default: "" })
   public readonly path!: string;
 
   get segments() {

@@ -17,6 +17,7 @@ if (import.meta.env.PROD) {
     // We recommend adjusting this value in production
     tracesSampleRate: 1.0,
     release: import.meta.env.VITE_APP_VERSION,
+    environment: import.meta.env.MODE,
     tunnel: "/tunnel",
   });
 }
