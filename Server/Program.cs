@@ -1,6 +1,5 @@
 
 using System.Reflection;
-using AspNetCore.Firebase.Authentication.Extensions;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using StudioFreesia.Vivideo.Core;
 using StudioFreesia.Vivideo.Server.ComponentModel;
 using StudioFreesia.Vivideo.Server.Controllers;
+using StudioFreesia.Vivideo.Server.Extensions;
 using StudioFreesia.Vivideo.Server.Modules;
 using Xabe.FFmpeg;
 
@@ -47,8 +47,11 @@ builder.Services.AddHttpClient();
 builder.Services.AddSentryTunneling();
 #endif
 
-var firebase = builder.Configuration.GetSection("FirebaseAuthentication");
-builder.Services.AddFirebaseAuthentication(firebase.GetValue<string>("Issuer"), firebase.GetValue<string>("Audience"));
+builder.Services.AddFirebaseAuthentication(
+    builder.Configuration
+        .GetRequiredSection("FirebaseAuthentication")
+        .Get<FirebaseAuthOptions>()
+        ?? throw new Exception());
 builder.Services.AddAuthorization(op
     => op.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
         .RequireAuthenticatedUser()
@@ -80,7 +83,7 @@ var env = app.Environment;
 var config = app.Configuration;
 #if !DEBUG
 app.UseSentryTracing();
-app.UseSentryTunneling();    
+app.UseSentryTunneling();
 #endif
 app.UseForwardedHeaders();
 if (env.IsDevelopment())
