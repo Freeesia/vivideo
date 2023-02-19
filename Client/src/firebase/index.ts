@@ -1,6 +1,6 @@
 import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
+import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 import axios from "axios";
 
@@ -18,6 +18,9 @@ export const app = initializeApp(firebaseOptions);
 getAnalytics(app);
 
 export const auth = getAuth(app);
+if (import.meta.env.DEV) {
+  connectAuthEmulator(auth, "http://localhost:9099");
+}
 
 (async function () {
   const { data: info } = await axios.get<ClientInfo>("/api/info/clientinfo");

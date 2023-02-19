@@ -13,6 +13,13 @@
     },
     "firestore": {
       "port": 8888
-    }
+    },
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

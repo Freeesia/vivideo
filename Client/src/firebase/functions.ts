@@ -2,8 +2,8 @@ import { app } from ".";
 import { getFunctions, connectFunctionsEmulator, httpsCallableFromURL } from "firebase/functions";
 
 export const functions = getFunctions(app, "asia-northeast1");
-if (process.env.NODE_ENV !== "production") {
-  connectFunctionsEmulator(functions, "localhost", 5000);
+if (import.meta.env.DEV) {
+  connectFunctionsEmulator(functions, "localhost", 5010);
 }
 
 export const invite = httpsCallableFromURL<void, string>(functions, "https://invite-uxogjp5z3q-an.a.run.app/invite");
