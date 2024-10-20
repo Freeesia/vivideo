@@ -21,7 +21,7 @@
     "shaka-player": "4.3.5",
     "uuid": "^9.0.0",
     "video.js": "^7.6.6",
-    "vue": "^2.6.12",
+    "vue": "^3.0.0",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^9.0.2",
     "vue-router": "^3.5.3",
